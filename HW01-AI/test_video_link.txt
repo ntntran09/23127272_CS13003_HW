@@ -1,3 +1,3 @@
 Video test (includes TC-05 , TC-07 , TC-09 , TC-10 , TC-11 , TC-14): 
-https://youtu.be/tOhkDsIPWTI 
+https://youtu.be/DzshPGh5MKg
 Note: this video contains 6 test execution videos, merged as one 1 minute video.

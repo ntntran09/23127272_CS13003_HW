@@ -516,7 +516,7 @@ Most AI hallucinations come from invalid links of the sources, the year of the d
   - Year: 2020  
   - Serial Number: 0323\*\*\*\*076  
 - Test case report: [Sharp KS-IH191V-RD Test Cases - Edited](https://docs.google.com/spreadsheets/d/1tFN9-R-bNTMH6gPnmYsua4k3PPeAua4rQSvxXM54xss/edit?usp=sharing)  
-- Video test (includes TC-05 , TC-07 , TC-09 , TC-10 , TC-11 , TC-14): [https://youtu.be/tOhkDsIPWTI](https://youtu.be/tOhkDsIPWTI)   
+- Video test (includes TC-05 , TC-07 , TC-09 , TC-10 , TC-11 , TC-14): [Youtube Video](https://youtu.be/DzshPGh5MKg)   
   Note: this video contains 6 test execution videos, merged as one 1 minute video.
 
 # AI Collaboration Protocol
