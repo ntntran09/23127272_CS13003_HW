@@ -1,0 +1,46 @@
+[
+  {
+    "tool": "Codex",
+    "time": "2026-07-06T23:33:58.440Z",
+    "prompt": "Dựa lên phân tích các test case lỗi, và bổ sung (chỉ) các tc bị thiếu, không sửa testcase sai(expected ouput sẽ sai), sửa lại 4 file FR, Sau đó, kiểm thử từng test case và report fail hoặc không fail ở trong bảng tương ứng.",
+    "output": "Đã sửa 4 file FR theo đúng hướng “chỉ bổ sung TC thiếu”, không sửa expected output của các TC cũ.\n\nCác section mới đều là `## 11. Supplemented Missing Test Cases and Static Execution Results`:\n\n- [FR-02-mobile-domain-testing.md](D:/CODE/23127272_CS13003_HW/HW02-AI/FR-02-mobile-domain-testing.md:222): thêm 6 TC thiếu, kết quả 5 `FAIL`, 1 `NOT FAIL`.\n- [FR-03-domain-testing.md](D:/CODE/23127272_CS13003_HW/HW02-AI/FR-03-domain-testing.md:198): thêm 4 TC thiếu, tất cả `FAIL`.\n- [FR-11-domain-testing.md](D:/CODE/23127272_CS13003_HW/HW02-AI/FR-11-domain-testing.md:208): thêm 5 TC thiếu, tất cả `FAIL`.\n- [FR-14-domain-testing.md](D:/CODE/23127272_CS13003_HW/HW02-AI/FR-14-domain-testing.md:218): thêm 5 TC thiếu, tất cả `FAIL`.\n\nTổng cộng thêm 20 TC bổ sung, đã report `FAIL`/`NOT FAIL` ngay trong bảng tương ứng. Mình kiểm thử bằng cách trace code tĩnh từ SUT hiện tại ở `D:\\CODE\\eshop-sut` vì các report này ghi rõ không có UI automation/test runner cấu hình sẵn.\n\nGhi chú nhỏ: `HW02-AI/` hiện đang untracked trong Git, nên `git diff` không hiển thị nội dung các file đó; mình đã xác nhận bằng đọc file trực tiếp và `rg`.",
+    "output_scope": "last_assistant_message",
+    "source": "codex-chat-logs/codex-chat-log.md#interaction-1",
+    "verdict": "",
+    "reasoning": "",
+    "student_fix": ""
+  },
+  {
+    "tool": "Codex",
+    "time": "2026-07-06T23:37:40.381Z",
+    "prompt": "Mình chuẩn bị patch theo kiểu “append-only” ở cuối từng file: thêm section bổ sung TC thiếu + kết quả kiểm thử tĩnh. Cách này giữ nguyên toàn bộ TC cũ và expected output cũ, kể cả những oracle đang sai như bạn dặn.\n\ntôi mún sửa lại chứ không có giữ mấy cái sai, chỉ là expected output sẽ dựa trên readme, không phải trong code thực tế",
+    "output": "Đúng ý bạn rồi. Mình đã sửa lại 4 file để oracle/Expected Output dựa trên README/spec, không dựa theo bug trong code thực tế.\n\nĐã làm:\n\n- Sửa các expected sai trong bảng chính, ví dụ:\n  - FR-02 không còn xem `Sign In`/`Username` là expected đúng.\n  - FR-02 email mobile phải có email keyboard cụ thể.\n  - FR-11 `shipping` phải không có nút hủy theo FR-10.\n  - FR-11 tiền tệ không hard-code dấu phẩy, cho phép locale-equivalent.\n  - FR-14 non-admin phải bị bảo vệ ở mức hệ thống, không chỉ UI.\n  - FR-14 delete confirmation chuyển thành `NEEDS REVIEW` vì README không yêu cầu rõ.\n- Giữ expected theo README, rồi ghi Actual Result + `FAIL` / `NOT FAIL` / `NEEDS REVIEW` trong Section 11 của từng file.\n- Bổ sung kết quả cho cả TC cũ bị review sai/blocked, không chỉ TC mới.\n\nTổng số dòng kết quả kiểm thử tĩnh hiện có:\n\n- FR-02: 18 dòng kết quả\n- FR-03: 28 dòng kết quả\n- FR-11: 8 dòng kết quả\n- FR-14: 11 dòng kết quả\n\nMình kiểm tra bằng static trace từ code SUT hiện tại vì các report vẫn ghi không có UI automation/test runner cấu hình sẵn.",
+    "output_scope": "last_assistant_message",
+    "source": "codex-chat-logs/codex-chat-log.md#interaction-2",
+    "verdict": "",
+    "reasoning": "",
+    "student_fix": ""
+  },
+  {
+    "tool": "Codex",
+    "time": "2026-07-06T23:43:40.388Z",
+    "prompt": "Không có bổ sung thêm phần 11, mà chỉnh sửa và bổ sung các test case chưa hợp lí hoặc thiếu ở các phần trên và tiến hành kiểm thử và ghi lại kết quả trong các bảng test set đó luôn",
+    "output": "Đã sửa lại đúng format bạn muốn:\n\n- Xóa toàn bộ `## 11. Supplemented Missing Test Cases...` khỏi cả 4 file.\n- Chỉnh các expected output chưa hợp lý ngay trong bảng Section 5/6 theo README/spec.\n- Bổ sung TC thiếu trực tiếp vào bảng test set chính:\n  - FR-02: thêm `DT-FR02-MOB-028..030`, `DT-FR02-WEB-001..002`\n  - FR-03: thêm `DT-FR03-026..029`\n  - FR-11: thêm `DT-FR11-027..031`\n  - FR-14: thêm `DT-FR14-028..032`\n- Ghi kết quả kiểm thử tĩnh ngay trong bảng:\n  - Section 5: cột `Notes / Static Result`\n  - Section 6: cột `Covered ECs / Static Result`\n\nKết quả static hiện được ghi trong bảng:\n- FR-02: 19 dòng có `Static: ...`\n- FR-03: 28 dòng\n- FR-11: 8 dòng\n- FR-14: 11 dòng\n\nMình cũng cập nhật FR-02 surface/rationale vì có thêm web-login coverage gap, không còn ghi “mobile-only” tuyệt đối nữa. Kiểm thử được thực hiện bằng static trace từ code SUT hiện tại, vì các report vẫn ghi không có UI automation/test runner cấu hình sẵn.",
+    "output_scope": "last_assistant_message",
+    "source": "codex-chat-logs/codex-chat-log.md#interaction-3",
+    "verdict": "",
+    "reasoning": "",
+    "student_fix": ""
+  },
+  {
+    "tool": "Codex",
+    "time": "2026-07-06T23:54:16.964Z",
+    "prompt": "note which one pass and which one fail, no need to clearly state its static",
+    "output": "Đã chỉnh xong: không còn chữ `Static`/`static` trong 4 file FR.\n\nMình đổi nhãn trong bảng thành:\n\n- `Notes / Result`\n- `Covered ECs / Result`\n- Kết quả ghi trực tiếp là `PASS.`, `FAIL.`, hoặc `NEEDS REVIEW.`\n\nSố dòng kết quả hiện có:\n- FR-02: 19\n- FR-03: 28\n- FR-11: 8\n- FR-14: 11",
+    "output_scope": "last_assistant_message",
+    "source": "codex-chat-logs/codex-chat-log.md#interaction-4",
+    "verdict": "",
+    "reasoning": "",
+    "student_fix": ""
+  }
+]

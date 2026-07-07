@@ -1,0 +1,24 @@
+[
+  {
+    "tool": "Codex",
+    "time": "2026-07-07T00:02:19.154Z",
+    "prompt": "Dựa vào kết quả của các file FR, hãy viết bug report.",
+    "output": "Đã viết bug report tại [HW02-AI/bug-report.md](D:/CODE/23127272_CS13003_HW/HW02-AI/bug-report.md).\n\nMình đã tổng hợp từ 4 file FR, gồm:\n\n- 36 bug chính từ FR-02, FR-03, FR-11, FR-14\n- 2 requirement gaps cần xác nhận thêm\n- Summary theo feature, severity, evidence, related tests\n- Mỗi bug có steps to reproduce, expected result, actual result, screenshot note để đưa lên GitHub Issues\n- Có thêm phần AI Gap Analysis theo yêu cầu bài HW02\n\nLưu ý: terminal PowerShell hiển thị tiếng Việt bị mojibake, nhưng file Markdown đã được tạo bằng Unicode và nên mở trong IDE/render Markdown bình thường.",
+    "output_scope": "last_assistant_message",
+    "source": "codex-chat-logs/codex-chat-log.md#interaction-1",
+    "verdict": "",
+    "reasoning": "",
+    "student_fix": ""
+  },
+  {
+    "tool": "Codex",
+    "time": "2026-07-07T00:10:08.029Z",
+    "prompt": "bug report, no need for screenshot",
+    "output": "Đã chỉnh [bug-report.md](D:/CODE/23127272_CS13003_HW/HW02-AI/bug-report.md): bỏ toàn bộ dòng `Screenshot` và câu yêu cầu đính kèm screenshot ở phần Scope.\n\nMình cũng quét lại bằng `rg`, không còn chữ `Screenshot/screenshot` trong file nữa.",
+    "output_scope": "last_assistant_message",
+    "source": "codex-chat-logs/codex-chat-log.md#interaction-2",
+    "verdict": "",
+    "reasoning": "",
+    "student_fix": ""
+  }
+]
