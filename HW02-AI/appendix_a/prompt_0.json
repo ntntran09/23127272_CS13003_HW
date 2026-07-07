@@ -1,0 +1,162 @@
+[
+    {
+        "index":  1,
+        "source_group":  "generate-domain-skill",
+        "tool":  "Codex",
+        "time":  "2026-07-01T09:45:58.697Z",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-1",
+        "prompt":  "[$skill-creator](C:\\\\Users\\\\tinal\\\\.codex\\\\skills\\\\.system\\\\skill-creator\\\\SKILL.md) Dá»±a trÃªn pipeline táº¡o test case theo kÄ© thuáº­t domain testing nhÆ° trong slide, hÃ£y táº¡o skill Ä‘á»ƒ táº¡o test case test 1 function Ä‘Æ°á»£c cho trong 1 project"
+    },
+    {
+        "index":  2,
+        "source_group":  "generate-domain-skill",
+        "tool":  "Codex",
+        "time":  "2026-07-01T10:05:10.858Z",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-2",
+        "prompt":  "The skill should not mention the course slide, since the slide might not be availiable for the next skill usage. Ensure there is human in the loop"
+    },
+    {
+        "index":  3,
+        "source_group":  "generate-domain-skill",
+        "tool":  "Codex",
+        "time":  "2026-07-01T11:04:19.560Z",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-3",
+        "prompt":  "The skill should be able to handle specific user connected to type of testing needed, such as UI testing only, API testing only, UI and API testing,  ect"
+    },
+    {
+        "index":  4,
+        "source_group":  "fr03-fr11-domain-tests",
+        "tool":  "Codex",
+        "time":  "2026-07-01T11:13:15.978Z",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-1",
+        "prompt":  "Use $generate-domain-tests to create domain-testing test cases for FR-03: Forgot password and password reset (two steps) in eshop-sut (\"D:\\CODE\\eshop-sut\")."
+    },
+    {
+        "index":  5,
+        "source_group":  "fr03-fr11-domain-tests",
+        "tool":  "Codex",
+        "time":  "2026-07-05T03:56:45.358Z",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-3",
+        "prompt":  "Use Generate Domain Tests to create domain-testing test cases for FR-11: Xem lá»‹ch sá»­ Ä‘Æ¡n hÃ ng (User) in eshop-sut (\"D:\\CODE\\eshop-sut\")."
+    },
+    {
+        "index":  6,
+        "source_group":  "ai-audit-skill",
+        "tool":  "Codex",
+        "time":  "2026-07-06T22:57:05.936Z",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-1",
+        "prompt":  "[$skill-creator](C:\\\\Users\\\\tinal\\\\.codex\\\\skills\\\\.system\\\\skill-creator\\\\SKILL.md) Based on the the give example of AI audit log, write a skill to automatically create one based on a given AI audit folder. In the process, it should also ask for the condition of the AI output. Users can also request to automatically get chat log of codex, saved into the folder, and put into the report."
+    },
+    {
+        "index":  7,
+        "source_group":  "ai-audit-skill",
+        "tool":  "Codex",
+        "time":  "2026-07-06T23:07:48.000Z",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-2",
+        "prompt":  "Trong má»™t sá»‘ trÆ°á»ng há»£p, tÃ´i sáº½ chá»‰nh sá»­a trá»±c tiáº¿p trÃªn file output do AI táº¡o ra (AI gen). Khi Ä‘Ã³, tÃ´i sáº½ cung cáº¥p file cuá»‘i cÃ¹ng (final file) vÃ  yÃªu cáº§u báº¡n so sÃ¡nh nÃ³ vá»›i báº£n gá»‘c cá»§a AI. Báº¡n cáº§n liá»‡t kÃª chi tiáº¿t cÃ¡c Ä‘iá»ƒm khÃ¡c biá»‡t vÃ  giáº£i thÃ­ch lÃ½ do cho nhá»¯ng thay Ä‘á»•i Ä‘Ã³."
+    },
+    {
+        "index":  8,
+        "source_group":  "ai-audit-skill",
+        "tool":  "Codex",
+        "time":  "2026-07-06T23:45:18.136Z",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-3",
+        "prompt":  "vÃ  trong pháº§n ai output, khÃ´ng cáº§n ghi quÃ¡ trÃ¬nh thinking, chá»‰ cáº§n ghi output cuá»‘i cÃ¹ng"
+    },
+    {
+        "index":  9,
+        "source_group":  "fr-incomplete-review",
+        "tool":  "Codex",
+        "time":  "2026-07-06T23:33:58.440Z",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-1",
+        "prompt":  "Dá»±a lÃªn phÃ¢n tÃ­ch cÃ¡c test case lá»—i, vÃ  bá»• sung (chá»‰) cÃ¡c tc bá»‹ thiáº¿u, khÃ´ng sá»­a testcase sai(expected ouput sáº½ sai), sá»­a láº¡i 4 file FR, Sau Ä‘Ã³, kiá»ƒm thá»­ tá»«ng test case vÃ  report fail hoáº·c khÃ´ng fail á»Ÿ trong báº£ng tÆ°Æ¡ng á»©ng."
+    },
+    {
+        "index":  10,
+        "source_group":  "fr-incomplete-review",
+        "tool":  "Codex",
+        "time":  "2026-07-06T23:37:40.381Z",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-2",
+        "prompt":  "MÃ¬nh chuáº©n bá»‹ patch theo kiá»ƒu â€œappend-onlyâ€ á»Ÿ cuá»‘i tá»«ng file: thÃªm section bá»• sung TC thiáº¿u + káº¿t quáº£ kiá»ƒm thá»­ tÄ©nh. CÃ¡ch nÃ y giá»¯ nguyÃªn toÃ n bá»™ TC cÅ© vÃ  expected output cÅ©, ká»ƒ cáº£ nhá»¯ng oracle Ä‘ang sai nhÆ° báº¡n dáº·n.\n\ntÃ´i mÃºn sá»­a láº¡i chá»© khÃ´ng cÃ³ giá»¯ máº¥y cÃ¡i sai, chá»‰ lÃ  expected output sáº½ dá»±a trÃªn readme, khÃ´ng pháº£i trong code thá»±c táº¿"
+    },
+    {
+        "index":  11,
+        "source_group":  "fr-incomplete-review",
+        "tool":  "Codex",
+        "time":  "2026-07-06T23:43:40.388Z",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-3",
+        "prompt":  "KhÃ´ng cÃ³ bá»• sung thÃªm pháº§n 11, mÃ  chá»‰nh sá»­a vÃ  bá»• sung cÃ¡c test case chÆ°a há»£p lÃ­ hoáº·c thiáº¿u á»Ÿ cÃ¡c pháº§n trÃªn vÃ  tiáº¿n hÃ nh kiá»ƒm thá»­ vÃ  ghi láº¡i káº¿t quáº£ trong cÃ¡c báº£ng test set Ä‘Ã³ luÃ´n"
+    },
+    {
+        "index":  12,
+        "source_group":  "fr-incomplete-review",
+        "tool":  "Codex",
+        "time":  "2026-07-06T23:54:16.964Z",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-4",
+        "prompt":  "note which one pass and which one fail, no need to clearly state its static"
+    },
+    {
+        "index":  13,
+        "source_group":  "bug-report-from-fr",
+        "tool":  "Codex",
+        "time":  "2026-07-07T00:02:19.154Z",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-1",
+        "prompt":  "Dá»±a vÃ o káº¿t quáº£ cá»§a cÃ¡c file FR, hÃ£y viáº¿t bug report."
+    },
+    {
+        "index":  14,
+        "source_group":  "bug-report-from-fr",
+        "tool":  "Codex",
+        "time":  "2026-07-07T00:10:08.029Z",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-2",
+        "prompt":  "bug report, no need for screenshot"
+    },
+    {
+        "index":  15,
+        "source_group":  "ai-audit-report",
+        "tool":  "Codex",
+        "time":  "2026-07-07T00:14:53Z",
+        "source":  "AI docs/AI-Audit-Report.md, audit table row",
+        "prompt":  "Use $ai-audit-report to write this audit report, include Codex chat logs, and compare incomplete AI outputs for FR-02/03/11/14 against current files."
+    },
+    {
+        "index":  16,
+        "source_group":  "ai-final-comparisons",
+        "tool":  "Codex",
+        "time":  "2026-07-07",
+        "source":  "AI docs/AI-Audit-Report.md and AI docs/ai-final-comparisons/FR-02-comparison.md",
+        "prompt":  "Compare incomplete AI output for FR-02 against the current final report."
+    },
+    {
+        "index":  17,
+        "source_group":  "ai-final-comparisons",
+        "tool":  "Codex",
+        "time":  "2026-07-07",
+        "source":  "AI docs/AI-Audit-Report.md and AI docs/ai-final-comparisons/FR-03-comparison.md",
+        "prompt":  "Compare incomplete AI output for FR-03 against the current final report."
+    },
+    {
+        "index":  18,
+        "source_group":  "ai-final-comparisons",
+        "tool":  "Codex",
+        "time":  "2026-07-07",
+        "source":  "AI docs/AI-Audit-Report.md and AI docs/ai-final-comparisons/FR-11-comparison.md",
+        "prompt":  "Compare incomplete AI output for FR-11 against the current final report."
+    },
+    {
+        "index":  19,
+        "source_group":  "ai-final-comparisons",
+        "tool":  "Codex",
+        "time":  "2026-07-07",
+        "source":  "AI docs/AI-Audit-Report.md and AI docs/ai-final-comparisons/FR-14-comparison.md",
+        "prompt":  "Compare incomplete AI output for FR-14 against the current final report."
+    },
+    {
+        "index":  20,
+        "source_group":  "current-submission-cleanup",
+        "tool":  "Codex",
+        "time":  "2026-07-07T07:40:11+07:00",
+        "source":  "current Codex session",
+        "prompt":  "appendix_a should hold all the ai prompts, and copy the created skills for domain and audit into the skills folder too. and then finally wrte thê readme based on hw2 req"
+    }
+]

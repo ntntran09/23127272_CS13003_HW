@@ -1,4 +1,10 @@
-commit 288ecf429d87876a0aa5c58bdbdbfd96bc6cbc2a (HEAD -> main, origin/main, origin/HEAD)
+commit 3e0f61b62386b9161b92b4490549a4c312241822 (HEAD -> main, origin/main, origin/HEAD)
+Author: heyyouknowme <ntntran23@clc.fitus.edu.vn>
+Date:   Tue Jun 2 03:35:51 2026 +0700
+
+    HW01-AI: Updated youtube link
+
+commit 288ecf429d87876a0aa5c58bdbdbfd96bc6cbc2a
 Author: heyyouknowme <ntntran23@clc.fitus.edu.vn>
 Date:   Tue Jun 2 03:18:55 2026 +0700
 
@@ -15,4 +21,3 @@ Author: heyyouknowme <ntntran23@clc.fitus.edu.vn>
 Date:   Tue Jun 2 03:10:25 2026 +0700
 
     first commit
-:
