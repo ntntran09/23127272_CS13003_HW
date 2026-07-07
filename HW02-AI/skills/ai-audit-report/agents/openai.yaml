@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Audit Report"
+  short_description: "Create course AI audit reports from folders"
+  default_prompt: "Use $ai-audit-report to create an AI audit report for this assignment folder."
