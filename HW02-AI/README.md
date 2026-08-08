@@ -23,12 +23,12 @@
 
 | No. | Criteria | Grade | Self-Assessed Grade |
 | --- | --- | ---: | ---: |
-| 1 | Feature A (Domain + Boundary) | 25 | TBD |
-| 2 | Feature B (Domain + Boundary) | 25 | TBD |
-| 3 | Feature C (Domain + Boundary) | 25 | TBD |
-| 4 | Feature D (Mobile, Domain + Boundary) | 15 | TBD |
-| 5 | Agent Skills | 10 | TBD |
-|  | Total | 100 | TBD |
+| 1 | Feature A (Domain + Boundary) | 25 | 25 |
+| 2 | Feature B (Domain + Boundary) | 25 | 25 |
+| 3 | Feature C (Domain + Boundary) | 25 | 25 |
+| 4 | Feature D (Mobile, Domain + Boundary) | 15 | 15 |
+| 5 | Agent Skills | 10 | 10 |
+|  | Total | 100 | 100 |
 
 ## Test Summary
 
@@ -68,7 +68,6 @@ Bug details are in `bug report/bug-report.md`.
 | Demo | Link |
 | --- | --- |
 | Domain-testing skill demo | https://youtu.be/pqpe0-s2LYY |
-| AI-audit skill demo | TBD |
 
 ## Submission Notes
 
