@@ -1,0 +1,4 @@
+interface:
+  display_name: "Run Playwright Browser Matrix"
+  short_description: "Run and verify per-browser Playwright reports"
+  default_prompt: "Use $run-playwright-browser-matrix to execute this Playwright suite across the requested browsers and verify its reports."

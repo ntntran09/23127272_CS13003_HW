@@ -1,0 +1,18 @@
+{
+  "name": "eshop-hw04-automation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Data-driven Playwright automation for EShop FR-03, FR-11, and FR-14",
+  "scripts": {
+    "test": "playwright test",
+    "test:fr03": "playwright test tests/fr03-password-reset.spec.js",
+    "test:fr11": "playwright test tests/fr11-order-history.spec.js",
+    "test:fr14": "playwright test tests/fr14-category-management.spec.js",
+    "test:matrix": "node scripts/run-browser-matrix.js",
+    "validate:data": "node scripts/validate-test-data.js",
+    "validate:reports": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/validate-reports.ps1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.2"
+  }
+}

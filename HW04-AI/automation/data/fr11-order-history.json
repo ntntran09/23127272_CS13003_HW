@@ -1,0 +1,98 @@
+[
+  {
+    "id": "FR11-AUTO-001",
+    "title": "Guest cannot see order history",
+    "action": "guest-gate",
+    "input": {},
+    "expected": "Login-required feedback is visible and no order rows are rendered",
+    "requirementIds": ["FR-11", "SEC-02"]
+  },
+  {
+    "id": "FR11-AUTO-002",
+    "title": "Expired token does not expose stale orders",
+    "action": "expired-token",
+    "input": { "token": "expired-token" },
+    "expected": "Invalid session is cleared and no order rows are visible",
+    "requirementIds": ["FR-11", "SEC-02"]
+  },
+  {
+    "id": "FR11-AUTO-003",
+    "title": "Zero orders renders an empty state",
+    "action": "empty-orders",
+    "input": { "orders": [] },
+    "expected": "A friendly no-orders message is shown",
+    "requirementIds": ["FR-11", "FR-24"]
+  },
+  {
+    "id": "FR11-AUTO-004",
+    "title": "One order displays every required field",
+    "action": "one-order",
+    "input": { "orders": [{ "id": 101, "user_id": 2, "total_amount": 300000, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }] },
+    "expected": "One row shows order id, date, formatted total, and translated status",
+    "requirementIds": ["FR-11"]
+  },
+  {
+    "id": "FR11-AUTO-005",
+    "title": "Multiple orders render one row each",
+    "action": "many-orders",
+    "input": { "orders": [{ "id": 102, "user_id": 2, "total_amount": 1, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }, { "id": 103, "user_id": 2, "total_amount": 1000, "status": "delivered", "created_at": "2026-08-07T10:30:00Z" }] },
+    "expected": "Exactly two order rows are visible",
+    "requirementIds": ["FR-11"]
+  },
+  {
+    "id": "FR11-AUTO-006",
+    "title": "Other users' order details are absent",
+    "action": "ownership",
+    "input": { "orders": [{ "id": 104, "user_id": 2, "total_amount": 500000, "status": "confirmed", "created_at": "2026-08-08T10:30:00Z" }], "foreignOrderId": 999 },
+    "expected": "Owned order is visible and foreign order id is absent",
+    "requirementIds": ["FR-11", "SEC-02"]
+  },
+  {
+    "id": "FR11-AUTO-007",
+    "title": "Pending status is translated and colored",
+    "action": "status",
+    "input": { "orders": [{ "id": 105, "user_id": 2, "total_amount": 100, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }], "status": "pending", "label": "Chờ xác nhận", "classToken": "bg-yellow-100" },
+    "expected": "Pending status uses Vietnamese text and its status color",
+    "requirementIds": ["FR-11"]
+  },
+  {
+    "id": "FR11-AUTO-008",
+    "title": "Confirmed status is translated and colored",
+    "action": "status",
+    "input": { "orders": [{ "id": 106, "user_id": 2, "total_amount": 100, "status": "confirmed", "created_at": "2026-08-08T10:30:00Z" }], "status": "confirmed", "label": "Đã xác nhận", "classToken": "bg-indigo-100" },
+    "expected": "Confirmed status uses Vietnamese text and its status color",
+    "requirementIds": ["FR-11"]
+  },
+  {
+    "id": "FR11-AUTO-009",
+    "title": "Shipping order cannot be canceled",
+    "action": "shipping-no-cancel",
+    "input": { "orders": [{ "id": 107, "user_id": 2, "total_amount": 100, "status": "shipping", "created_at": "2026-08-08T10:30:00Z" }], "label": "Đang giao" },
+    "expected": "Shipping is translated and its row has no cancel button",
+    "requirementIds": ["FR-10", "FR-11"]
+  },
+  {
+    "id": "FR11-AUTO-010",
+    "title": "Delivered order cannot be canceled",
+    "action": "final-no-cancel",
+    "input": { "orders": [{ "id": 108, "user_id": 2, "total_amount": 100, "status": "delivered", "created_at": "2026-08-08T10:30:00Z" }], "label": "Đã giao" },
+    "expected": "Delivered is translated and its row has no cancel button",
+    "requirementIds": ["FR-10", "FR-11"]
+  },
+  {
+    "id": "FR11-AUTO-011",
+    "title": "Canceled order cannot be canceled again",
+    "action": "final-no-cancel",
+    "input": { "orders": [{ "id": 109, "user_id": 2, "total_amount": 100, "status": "canceled", "created_at": "2026-08-08T10:30:00Z" }], "label": "Đã hủy" },
+    "expected": "Canceled is translated and its row has no cancel button",
+    "requirementIds": ["FR-10", "FR-11"]
+  },
+  {
+    "id": "FR11-AUTO-012",
+    "title": "Total and date use readable formats",
+    "action": "formatting",
+    "input": { "orders": [{ "id": 110, "user_id": 2, "total_amount": 1234567890, "status": "pending", "created_at": "2024-02-29T00:00:00Z" }] },
+    "expected": "Large total has separators and currency symbol; leap-day date is readable",
+    "requirementIds": ["FR-11", "FR-21"]
+  }
+]

@@ -1,0 +1,101 @@
+﻿[
+    {
+        "feature":  "fr03",
+        "browser":  "chromium",
+        "timestamp":  "2026-08-08T15:00:21.941Z",
+        "total":  12,
+        "passed":  2,
+        "failed":  10,
+        "flaky":  0,
+        "skipped":  0,
+        "title":  "Run by: 23127272 | 2026-08-08T15:00:21.941Z | fr03 | chromium"
+    },
+    {
+        "feature":  "fr03",
+        "browser":  "chrome",
+        "timestamp":  "2026-08-08T15:01:31.591Z",
+        "total":  12,
+        "passed":  2,
+        "failed":  10,
+        "flaky":  0,
+        "skipped":  0,
+        "title":  "Run by: 23127272 | 2026-08-08T15:01:31.591Z | fr03 | chrome"
+    },
+    {
+        "feature":  "fr03",
+        "browser":  "edge",
+        "timestamp":  "2026-08-08T15:02:46.594Z",
+        "total":  12,
+        "passed":  2,
+        "failed":  10,
+        "flaky":  0,
+        "skipped":  0,
+        "title":  "Run by: 23127272 | 2026-08-08T15:02:46.594Z | fr03 | edge"
+    },
+    {
+        "feature":  "fr11",
+        "browser":  "chromium",
+        "timestamp":  "2026-08-08T15:03:57.943Z",
+        "total":  12,
+        "passed":  11,
+        "failed":  1,
+        "flaky":  0,
+        "skipped":  0,
+        "title":  "Run by: 23127272 | 2026-08-08T15:03:57.943Z | fr11 | chromium"
+    },
+    {
+        "feature":  "fr11",
+        "browser":  "chrome",
+        "timestamp":  "2026-08-08T15:04:11.786Z",
+        "total":  12,
+        "passed":  11,
+        "failed":  1,
+        "flaky":  0,
+        "skipped":  0,
+        "title":  "Run by: 23127272 | 2026-08-08T15:04:11.786Z | fr11 | chrome"
+    },
+    {
+        "feature":  "fr11",
+        "browser":  "edge",
+        "timestamp":  "2026-08-08T15:04:30.736Z",
+        "total":  12,
+        "passed":  11,
+        "failed":  1,
+        "flaky":  0,
+        "skipped":  0,
+        "title":  "Run by: 23127272 | 2026-08-08T15:04:30.736Z | fr11 | edge"
+    },
+    {
+        "feature":  "fr14",
+        "browser":  "chromium",
+        "timestamp":  "2026-08-08T15:04:56.318Z",
+        "total":  12,
+        "passed":  10,
+        "failed":  2,
+        "flaky":  0,
+        "skipped":  0,
+        "title":  "Run by: 23127272 | 2026-08-08T15:04:56.318Z | fr14 | chromium"
+    },
+    {
+        "feature":  "fr14",
+        "browser":  "chrome",
+        "timestamp":  "2026-08-08T15:05:28.652Z",
+        "total":  12,
+        "passed":  10,
+        "failed":  2,
+        "flaky":  0,
+        "skipped":  0,
+        "title":  "Run by: 23127272 | 2026-08-08T15:05:28.652Z | fr14 | chrome"
+    },
+    {
+        "feature":  "fr14",
+        "browser":  "edge",
+        "timestamp":  "2026-08-08T15:05:49.950Z",
+        "total":  12,
+        "passed":  10,
+        "failed":  2,
+        "flaky":  0,
+        "skipped":  0,
+        "title":  "Run by: 23127272 | 2026-08-08T15:05:49.950Z | fr14 | edge"
+    }
+]

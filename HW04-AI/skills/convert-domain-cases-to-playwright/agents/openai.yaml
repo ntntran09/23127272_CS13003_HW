@@ -1,0 +1,4 @@
+interface:
+  display_name: "Convert Cases to Playwright"
+  short_description: "Turn domain cases into data-driven Playwright tests"
+  default_prompt: "Use $convert-domain-cases-to-playwright to convert these domain test cases into reviewed Playwright tests."

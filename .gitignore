@@ -1,1 +1,8 @@
 *.zip
+
+# HW04 Playwright generated artifacts
+HW04-AI/automation/node_modules/
+HW04-AI/automation/test-results/
+HW04-AI/automation/playwright-report/
+HW04-AI/automation/blob-report/
+HW04-AI/tmp/
