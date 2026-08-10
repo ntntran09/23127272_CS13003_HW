@@ -18,7 +18,7 @@
 
 ## 2. Instructions
 
-The student must review each provisional verdict below and replace it with exactly `VALID`, `INVALID`, or `INCOMPLETE`. Full prompt/final-output evidence for the 2026-08-08 implementation session is stored in `evidence/implementation-session/codex-chat-logs/`. The 2026-08-11 review session used a second tool (Claude Code); its transcript still has to be exported into `evidence/review-session/` — the rows below record the prompts verbatim but are not yet backed by an attached log.
+The student must review each provisional verdict below and replace it with exactly `VALID`, `INVALID`, or `INCOMPLETE`. Full prompt/final-output evidence for the 2026-08-08 implementation session is stored in `evidence/implementation-session/codex-chat-logs/`. The 2026-08-11 review session used a second tool (Claude Code); its transcript, extracted interactions, and readable chat log are stored in `evidence/review-session/claude-chat-logs/`, together with the `extract-interactions.js` script that produced them.
 
 ## 3. Audit Table
 
@@ -39,7 +39,7 @@ I use AI tools for planning the automation workflow, generating initial Playwrig
 | Item | Status |
 | :---- | :---- |
 | Every AI-assisted artifact has a prompt | Partial – re-export after the implementation session ends |
-| Every AI-assisted artifact has output evidence | Partial – Codex session exported; **the 2026-08-11 Claude review session transcript is not yet exported** to `evidence/review-session/` |
+| Every AI-assisted artifact has output evidence | Done – both sessions exported (`evidence/implementation-session/`, `evidence/review-session/`) |
 | Every output has a verdict | Student confirmation pending |
 | Invalid or incomplete outputs have student fixes | Drafted |
 | AI-original vs final-file comparisons attached when applicable | Not applicable; corrections are documented from execution evidence |

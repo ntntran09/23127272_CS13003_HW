@@ -28,15 +28,16 @@ Browsers: Playwright Chromium, Google Chrome, Microsoft Edge.
 
 | Deliverable | Location / Status |
 | --- | --- |
-| Main report | `main-report.md`; PDF pending |
+| Main report | `main-report.md`; PDF at `output/pdf/23127272_HW04_Main_Report.pdf` |
 | Automation | `automation/` |
 | External test data | `automation/data/` |
 | HTML reports | `automation/reports/` |
 | Report summary | `automation/reports/run-summary.json` |
-| Bug report and screenshots | `bug-report/` |
+| Bug report and screenshots | `bug-report/`; 11 issues filed at [Issues](https://github.com/ntntran09/23127272_CS13003_HW/issues) |
 | Task skills | `skills/` |
-| AI Audit Report | `AI docs/AI-Audit-Report-DRAFT.md`; student verdict review pending |
-| AI Critique | `AI docs/AI-Critique-DRAFT.md`; student review pending |
+| AI Audit Report | `AI docs/AI-Audit-Report-DRAFT.md` + PDF; student verdict review pending |
+| AI Critique | `AI docs/AI-Critique-DRAFT.md` + PDF; student review pending |
+| AI session evidence | `AI docs/evidence/implementation-session/` (Codex), `AI docs/evidence/review-session/` (Claude) |
 | Demo video | TODO: unlisted YouTube URL |
 | Skill demo video | TODO: unlisted YouTube URL |
 | Public repository | https://github.com/ntntran09/23127272_CS13003_HW |
@@ -54,9 +55,7 @@ Browsers: Playwright Chromium, Google Chrome, Microsoft Edge.
 
 ## Remaining Submission Blockers
 
-- Create and link eleven GitHub Issues, attaching screenshots.
 - Record the Vietnamese narrated video with `whoami` and `hostname`.
 - Record the skill demonstration or clearly include it in the main video.
 - Review audit verdicts and AI critique in the student's own words.
-- Export the main report and audit report to PDF.
 - Accumulate at least eight meaningful `.spec.js` commits over four real days.
