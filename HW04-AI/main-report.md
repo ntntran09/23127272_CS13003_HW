@@ -104,14 +104,37 @@ Two reusable task skills were created instead of one assignment-specific skill:
 
 Both skill directories passed the official `quick_validate.py`. The first skill's data validator was executed against all three feature data files.
 
-## 9. Limitations and Remaining Student Actions
+## 9. Coverage of the HW02 Domain Cases
 
-- Chrome, Edge, and Chromium are three browser executables but use one rendering engine. Firefox/WebKit remains the stronger compatibility matrix if their runtimes are installed later.
+Every automated case declares a `sourceCases` field naming the HW02 domain cases it converts, and `scripts/validate-test-data.js` fails the build if a case traces to nothing or to an id that does not belong to its feature. The coverage figures below are therefore computed from the data files, not estimated.
+
+| Feature | HW02 cases | Covered | Not automated | Coverage |
+| --- | ---: | ---: | ---: | ---: |
+| FR-03 | 42 | 20 | 22 | 48% |
+| FR-11 | 46 | 29 | 17 | 63% |
+| FR-14 | 44 | 21 | 23 | 48% |
+| **Total** | **132** | **70** | **62** | **53%** |
+
+The assignment requires at least 12 converted cases per feature; 36 automated cases carrying 78 datasets cover 70 domain cases. The 62 remaining cases were not automated, grouped by reason:
+
+**Blocked by a defect already filed (19 cases).** `DT-FR03-010` to `DT-FR03-012`, `DT-FR03-014` to `DT-FR03-020`, `DT-FR03-027`, `BVA-FR03-001`, `BVA-FR03-003`, `BVA-FR03-005`, `BVA-FR03-006`, `BVA-FR03-008` all assert an inline error on step 2 for a wrong OTP length, a non-numeric OTP, or a weak password. Step 2 is non-functional per BUG-FR03-06 and BUG-FR03-07: there is no confirmation field, the reset request never fires, and every error surfaces through `alert()`. Automating them today would re-assert those two defects sixteen times with different inputs rather than test the rule. `DT-FR14-017`, `BVA-FR14-003`, and `BVA-FR14-005` collapse the same way into BUG-FR14-01, which shows that no trim or required validation exists at all. These become automatable once the defects are fixed, and the ids are recorded here so they can be picked up then.
+
+**Requires a backend or database oracle (9 cases).** `DT-FR03-013` (OTP bound to the requesting email), `DT-FR14-031` (direct `POST`/`DELETE` with a non-admin token), `DT-FR11-025`, `DT-FR14-005`, `DT-FR14-011`, `DT-FR14-023`, `DT-FR14-024`, `DT-FR14-025`, `DT-FR14-026`. These depend on server-side enforcement, endpoint failure modes, or a real session expiring. HW02 scoped these features to a UI-only oracle, and a fixture that forced the outcome would be exactly the tautology removed from this suite in section 6.1; they belong to API-level testing.
+
+**Belongs to another feature (8 cases).** `DT-FR03-026` and `DT-FR03-028` are FR-01 registration and FR-02 login-page checks; `DT-FR11-030` and `DT-FR11-031` are FR-04 profile phone validation; `DT-FR11-028` is the FR-10 cancel transition; `DT-FR14-007` and `DT-FR14-032` are FR-13/FR-15 dashboard and product tabs; `BVA-FR03-011` needs an `a@b.co` account seeded into the real user table.
+
+**Malformed-fixture robustness, deferred (12 cases).** `DT-FR11-015`, `DT-FR11-016`, `DT-FR11-020`, `DT-FR11-021`, `DT-FR11-023`, `DT-FR11-026`, `BVA-FR11-004`, `BVA-FR11-006`, `BVA-FR11-012`, `BVA-FR11-015`, `DT-FR14-027`, `BVA-FR14-011` feed impossible values — a negative total, a null date, an unknown status code, id `0`. They are legitimate robustness checks and are the highest-value group to automate next, because the single case of this kind that was automated (`FR11-AUTO-012-02`, unparseable date) found BUG-FR11-03 immediately.
+
+**Low-yield duplication of an automated case (10 cases).** `DT-FR03-004` and `DT-FR14-014` re-run an automated flow with Enter instead of a click; `DT-FR03-024` is back-to-login from step 2, already covered by BUG-FR03-02; `DT-FR11-003` and `DT-FR14-010` restate navigation and row-count assertions; `DT-FR14-018` is a duplicate-name case whose expected result HW02 itself left open; `BVA-FR11-005`, `BVA-FR14-009`, `BVA-FR14-010`, `BVA-FR14-012` restate id and row-count assertions already made. These were traded for the browser matrix and the boundary datasets.
+
+**Presentation detail, deliberately not asserted (4 cases).** `DT-FR11-029` (exactly one `<h1>`) and `DT-FR14-028`, `DT-FR14-029`, `DT-FR14-030` (admin form label and error placement). An early version of the suite did assert `<h1>`, and it produced a false defect against a page that legitimately uses `<h2>`; the assertion was removed rather than kept as noise. See section 6.1.
+
+## 10. Limitations and Remaining Student Actions
+
 - Network fixtures make edge-state UI tests deterministic; they do not replace separate backend/API authorization testing.
-- GitHub Issues must still be created from the eleven reviewed bug rows and screenshots.
 - Two defects are UI-contract findings observed behind a fixture (BUG-FR03-05 OTP length, BUG-FR11-01 ownership filtering). Confirming whether the backend shares the defect requires API-level testing that is out of scope here.
-- The narrated Vietnamese video, `whoami`/`hostname` evidence, YouTube links, and PDF exports require the student.
-- The assignment requires at least eight meaningful test-script commits over at least four real days. This cannot be fabricated after implementation.
+- The narrated Vietnamese video, `whoami`/`hostname` evidence, and the YouTube links require the student.
+- The assignment requires at least eight meaningful test-script commits over at least four real days. Commit count is genuine, but the calendar spread cannot be manufactured retroactively.
 
 ## 10. Reproduction Commands
 

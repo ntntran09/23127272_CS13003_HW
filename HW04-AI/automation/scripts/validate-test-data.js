@@ -59,8 +59,10 @@ for (const { fileName, specName, prefix, requiredByAction } of expected) {
     fail(`${fileName}: expected at least 12 test cases, found ${cases.length}`);
   }
 
+  const sourceCases = new Set();
+
   for (const row of cases) {
-    for (const field of ['id', 'title', 'action', 'requirementIds', 'datasets']) {
+    for (const field of ['id', 'title', 'action', 'requirementIds', 'sourceCases', 'datasets']) {
       if (row[field] === undefined || row[field] === null || row[field] === '') {
         fail(`${fileName}: ${row.id || '<unknown>'} is missing ${field}`);
       }
@@ -76,6 +78,19 @@ for (const { fileName, specName, prefix, requiredByAction } of expected) {
 
     if (!Array.isArray(row.requirementIds) || row.requirementIds.length === 0) {
       fail(`${fileName}: ${row.id} must declare non-empty requirementIds`);
+    }
+
+    // Every automated case must name the HW02 domain case it converts, so the
+    // coverage claim in the report is derived rather than asserted.
+    if (!Array.isArray(row.sourceCases) || row.sourceCases.length === 0) {
+      fail(`${fileName}: ${row.id} must trace back to at least one HW02 case`);
+    } else {
+      for (const source of row.sourceCases) {
+        if (!new RegExp(`^(DT|BVA)-${prefix.replace('FR', 'FR')}-\\d{3}$`).test(source)) {
+          fail(`${fileName}: ${row.id} traces to "${source}", which is not a ${prefix} domain case id`);
+        }
+        sourceCases.add(source);
+      }
     }
 
     if (!Array.isArray(row.datasets) || row.datasets.length === 0) {
@@ -126,7 +141,7 @@ for (const { fileName, specName, prefix, requiredByAction } of expected) {
     fail(`${fileName}: data-driven rule violated - every test case has exactly one dataset; at least one case must run multiple datasets`);
   }
 
-  console.log(`${fileName}: ${cases.length} test cases, ${totalDatasets} datasets, ${multiDatasetCases} multi-dataset case(s)`);
+  console.log(`${fileName}: ${cases.length} test cases, ${totalDatasets} datasets, ${multiDatasetCases} multi-dataset case(s), ${sourceCases.size} HW02 cases covered`);
 }
 
 if (invalid) process.exitCode = 1;

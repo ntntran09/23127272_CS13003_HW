@@ -4,6 +4,7 @@
     "title": "Unauthenticated visitor sees only admin login",
     "action": "auth-gate",
     "requirementIds": ["FR-12", "FR-14"],
+    "sourceCases": ["DT-FR14-001"],
     "datasets": [
       {
         "id": "FR14-AUTO-001-01",
@@ -18,6 +19,7 @@
     "title": "Admin credentials open the dashboard",
     "action": "admin-login",
     "requirementIds": ["FR-12"],
+    "sourceCases": ["DT-FR14-002"],
     "mockUsers": {
       "admin@eshop.com": { "id": 1, "password": "Admin123!", "role": "admin" },
       "root@eshop.com": { "id": 3, "password": "Root1234!", "role": "admin" }
@@ -42,6 +44,7 @@
     "title": "Invalid credentials remain blocked",
     "action": "invalid-login",
     "requirementIds": ["FR-12"],
+    "sourceCases": ["DT-FR14-003"],
     "datasets": [
       {
         "id": "FR14-AUTO-003-01",
@@ -68,6 +71,7 @@
     "title": "Normal user cannot enter admin application",
     "action": "non-admin-login",
     "requirementIds": ["FR-12", "SEC-03"],
+    "sourceCases": ["DT-FR14-004"],
     "mockUsers": {
       "test@eshop.com": { "id": 2, "password": "Test1234!", "role": "user" },
       "other@eshop.com": { "id": 4, "password": "Other123!", "role": "user" }
@@ -92,6 +96,7 @@
     "title": "Category navigation opens category management",
     "action": "category-view",
     "requirementIds": ["FR-14"],
+    "sourceCases": ["DT-FR14-006", "DT-FR14-009", "BVA-FR14-008"],
     "datasets": [
       {
         "id": "FR14-AUTO-005-01",
@@ -112,6 +117,7 @@
     "title": "Category table exposes required columns",
     "action": "table-columns",
     "requirementIds": ["FR-14"],
+    "sourceCases": ["DT-FR14-008"],
     "datasets": [
       {
         "id": "FR14-AUTO-006-01",
@@ -132,6 +138,7 @@
     "title": "Admin can add a valid category name",
     "action": "add-category",
     "requirementIds": ["FR-14"],
+    "sourceCases": ["DT-FR14-012", "DT-FR14-013", "DT-FR14-020"],
     "datasets": [
       {
         "id": "FR14-AUTO-007-01",
@@ -158,6 +165,7 @@
     "title": "Blank-equivalent category names are rejected",
     "action": "reject-category",
     "requirementIds": ["FR-14", "FR-22"],
+    "sourceCases": ["DT-FR14-015", "DT-FR14-016", "BVA-FR14-001", "BVA-FR14-004"],
     "datasets": [
       {
         "id": "FR14-AUTO-008-01",
@@ -184,6 +192,7 @@
     "title": "Category text is rendered safely",
     "action": "safe-rendering",
     "requirementIds": ["FR-14", "SEC-04"],
+    "sourceCases": ["DT-FR14-019"],
     "datasets": [
       {
         "id": "FR14-AUTO-009-01",
@@ -213,6 +222,7 @@
     "title": "Admin can delete one disposable category",
     "action": "delete-category",
     "requirementIds": ["FR-14"],
+    "sourceCases": ["DT-FR14-022"],
     "datasets": [
       {
         "id": "FR14-AUTO-010-01",
@@ -235,6 +245,7 @@
     "title": "One-character category name boundary",
     "action": "add-category",
     "requirementIds": ["FR-14"],
+    "sourceCases": ["BVA-FR14-002"],
     "datasets": [
       {
         "id": "FR14-AUTO-011-01",
@@ -249,6 +260,7 @@
     "title": "Long category name stays usable",
     "action": "add-category",
     "requirementIds": ["FR-14"],
+    "sourceCases": ["DT-FR14-021", "BVA-FR14-006", "BVA-FR14-007"],
     "datasets": [
       {
         "id": "FR14-AUTO-012-01",

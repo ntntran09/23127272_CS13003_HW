@@ -4,6 +4,7 @@
     "title": "Guest cannot see order history",
     "action": "guest-gate",
     "requirementIds": ["FR-11", "SEC-02"],
+    "sourceCases": ["DT-FR11-001"],
     "datasets": [
       {
         "id": "FR11-AUTO-001-01",
@@ -18,6 +19,7 @@
     "title": "Expired token does not expose stale orders",
     "action": "expired-token",
     "requirementIds": ["FR-11", "SEC-02"],
+    "sourceCases": ["DT-FR11-002"],
     "datasets": [
       {
         "id": "FR11-AUTO-002-01",
@@ -38,6 +40,7 @@
     "title": "Zero orders renders an empty state",
     "action": "empty-orders",
     "requirementIds": ["FR-11", "FR-24"],
+    "sourceCases": ["DT-FR11-004", "BVA-FR11-001"],
     "datasets": [
       {
         "id": "FR11-AUTO-003-01",
@@ -52,6 +55,7 @@
     "title": "One order displays every required field",
     "action": "one-order",
     "requirementIds": ["FR-11"],
+    "sourceCases": ["DT-FR11-005", "BVA-FR11-002"],
     "datasets": [
       {
         "id": "FR11-AUTO-004-01",
@@ -84,6 +88,7 @@
     "title": "Multiple orders render one row each",
     "action": "many-orders",
     "requirementIds": ["FR-11"],
+    "sourceCases": ["DT-FR11-006", "BVA-FR11-003"],
     "datasets": [
       {
         "id": "FR11-AUTO-005-01",
@@ -104,6 +109,7 @@
     "title": "Other users' order details are absent",
     "action": "ownership",
     "requirementIds": ["FR-11", "SEC-02"],
+    "sourceCases": ["DT-FR11-007", "DT-FR11-008"],
     "datasets": [
       {
         "id": "FR11-AUTO-006-01",
@@ -126,6 +132,7 @@
     "title": "Status is translated to Vietnamese and colored",
     "action": "status",
     "requirementIds": ["FR-11"],
+    "sourceCases": ["DT-FR11-009", "DT-FR11-010", "DT-FR11-011", "DT-FR11-012", "DT-FR11-013", "DT-FR11-014", "BVA-FR11-013", "BVA-FR11-014"],
     "datasets": [
       {
         "id": "FR11-AUTO-007-01",
@@ -164,6 +171,7 @@
     "title": "Shipping order cannot be canceled",
     "action": "shipping-no-cancel",
     "requirementIds": ["FR-10", "FR-11"],
+    "sourceCases": ["DT-FR11-027"],
     "datasets": [
       {
         "id": "FR11-AUTO-008-01",
@@ -178,6 +186,7 @@
     "title": "Final-state orders cannot be canceled",
     "action": "final-no-cancel",
     "requirementIds": ["FR-10", "FR-11"],
+    "sourceCases": ["DT-FR11-012", "DT-FR11-013"],
     "datasets": [
       {
         "id": "FR11-AUTO-009-01",
@@ -198,6 +207,7 @@
     "title": "Total and date use readable formats",
     "action": "formatting",
     "requirementIds": ["FR-11", "FR-21"],
+    "sourceCases": ["DT-FR11-017", "DT-FR11-019", "DT-FR11-022", "BVA-FR11-007", "BVA-FR11-010"],
     "datasets": [
       {
         "id": "FR11-AUTO-010-01",
@@ -227,6 +237,7 @@
     "title": "Small money boundary values render cleanly",
     "action": "formatting",
     "requirementIds": ["FR-11", "FR-21"],
+    "sourceCases": ["DT-FR11-018", "BVA-FR11-008", "BVA-FR11-009"],
     "datasets": [
       {
         "id": "FR11-AUTO-011-01",
@@ -256,6 +267,7 @@
     "title": "Date boundaries are rendered without invalid artifacts",
     "action": "formatting",
     "requirementIds": ["FR-11"],
+    "sourceCases": ["DT-FR11-024", "BVA-FR11-011"],
     "datasets": [
       {
         "id": "FR11-AUTO-012-01",
