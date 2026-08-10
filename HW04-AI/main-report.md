@@ -100,9 +100,28 @@ Each defect row states whether a fixture stood in for the backend and, where it 
 Two reusable task skills were created instead of one assignment-specific skill:
 
 - `convert-domain-cases-to-playwright`: converts existing requirement/domain cases into external-data Playwright tests and enforces human-review gates.
-- `run-playwright-browser-matrix`: executes isolated feature-browser runs and defines the attributable report contract.
+- `run-playwright-browser-matrix`: executes isolated feature-browser runs, defines the attributable report contract, and verifies it.
 
-Both skill directories passed the official `quick_validate.py`. The first skill's data validator was executed against all three feature data files.
+Both skills are exercised against this project's real artifacts rather than described only in prose:
+
+```powershell
+npm run validate:data:skill      # the conversion skill's validator, on all three data files
+npm run validate:reports:skill   # the matrix skill's verifier, on all fifteen reports
+```
+
+### Corrections found by using the skills on their own output
+
+The review session exposed two ways in which a skill can look complete and still be unusable.
+
+**The conversion skill could not validate the data it produced.** Its schema and bundled validator still described a flat one-row-per-test shape, while the suite had moved to case objects holding a `datasets` array. Running the skill's validator against the three feature files reported `missing input` and `missing expected` for all 36 cases. An earlier draft of this report stated that the validator had been run against them, which cannot have been true. The schema reference now documents case fields and dataset fields separately, and the validator checks the real shape, including the `sourceCases` traceability field that makes section 9 computable. It passes on all three files.
+
+**The matrix skill told the user to verify but shipped nothing to verify with.** Its "Verify" section described decoding the embedded `report.json` by hand, and the only working implementation lived in this project as a Windows-only PowerShell script. The skill now ships `scripts/verify-reports.js`: dependency-free Node that reads the ZIP the HTML report embeds, checks runner identity, ISO timestamp, feature/browser metadata against the path, the visible title, and totals, and exits nonzero on any violation. It also fails a report containing zero tests, because a run that executed nothing otherwise reads as a clean pass — the exact failure mode that produced a misleading all-red summary during implementation.
+
+**The matrix skill also could not catch the mistake this project made.** Its precondition was "at least three browsers", which Chromium, Chrome, and Edge satisfy while sharing one renderer. The runner now maps each project to its engine and refuses a single-engine matrix unless `--allow-single-engine` is passed, in which case the limitation belongs in the report.
+
+The conversion skill's human-review gates were sharpened from the specific defects found in section 6.1: a falsifiability test for every case that uses a fixture, and a rule that a case asserting the absence of something must be served data that contains it. Those two checks are what would have caught the tautological ownership case before it shipped green on three browsers.
+
+An `quick_validate.py` conformance run was claimed in an earlier draft; that tool is not present in this environment, so the claim is withdrawn rather than restated. The validation evidence above is reproducible from the repository.
 
 ## 9. Coverage of the HW02 Domain Cases
 

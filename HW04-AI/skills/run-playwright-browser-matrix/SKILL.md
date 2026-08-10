@@ -12,6 +12,8 @@ Produce attributable, non-overwriting execution evidence. Do not fabricate repor
 - Confirm the SUT URLs respond.
 - Run `npx playwright test --list` and verify the expected test count.
 - Confirm every requested browser project launches before starting the full matrix.
+- Cover more than one rendering engine. Chromium, Chrome, and Edge are three executables sharing one renderer, so a matrix built only from them satisfies a browser count while evidencing nothing about cross-browser behaviour. The runner refuses a single-engine matrix unless `--allow-single-engine` is passed, and that limitation then belongs in the report.
+- Smoke one feature on each newly added engine before committing to the full matrix, so an engine-specific breakage is not discovered after a long run.
 - Confirm the Playwright config reads `STUDENT_ID`, `RUN_TIMESTAMP`, `FEATURE`, `BROWSER`, `PLAYWRIGHT_HTML_OUTPUT_DIR`, and `PLAYWRIGHT_OUTPUT_DIR`.
 - Configure the HTML reporter title to visibly include runner identity and ISO timestamp.
 
@@ -25,22 +27,34 @@ Use the bundled runner from the Playwright project root:
 node <skill-path>/scripts/run-matrix.js \
   --root . \
   --student-id RUNNER_ID \
-  --browsers chromium,chrome,edge \
+  --browsers chromium,firefox,webkit \
   --features login=tests/login.spec.js,cart=tests/cart.spec.js
 ```
 
-The runner deliberately continues after failing tests so every feature-browser report is produced. Its final nonzero exit code means at least one run contains a failed test or could not start; it does not imply the report generation failed.
+The runner deliberately continues after failing tests so every feature-browser report is produced. It separates two outcomes that look alike from an exit code: a run whose tests failed, and a run that never produced a report. The second is an orchestration failure, and it must be fixed before any result is read as a product defect.
 
 ## Verify
 
-Inspect every expected `reports/<feature>/<browser>/index.html`. Decode the embedded Playwright `report.json` and verify:
+Never verify from directory names — a copied or relabelled directory passes that check. Decode the report each HTML file embeds and read its own metadata:
+
+```text
+node <skill-path>/scripts/verify-reports.js \
+  --root . \
+  --runner-id RUNNER_ID \
+  --browsers chromium,firefox,webkit \
+  --features login,cart \
+  --summary reports/run-summary.json
+```
+
+The verifier is dependency-free Node, so it runs on any platform, and it exits nonzero when any of these fails:
 
 - `metadata["Run by"]` equals the requested runner ID;
 - `metadata["Run timestamp"]` parses as an ISO timestamp;
 - feature and browser metadata match the report path;
-- the visible report title begins with `Run by: <runner-id> |`;
+- the visible report title begins with `Run by: <runner-id>`;
 - totals equal passed + failed + flaky + skipped;
-- every expected combination exists exactly once.
+- the report contains at least one test, since a zero-test report is an orchestration failure that otherwise reads as a clean pass;
+- every expected combination exists.
 
 ## Review
 

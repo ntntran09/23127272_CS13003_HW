@@ -15,18 +15,53 @@ function parseFeatures(value) {
   });
 }
 
+// Counting browsers is not the same as covering engines: Chromium, Chrome, and
+// Edge are three executables sharing one renderer, so a matrix built from them
+// evidences nothing about cross-browser behaviour.
+const ENGINE_BY_PROJECT = {
+  chromium: 'Chromium',
+  chrome: 'Chromium',
+  'chrome-beta': 'Chromium',
+  msedge: 'Chromium',
+  edge: 'Chromium',
+  'msedge-beta': 'Chromium',
+  firefox: 'Gecko',
+  webkit: 'WebKit',
+  safari: 'WebKit',
+};
+
+function engineOf(project) {
+  const key = project.toLowerCase();
+  return ENGINE_BY_PROJECT[key]
+    || Object.entries(ENGINE_BY_PROJECT).find(([name]) => key.includes(name))?.[1]
+    || 'unknown';
+}
+
 const root = path.resolve(readArg('root') || '.');
 const studentId = readArg('student-id');
 const browsers = (readArg('browsers') || '').split(',').filter(Boolean);
 const features = parseFeatures(readArg('features') || '');
+const allowSingleEngine = process.argv.includes('--allow-single-engine');
 
 if (!studentId || browsers.length < 3 || features.length === 0) {
   console.error('Required: --student-id, at least three --browsers, and --features id=spec,...');
   process.exit(2);
 }
 
+const engines = [...new Set(browsers.map(engineOf))];
+if (engines.length === 1 && !allowSingleEngine) {
+  console.error(
+    `All requested projects (${browsers.join(', ')}) use the ${engines[0]} engine. `
+    + 'A single-engine matrix cannot evidence cross-browser behaviour; add a Firefox or WebKit '
+    + 'project, or pass --allow-single-engine and state the limitation in the report.',
+  );
+  process.exit(2);
+}
+console.log(`Engines covered: ${engines.join(', ')} (${browsers.length} project(s))`);
+
 const playwrightCli = require.resolve('@playwright/test/cli', { paths: [root] });
 let failedRuns = 0;
+let brokenRuns = 0;
 
 for (const feature of features) {
   for (const browser of browsers) {
@@ -53,9 +88,25 @@ for (const feature of features) {
       },
     );
 
-    if (result.error || result.status !== 0) failedRuns += 1;
+    // Distinguish "tests failed" from "the run never happened". A spawn that
+    // dies instantly returns a nonzero status too, and summarising both as
+    // "failed run" is how a broken matrix gets reported as a red test suite.
+    const reportWritten = fs.existsSync(path.join(reportDir, 'index.html'));
+    if (result.error) {
+      console.error(`${feature.id}/${browser}: could not start Playwright: ${result.error.message}`);
+      brokenRuns += 1;
+    } else if (!reportWritten) {
+      console.error(`${feature.id}/${browser}: exited ${result.status} without writing a report; treat as an orchestration failure, not a test result`);
+      brokenRuns += 1;
+    } else if (result.status !== 0) {
+      failedRuns += 1;
+    }
   }
 }
 
-console.log(`Matrix complete: ${features.length * browsers.length} runs; ${failedRuns} non-passing run(s).`);
-process.exitCode = failedRuns > 0 ? 1 : 0;
+const planned = features.length * browsers.length;
+console.log(`Matrix complete: ${planned} run(s) planned; ${failedRuns} with failing tests; ${brokenRuns} that did not produce a report.`);
+if (brokenRuns > 0) {
+  console.error('At least one run produced no evidence. Fix the orchestration before reading any result as a product defect.');
+}
+process.exitCode = brokenRuns > 0 || failedRuns > 0 ? 1 : 0;

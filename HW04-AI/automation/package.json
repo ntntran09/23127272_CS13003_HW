@@ -10,7 +10,9 @@
     "test:fr14": "playwright test tests/fr14-category-management.spec.js",
     "test:matrix": "node scripts/run-browser-matrix.js",
     "validate:data": "node scripts/validate-test-data.js",
-    "validate:reports": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/validate-reports.ps1"
+    "validate:data:skill": "node ../skills/convert-domain-cases-to-playwright/scripts/validate-case-data.js data/fr03-password-reset.json data/fr11-order-history.json data/fr14-category-management.json",
+    "validate:reports": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/validate-reports.ps1",
+    "validate:reports:skill": "node ../skills/run-playwright-browser-matrix/scripts/verify-reports.js --root . --runner-id 23127272 --browsers chromium,firefox,webkit,chrome,edge --features fr03,fr11,fr14 --summary reports/run-summary.json"
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2"
