@@ -2,100 +2,100 @@
     {
         "feature":  "fr03",
         "browser":  "chromium",
-        "timestamp":  "2026-08-08T15:00:21.941Z",
-        "total":  12,
+        "timestamp":  "2026-08-10T19:25:44.148Z",
+        "total":  25,
         "passed":  2,
-        "failed":  10,
+        "failed":  23,
         "flaky":  0,
         "skipped":  0,
-        "title":  "Run by: 23127272 | 2026-08-08T15:00:21.941Z | fr03 | chromium"
+        "title":  "Run by: 23127272 | 2026-08-10T19:25:44.148Z | fr03 | chromium"
     },
     {
         "feature":  "fr03",
         "browser":  "chrome",
-        "timestamp":  "2026-08-08T15:01:31.591Z",
-        "total":  12,
+        "timestamp":  "2026-08-10T19:28:36.238Z",
+        "total":  25,
         "passed":  2,
-        "failed":  10,
+        "failed":  23,
         "flaky":  0,
         "skipped":  0,
-        "title":  "Run by: 23127272 | 2026-08-08T15:01:31.591Z | fr03 | chrome"
+        "title":  "Run by: 23127272 | 2026-08-10T19:28:36.238Z | fr03 | chrome"
     },
     {
         "feature":  "fr03",
         "browser":  "edge",
-        "timestamp":  "2026-08-08T15:02:46.594Z",
-        "total":  12,
+        "timestamp":  "2026-08-10T19:31:46.409Z",
+        "total":  25,
         "passed":  2,
-        "failed":  10,
+        "failed":  23,
         "flaky":  0,
         "skipped":  0,
-        "title":  "Run by: 23127272 | 2026-08-08T15:02:46.594Z | fr03 | edge"
+        "title":  "Run by: 23127272 | 2026-08-10T19:31:46.409Z | fr03 | edge"
     },
     {
         "feature":  "fr11",
         "browser":  "chromium",
-        "timestamp":  "2026-08-08T15:03:57.943Z",
-        "total":  12,
-        "passed":  11,
-        "failed":  1,
+        "timestamp":  "2026-08-10T19:34:18.739Z",
+        "total":  27,
+        "passed":  25,
+        "failed":  2,
         "flaky":  0,
         "skipped":  0,
-        "title":  "Run by: 23127272 | 2026-08-08T15:03:57.943Z | fr11 | chromium"
+        "title":  "Run by: 23127272 | 2026-08-10T19:34:18.739Z | fr11 | chromium"
     },
     {
         "feature":  "fr11",
         "browser":  "chrome",
-        "timestamp":  "2026-08-08T15:04:11.786Z",
-        "total":  12,
-        "passed":  11,
-        "failed":  1,
+        "timestamp":  "2026-08-10T19:34:55.219Z",
+        "total":  27,
+        "passed":  25,
+        "failed":  2,
         "flaky":  0,
         "skipped":  0,
-        "title":  "Run by: 23127272 | 2026-08-08T15:04:11.786Z | fr11 | chrome"
+        "title":  "Run by: 23127272 | 2026-08-10T19:34:55.219Z | fr11 | chrome"
     },
     {
         "feature":  "fr11",
         "browser":  "edge",
-        "timestamp":  "2026-08-08T15:04:30.736Z",
-        "total":  12,
-        "passed":  11,
-        "failed":  1,
+        "timestamp":  "2026-08-10T19:35:36.271Z",
+        "total":  27,
+        "passed":  25,
+        "failed":  2,
         "flaky":  0,
         "skipped":  0,
-        "title":  "Run by: 23127272 | 2026-08-08T15:04:30.736Z | fr11 | edge"
+        "title":  "Run by: 23127272 | 2026-08-10T19:35:36.271Z | fr11 | edge"
     },
     {
         "feature":  "fr14",
         "browser":  "chromium",
-        "timestamp":  "2026-08-08T15:04:56.318Z",
-        "total":  12,
-        "passed":  10,
-        "failed":  2,
+        "timestamp":  "2026-08-10T19:36:12.548Z",
+        "total":  25,
+        "passed":  22,
+        "failed":  3,
         "flaky":  0,
         "skipped":  0,
-        "title":  "Run by: 23127272 | 2026-08-08T15:04:56.318Z | fr14 | chromium"
+        "title":  "Run by: 23127272 | 2026-08-10T19:36:12.548Z | fr14 | chromium"
     },
     {
         "feature":  "fr14",
         "browser":  "chrome",
-        "timestamp":  "2026-08-08T15:05:28.652Z",
-        "total":  12,
-        "passed":  10,
-        "failed":  2,
+        "timestamp":  "2026-08-10T19:36:50.600Z",
+        "total":  25,
+        "passed":  22,
+        "failed":  3,
         "flaky":  0,
         "skipped":  0,
-        "title":  "Run by: 23127272 | 2026-08-08T15:05:28.652Z | fr14 | chrome"
+        "title":  "Run by: 23127272 | 2026-08-10T19:36:50.600Z | fr14 | chrome"
     },
     {
         "feature":  "fr14",
         "browser":  "edge",
-        "timestamp":  "2026-08-08T15:05:49.950Z",
-        "total":  12,
-        "passed":  10,
-        "failed":  2,
+        "timestamp":  "2026-08-10T19:37:54.149Z",
+        "total":  25,
+        "passed":  22,
+        "failed":  3,
         "flaky":  0,
         "skipped":  0,
-        "title":  "Run by: 23127272 | 2026-08-08T15:05:49.950Z | fr14 | edge"
+        "title":  "Run by: 23127272 | 2026-08-10T19:37:54.149Z | fr14 | edge"
     }
 ]

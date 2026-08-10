@@ -26,14 +26,28 @@ async function mockAuthenticatedProfile(page, orders, options = {}) {
   await page.route('**/api/orders/my-orders', (route) => route.fulfill(json(orders)));
 }
 
-async function mockForgotPassword(page, resetToken = '123456', resetStatus = 200) {
+async function mockForgotPassword(page, options = {}) {
+  const {
+    registeredEmails = null,
+    unregisteredEmails = [],
+    resetToken = '123456',
+    resetTokenByEmail = {},
+    resetStatus = 200,
+  } = options;
   await page.route('**/api/forgot-password', async (route) => {
     const data = route.request().postDataJSON();
-    if (data.email === 'notfound@example.com') {
+    const email = data && data.email;
+    const blocked =
+      unregisteredEmails.includes(email) ||
+      (registeredEmails !== null && !registeredEmails.includes(email));
+    if (blocked) {
       await route.fulfill(json({ error: 'User not found' }, 404));
       return;
     }
-    await route.fulfill(json({ message: 'OTP created', resetToken }));
+    await route.fulfill(json({
+      message: 'OTP created',
+      resetToken: resetTokenByEmail[email] || resetToken,
+    }));
   });
   await page.route('**/api/reset-password', (route) => route.fulfill(
     resetStatus === 200
@@ -42,7 +56,13 @@ async function mockForgotPassword(page, resetToken = '123456', resetStatus = 200
   ));
 }
 
-async function createMockAdminApi(page, initialCategories = []) {
+const defaultUsers = {
+  'admin@eshop.com': { id: 1, password: 'Admin123!', role: 'admin' },
+  'test@eshop.com': { id: 2, password: 'Test1234!', role: 'user' },
+};
+
+async function createMockAdminApi(page, initialCategories = [], options = {}) {
+  const users = options.users || defaultUsers;
   const state = {
     categories: structuredClone(initialCategories),
     postCount: 0,
@@ -57,14 +77,14 @@ async function createMockAdminApi(page, initialCategories = []) {
 
     if (pathname === '/api/login' && method === 'POST') {
       const credentials = request.postDataJSON();
-      if (credentials.password === 'wrong-password') {
+      const account = users[credentials.email];
+      if (!account || account.password !== credentials.password) {
         await route.fulfill(json({ error: 'Invalid email or password' }, 401));
         return;
       }
-      const role = credentials.email === 'admin@eshop.com' ? 'admin' : 'user';
       await route.fulfill(json({
-        token: `mock-${role}-token`,
-        user: { id: role === 'admin' ? 1 : 2, email: credentials.email, role },
+        token: `mock-${account.role}-token`,
+        user: { id: account.id, email: credentials.email, role: account.role },
       }));
       return;
     }

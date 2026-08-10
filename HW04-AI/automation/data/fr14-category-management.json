@@ -3,96 +3,256 @@
     "id": "FR14-AUTO-001",
     "title": "Unauthenticated visitor sees only admin login",
     "action": "auth-gate",
-    "input": {},
-    "expected": "Admin login form is visible and category controls are hidden",
-    "requirementIds": ["FR-12", "FR-14"]
+    "requirementIds": ["FR-12", "FR-14"],
+    "datasets": [
+      {
+        "id": "FR14-AUTO-001-01",
+        "title": "No admin token present",
+        "input": {},
+        "expected": "Admin login form is visible and category controls are hidden"
+      }
+    ]
   },
   {
     "id": "FR14-AUTO-002",
     "title": "Admin credentials open the dashboard",
     "action": "admin-login",
-    "input": { "email": "admin@eshop.com", "password": "Admin123!", "role": "admin" },
-    "expected": "Admin dashboard and navigation are visible",
-    "requirementIds": ["FR-12"]
+    "requirementIds": ["FR-12"],
+    "mockUsers": {
+      "admin@eshop.com": { "id": 1, "password": "Admin123!", "role": "admin" },
+      "root@eshop.com": { "id": 3, "password": "Root1234!", "role": "admin" }
+    },
+    "datasets": [
+      {
+        "id": "FR14-AUTO-002-01",
+        "title": "Default admin account",
+        "input": { "email": "admin@eshop.com", "password": "Admin123!" },
+        "expected": "Admin dashboard and navigation are visible"
+      },
+      {
+        "id": "FR14-AUTO-002-02",
+        "title": "Second admin account",
+        "input": { "email": "root@eshop.com", "password": "Root1234!" },
+        "expected": "Admin dashboard and navigation are visible"
+      }
+    ]
   },
   {
     "id": "FR14-AUTO-003",
     "title": "Invalid credentials remain blocked",
     "action": "invalid-login",
-    "input": { "email": "admin@eshop.com", "password": "wrong-password" },
-    "expected": "Login remains visible and management controls remain hidden",
-    "requirementIds": ["FR-12"]
+    "requirementIds": ["FR-12"],
+    "datasets": [
+      {
+        "id": "FR14-AUTO-003-01",
+        "title": "Wrong password",
+        "input": { "email": "admin@eshop.com", "password": "WrongPass1!" },
+        "expected": "Login remains visible and management controls remain hidden"
+      },
+      {
+        "id": "FR14-AUTO-003-02",
+        "title": "Unknown email",
+        "input": { "email": "ghost@eshop.com", "password": "Ghost1234!" },
+        "expected": "Login remains visible and management controls remain hidden"
+      },
+      {
+        "id": "FR14-AUTO-003-03",
+        "title": "Empty password",
+        "input": { "email": "admin@eshop.com", "password": "" },
+        "expected": "Login remains visible and management controls remain hidden"
+      }
+    ]
   },
   {
     "id": "FR14-AUTO-004",
     "title": "Normal user cannot enter admin application",
     "action": "non-admin-login",
-    "input": { "email": "test@eshop.com", "password": "Test1234!", "role": "user" },
-    "expected": "Normal user is rejected and category controls remain hidden",
-    "requirementIds": ["FR-12", "SEC-03"]
+    "requirementIds": ["FR-12", "SEC-03"],
+    "mockUsers": {
+      "test@eshop.com": { "id": 2, "password": "Test1234!", "role": "user" },
+      "other@eshop.com": { "id": 4, "password": "Other123!", "role": "user" }
+    },
+    "datasets": [
+      {
+        "id": "FR14-AUTO-004-01",
+        "title": "Primary shop user",
+        "input": { "email": "test@eshop.com", "password": "Test1234!" },
+        "expected": "Normal user is rejected and category controls remain hidden"
+      },
+      {
+        "id": "FR14-AUTO-004-02",
+        "title": "Second shop user",
+        "input": { "email": "other@eshop.com", "password": "Other123!" },
+        "expected": "Normal user is rejected and category controls remain hidden"
+      }
+    ]
   },
   {
     "id": "FR14-AUTO-005",
     "title": "Category navigation opens category management",
     "action": "category-view",
-    "input": { "categories": [{ "id": 1, "name": "Laptop" }] },
-    "expected": "Heading, name input, add button, and table are visible",
-    "requirementIds": ["FR-14"]
+    "requirementIds": ["FR-14"],
+    "datasets": [
+      {
+        "id": "FR14-AUTO-005-01",
+        "title": "Empty category list",
+        "input": { "categories": [] },
+        "expected": "Heading, name input, add button, and table are visible"
+      },
+      {
+        "id": "FR14-AUTO-005-02",
+        "title": "Two seeded categories",
+        "input": { "categories": [{ "id": 1, "name": "Laptop" }, { "id": 2, "name": "Điện thoại" }] },
+        "expected": "Heading, name input, add button, and table are visible"
+      }
+    ]
   },
   {
     "id": "FR14-AUTO-006",
     "title": "Category table exposes required columns",
     "action": "table-columns",
-    "input": { "categories": [{ "id": 1, "name": "Laptop" }] },
-    "expected": "ID, category name, and action columns are visible",
-    "requirementIds": ["FR-14"]
+    "requirementIds": ["FR-14"],
+    "datasets": [
+      {
+        "id": "FR14-AUTO-006-01",
+        "title": "Empty list",
+        "input": { "categories": [] },
+        "expected": "ID, category name, and action columns are visible"
+      },
+      {
+        "id": "FR14-AUTO-006-02",
+        "title": "Seeded list",
+        "input": { "categories": [{ "id": 1, "name": "Laptop" }, { "id": 2, "name": "Phụ kiện" }] },
+        "expected": "ID, category name, and action columns are visible"
+      }
+    ]
   },
   {
     "id": "FR14-AUTO-007",
-    "title": "Admin can add a normal category",
+    "title": "Admin can add a valid category name",
     "action": "add-category",
-    "input": { "categories": [], "name": "Do gia dung" },
-    "expected": "The new category appears exactly once and input clears",
-    "requirementIds": ["FR-14"]
+    "requirementIds": ["FR-14"],
+    "datasets": [
+      {
+        "id": "FR14-AUTO-007-01",
+        "title": "ASCII category text",
+        "input": { "categories": [], "name": "Do gia dung" },
+        "expected": "The new category appears exactly once and input clears"
+      },
+      {
+        "id": "FR14-AUTO-007-02",
+        "title": "Vietnamese category text",
+        "input": { "categories": [], "name": "Đồ gia dụng" },
+        "expected": "Vietnamese category text is preserved and displayed"
+      },
+      {
+        "id": "FR14-AUTO-007-03",
+        "title": "Symbols inside name",
+        "input": { "categories": [], "name": "Kids & Baby" },
+        "expected": "Symbol-bearing category name is added and displayed"
+      }
+    ]
   },
   {
     "id": "FR14-AUTO-008",
-    "title": "Admin can add Vietnamese category text",
-    "action": "add-category",
-    "input": { "categories": [], "name": "Đồ gia dụng" },
-    "expected": "Vietnamese category text is preserved and displayed",
-    "requirementIds": ["FR-14", "FR-21"]
+    "title": "Blank-equivalent category names are rejected",
+    "action": "reject-category",
+    "requirementIds": ["FR-14", "FR-22"],
+    "datasets": [
+      {
+        "id": "FR14-AUTO-008-01",
+        "title": "Empty name",
+        "input": { "categories": [], "name": "" },
+        "expected": "No POST is sent and no blank category row appears"
+      },
+      {
+        "id": "FR14-AUTO-008-02",
+        "title": "Single-space name",
+        "input": { "categories": [], "name": " " },
+        "expected": "No POST is sent and no blank-equivalent row appears"
+      },
+      {
+        "id": "FR14-AUTO-008-03",
+        "title": "Whitespace-only name",
+        "input": { "categories": [], "name": "   " },
+        "expected": "No POST is sent and no blank-equivalent row appears"
+      }
+    ]
   },
   {
     "id": "FR14-AUTO-009",
-    "title": "Empty category name is rejected",
-    "action": "reject-category",
-    "input": { "categories": [], "name": "" },
-    "expected": "No POST is sent and no blank category row appears",
-    "requirementIds": ["FR-14", "FR-22"]
+    "title": "Category text is rendered safely",
+    "action": "safe-rendering",
+    "requirementIds": ["FR-14", "SEC-04"],
+    "datasets": [
+      {
+        "id": "FR14-AUTO-009-01",
+        "title": "Image-onerror payload",
+        "input": { "categories": [], "name": "<img src=x onerror=alert(1)>" },
+        "expected": "Payload is displayed literally and no image element executes"
+      },
+      {
+        "id": "FR14-AUTO-009-02",
+        "title": "Script payload",
+        "input": { "categories": [], "name": "<script>alert(1)</script>" },
+        "expected": "Payload is displayed literally and no script element executes"
+      },
+      {
+        "id": "FR14-AUTO-009-03",
+        "title": "Markup tags",
+        "input": { "categories": [], "name": "<b>Bold</b>" },
+        "expected": "Markup is displayed literally and no styled element is created"
+      }
+    ]
   },
   {
     "id": "FR14-AUTO-010",
-    "title": "Whitespace-only category name is rejected",
-    "action": "reject-category",
-    "input": { "categories": [], "name": "   " },
-    "expected": "No POST is sent and no blank-equivalent row appears",
-    "requirementIds": ["FR-14"]
+    "title": "Admin can delete one disposable category",
+    "action": "delete-category",
+    "requirementIds": ["FR-14"],
+    "datasets": [
+      {
+        "id": "FR14-AUTO-010-01",
+        "title": "ASCII kept row",
+        "input": { "categories": [{ "id": 701, "name": "Disposable" }, { "id": 702, "name": "Keep me" }], "deleteId": 701 },
+        "keepName": "Keep me",
+        "expected": "Only the selected category disappears"
+      },
+      {
+        "id": "FR14-AUTO-010-02",
+        "title": "Vietnamese kept row",
+        "input": { "categories": [{ "id": 801, "name": "Tạm xóa" }, { "id": 802, "name": "Giữ lại" }], "deleteId": 801 },
+        "keepName": "Giữ lại",
+        "expected": "Only the selected category disappears"
+      }
+    ]
   },
   {
     "id": "FR14-AUTO-011",
-    "title": "Category text is rendered safely",
-    "action": "safe-rendering",
-    "input": { "categories": [], "name": "<img src=x onerror=alert(1)>" },
-    "expected": "Payload is displayed literally and no image element executes",
-    "requirementIds": ["FR-14", "SEC-04"]
+    "title": "One-character category name boundary",
+    "action": "add-category",
+    "requirementIds": ["FR-14"],
+    "datasets": [
+      {
+        "id": "FR14-AUTO-011-01",
+        "title": "Minimum-length name",
+        "input": { "categories": [], "name": "A" },
+        "expected": "One-character category is added and displayed"
+      }
+    ]
   },
   {
     "id": "FR14-AUTO-012",
-    "title": "Admin can delete one disposable category",
-    "action": "delete-category",
-    "input": { "categories": [{ "id": 701, "name": "Disposable" }, { "id": 702, "name": "Keep me" }], "deleteId": 701 },
-    "expected": "Only the selected category disappears",
-    "requirementIds": ["FR-14"]
+    "title": "Long category name stays usable",
+    "action": "add-category",
+    "requirementIds": ["FR-14"],
+    "datasets": [
+      {
+        "id": "FR14-AUTO-012-01",
+        "title": "255-character name",
+        "input": { "categories": [], "name": "Danh mục rất dài 255 ký tự để kiểm tra giao diện vẫn hoạt động bình thường khi tên danh mục vượt quá độ dài thông thường của một tên danh mục trong hệ thống thương mại điện tử này nhé các bạn ơi hôm nay trời đẹp quá đi thôi chúng ta cùng nhau thử nghiệm một trường hợp biên vui vẻ này một hai ba bốn năm sáu bảy tám chín mười" },
+        "expected": "Long category name is accepted and the table stays readable"
+      }
+    ]
   }
 ]

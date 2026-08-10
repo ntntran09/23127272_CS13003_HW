@@ -3,96 +3,272 @@
     "id": "FR11-AUTO-001",
     "title": "Guest cannot see order history",
     "action": "guest-gate",
-    "input": {},
-    "expected": "Login-required feedback is visible and no order rows are rendered",
-    "requirementIds": ["FR-11", "SEC-02"]
+    "requirementIds": ["FR-11", "SEC-02"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-001-01",
+        "title": "No session present",
+        "input": {},
+        "expected": "Login-required feedback is visible and no order rows are rendered"
+      }
+    ]
   },
   {
     "id": "FR11-AUTO-002",
     "title": "Expired token does not expose stale orders",
     "action": "expired-token",
-    "input": { "token": "expired-token" },
-    "expected": "Invalid session is cleared and no order rows are visible",
-    "requirementIds": ["FR-11", "SEC-02"]
+    "requirementIds": ["FR-11", "SEC-02"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-002-01",
+        "title": "Clearly expired token",
+        "input": { "token": "expired-token" },
+        "expected": "Invalid session is cleared and no order rows are visible"
+      },
+      {
+        "id": "FR11-AUTO-002-02",
+        "title": "Garbage token",
+        "input": { "token": "garbage-session" },
+        "expected": "Invalid session is cleared and no order rows are visible"
+      }
+    ]
   },
   {
     "id": "FR11-AUTO-003",
     "title": "Zero orders renders an empty state",
     "action": "empty-orders",
-    "input": { "orders": [] },
-    "expected": "A friendly no-orders message is shown",
-    "requirementIds": ["FR-11", "FR-24"]
+    "requirementIds": ["FR-11", "FR-24"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-003-01",
+        "title": "Empty order array",
+        "input": { "orders": [] },
+        "expected": "A friendly no-orders message is shown"
+      }
+    ]
   },
   {
     "id": "FR11-AUTO-004",
     "title": "One order displays every required field",
     "action": "one-order",
-    "input": { "orders": [{ "id": 101, "user_id": 2, "total_amount": 300000, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }] },
-    "expected": "One row shows order id, date, formatted total, and translated status",
-    "requirementIds": ["FR-11"]
+    "requirementIds": ["FR-11"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-004-01",
+        "title": "Pending order",
+        "input": { "orders": [{ "id": 101, "user_id": 2, "total_amount": 300000, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }] },
+        "expectedTotal": "300.000",
+        "expectedLabel": "Chờ xác nhận",
+        "expected": "One row shows order id, date, formatted total, and translated pending status"
+      },
+      {
+        "id": "FR11-AUTO-004-02",
+        "title": "Delivered order",
+        "input": { "orders": [{ "id": 202, "user_id": 2, "total_amount": 999999, "status": "delivered", "created_at": "2026-07-01T00:00:00Z" }] },
+        "expectedTotal": "999.999",
+        "expectedLabel": "Đã giao",
+        "expected": "One row shows order id, date, formatted total, and translated delivered status"
+      },
+      {
+        "id": "FR11-AUTO-004-03",
+        "title": "Confirmed order with large total",
+        "input": { "orders": [{ "id": 303, "user_id": 2, "total_amount": 1234567890, "status": "confirmed", "created_at": "2026-06-15T00:00:00Z" }] },
+        "expectedTotal": "1.234.567.890",
+        "expectedLabel": "Đã xác nhận",
+        "expected": "One row shows order id, date, formatted total, and translated confirmed status"
+      }
+    ]
   },
   {
     "id": "FR11-AUTO-005",
     "title": "Multiple orders render one row each",
     "action": "many-orders",
-    "input": { "orders": [{ "id": 102, "user_id": 2, "total_amount": 1, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }, { "id": 103, "user_id": 2, "total_amount": 1000, "status": "delivered", "created_at": "2026-08-07T10:30:00Z" }] },
-    "expected": "Exactly two order rows are visible",
-    "requirementIds": ["FR-11"]
+    "requirementIds": ["FR-11"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-005-01",
+        "title": "Two orders",
+        "input": { "orders": [{ "id": 102, "user_id": 2, "total_amount": 1, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }, { "id": 103, "user_id": 2, "total_amount": 1000, "status": "delivered", "created_at": "2026-08-07T10:30:00Z" }] },
+        "expected": "Exactly two order rows are visible"
+      },
+      {
+        "id": "FR11-AUTO-005-02",
+        "title": "Three orders",
+        "input": { "orders": [{ "id": 201, "user_id": 2, "total_amount": 1, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }, { "id": 202, "user_id": 2, "total_amount": 2, "status": "confirmed", "created_at": "2026-08-07T10:30:00Z" }, { "id": 203, "user_id": 2, "total_amount": 3, "status": "canceled", "created_at": "2026-08-06T10:30:00Z" }] },
+        "expected": "Exactly three order rows are visible"
+      }
+    ]
   },
   {
     "id": "FR11-AUTO-006",
     "title": "Other users' order details are absent",
     "action": "ownership",
-    "input": { "orders": [{ "id": 104, "user_id": 2, "total_amount": 500000, "status": "confirmed", "created_at": "2026-08-08T10:30:00Z" }], "foreignOrderId": 999 },
-    "expected": "Owned order is visible and foreign order id is absent",
-    "requirementIds": ["FR-11", "SEC-02"]
+    "requirementIds": ["FR-11", "SEC-02"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-006-01",
+        "title": "Foreign id 999",
+        "input": { "orders": [{ "id": 104, "user_id": 2, "total_amount": 500000, "status": "confirmed", "created_at": "2026-08-08T10:30:00Z" }], "foreignOrderId": 999 },
+        "expected": "Owned order is visible and foreign order id is absent"
+      },
+      {
+        "id": "FR11-AUTO-006-02",
+        "title": "Foreign id 777",
+        "input": { "orders": [{ "id": 555, "user_id": 2, "total_amount": 250000, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }], "foreignOrderId": 777 },
+        "expected": "Owned order is visible and foreign order id is absent"
+      }
+    ]
   },
   {
     "id": "FR11-AUTO-007",
-    "title": "Pending status is translated and colored",
+    "title": "Status is translated to Vietnamese and colored",
     "action": "status",
-    "input": { "orders": [{ "id": 105, "user_id": 2, "total_amount": 100, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }], "status": "pending", "label": "Chờ xác nhận", "classToken": "bg-yellow-100" },
-    "expected": "Pending status uses Vietnamese text and its status color",
-    "requirementIds": ["FR-11"]
+    "requirementIds": ["FR-11"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-007-01",
+        "title": "Pending status",
+        "input": { "orders": [{ "id": 105, "user_id": 2, "total_amount": 100, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }], "label": "Chờ xác nhận", "classToken": "bg-yellow-100" },
+        "expected": "Pending status uses Vietnamese text and its status color"
+      },
+      {
+        "id": "FR11-AUTO-007-02",
+        "title": "Confirmed status",
+        "input": { "orders": [{ "id": 106, "user_id": 2, "total_amount": 100, "status": "confirmed", "created_at": "2026-08-08T10:30:00Z" }], "label": "Đã xác nhận", "classToken": "bg-indigo-100" },
+        "expected": "Confirmed status uses Vietnamese text and its status color"
+      },
+      {
+        "id": "FR11-AUTO-007-03",
+        "title": "Shipping status",
+        "input": { "orders": [{ "id": 107, "user_id": 2, "total_amount": 100, "status": "shipping", "created_at": "2026-08-08T10:30:00Z" }], "label": "Đang giao", "classToken": "bg-blue-100" },
+        "expected": "Shipping status uses Vietnamese text and its status color"
+      },
+      {
+        "id": "FR11-AUTO-007-04",
+        "title": "Delivered status",
+        "input": { "orders": [{ "id": 108, "user_id": 2, "total_amount": 100, "status": "delivered", "created_at": "2026-08-08T10:30:00Z" }], "label": "Đã giao", "classToken": "bg-green-100" },
+        "expected": "Delivered status uses Vietnamese text and its status color"
+      },
+      {
+        "id": "FR11-AUTO-007-05",
+        "title": "Canceled status",
+        "input": { "orders": [{ "id": 109, "user_id": 2, "total_amount": 100, "status": "canceled", "created_at": "2026-08-08T10:30:00Z" }], "label": "Đã hủy", "classToken": "bg-red-100" },
+        "expected": "Canceled status uses Vietnamese text and its status color"
+      }
+    ]
   },
   {
     "id": "FR11-AUTO-008",
-    "title": "Confirmed status is translated and colored",
-    "action": "status",
-    "input": { "orders": [{ "id": 106, "user_id": 2, "total_amount": 100, "status": "confirmed", "created_at": "2026-08-08T10:30:00Z" }], "status": "confirmed", "label": "Đã xác nhận", "classToken": "bg-indigo-100" },
-    "expected": "Confirmed status uses Vietnamese text and its status color",
-    "requirementIds": ["FR-11"]
+    "title": "Shipping order cannot be canceled",
+    "action": "shipping-no-cancel",
+    "requirementIds": ["FR-10", "FR-11"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-008-01",
+        "title": "Shipping order row",
+        "input": { "orders": [{ "id": 110, "user_id": 2, "total_amount": 100, "status": "shipping", "created_at": "2026-08-08T10:30:00Z" }], "label": "Đang giao" },
+        "expected": "Shipping is translated and its row has no cancel button"
+      }
+    ]
   },
   {
     "id": "FR11-AUTO-009",
-    "title": "Shipping order cannot be canceled",
-    "action": "shipping-no-cancel",
-    "input": { "orders": [{ "id": 107, "user_id": 2, "total_amount": 100, "status": "shipping", "created_at": "2026-08-08T10:30:00Z" }], "label": "Đang giao" },
-    "expected": "Shipping is translated and its row has no cancel button",
-    "requirementIds": ["FR-10", "FR-11"]
+    "title": "Final-state orders cannot be canceled",
+    "action": "final-no-cancel",
+    "requirementIds": ["FR-10", "FR-11"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-009-01",
+        "title": "Delivered order row",
+        "input": { "orders": [{ "id": 111, "user_id": 2, "total_amount": 100, "status": "delivered", "created_at": "2026-08-08T10:30:00Z" }], "label": "Đã giao" },
+        "expected": "Delivered is translated and its row has no cancel button"
+      },
+      {
+        "id": "FR11-AUTO-009-02",
+        "title": "Canceled order row",
+        "input": { "orders": [{ "id": 112, "user_id": 2, "total_amount": 100, "status": "canceled", "created_at": "2026-08-08T10:30:00Z" }], "label": "Đã hủy" },
+        "expected": "Canceled is translated and its row has no cancel button"
+      }
+    ]
   },
   {
     "id": "FR11-AUTO-010",
-    "title": "Delivered order cannot be canceled",
-    "action": "final-no-cancel",
-    "input": { "orders": [{ "id": 108, "user_id": 2, "total_amount": 100, "status": "delivered", "created_at": "2026-08-08T10:30:00Z" }], "label": "Đã giao" },
-    "expected": "Delivered is translated and its row has no cancel button",
-    "requirementIds": ["FR-10", "FR-11"]
+    "title": "Total and date use readable formats",
+    "action": "formatting",
+    "requirementIds": ["FR-11", "FR-21"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-010-01",
+        "title": "Large amount on a leap day",
+        "input": { "orders": [{ "id": 113, "user_id": 2, "total_amount": 1234567890, "status": "pending", "created_at": "2024-02-29T00:00:00Z" }] },
+        "expectedTotal": "1.234.567.890",
+        "expected": "Large total has separators and currency symbol; leap-day date is readable"
+      },
+      {
+        "id": "FR11-AUTO-010-02",
+        "title": "First thousand-separator boundary",
+        "input": { "orders": [{ "id": 114, "user_id": 2, "total_amount": 1000, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }] },
+        "expectedTotal": "1.000",
+        "expected": "One-thousand total renders with a separator and currency symbol"
+      },
+      {
+        "id": "FR11-AUTO-010-03",
+        "title": "Zero total boundary",
+        "input": { "orders": [{ "id": 115, "user_id": 2, "total_amount": 0, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }] },
+        "expectedTotal": "0",
+        "expected": "Zero total renders as 0 with currency symbol"
+      }
+    ]
   },
   {
     "id": "FR11-AUTO-011",
-    "title": "Canceled order cannot be canceled again",
-    "action": "final-no-cancel",
-    "input": { "orders": [{ "id": 109, "user_id": 2, "total_amount": 100, "status": "canceled", "created_at": "2026-08-08T10:30:00Z" }], "label": "Đã hủy" },
-    "expected": "Canceled is translated and its row has no cancel button",
-    "requirementIds": ["FR-10", "FR-11"]
+    "title": "Small money boundary values render cleanly",
+    "action": "formatting",
+    "requirementIds": ["FR-11", "FR-21"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-011-01",
+        "title": "One VND",
+        "input": { "orders": [{ "id": 116, "user_id": 2, "total_amount": 1, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }] },
+        "expectedTotal": "1",
+        "expected": "One-VND total renders with currency symbol"
+      },
+      {
+        "id": "FR11-AUTO-011-02",
+        "title": "Separator upper boundary minus one",
+        "input": { "orders": [{ "id": 117, "user_id": 2, "total_amount": 999, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }] },
+        "expectedTotal": "999",
+        "expected": "Nine-hundred-ninety-nine total renders without a separator"
+      },
+      {
+        "id": "FR11-AUTO-011-03",
+        "title": "One million",
+        "input": { "orders": [{ "id": 118, "user_id": 2, "total_amount": 1000000, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }] },
+        "expectedTotal": "1.000.000",
+        "expected": "One-million total renders with separators and currency symbol"
+      }
+    ]
   },
   {
     "id": "FR11-AUTO-012",
-    "title": "Total and date use readable formats",
+    "title": "Date boundaries are rendered without invalid artifacts",
     "action": "formatting",
-    "input": { "orders": [{ "id": 110, "user_id": 2, "total_amount": 1234567890, "status": "pending", "created_at": "2024-02-29T00:00:00Z" }] },
-    "expected": "Large total has separators and currency symbol; leap-day date is readable",
-    "requirementIds": ["FR-11", "FR-21"]
+    "requirementIds": ["FR-11"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-012-01",
+        "title": "Valid leap-day date",
+        "input": { "orders": [{ "id": 119, "user_id": 2, "total_amount": 100, "status": "pending", "created_at": "2024-02-29T00:00:00Z" }] },
+        "expectedTotal": "100",
+        "expected": "Leap-day date renders as a readable date"
+      },
+      {
+        "id": "FR11-AUTO-012-02",
+        "title": "Unparseable date",
+        "input": { "orders": [{ "id": 120, "user_id": 2, "total_amount": 100, "status": "pending", "created_at": "not-a-date" }] },
+        "expectedTotal": "100",
+        "expected": "Invalid date does not render the raw Invalid Date artifact"
+      }
+    ]
   }
 ]
