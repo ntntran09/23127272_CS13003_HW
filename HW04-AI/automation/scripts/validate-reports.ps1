@@ -4,7 +4,7 @@ Add-Type -AssemblyName System.IO.Compression
 $root = Split-Path -Parent $PSScriptRoot
 $studentId = if ($env:STUDENT_ID) { $env:STUDENT_ID } else { '23127272' }
 $features = @('fr03', 'fr11', 'fr14')
-$browsers = @('chromium', 'chrome', 'edge')
+$browsers = if ($env:BROWSERS) { $env:BROWSERS -split ',' } else { @('chromium', 'firefox', 'webkit', 'chrome', 'edge') }
 $summary = @()
 
 foreach ($feature in $features) {

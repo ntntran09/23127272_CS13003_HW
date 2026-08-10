@@ -37,8 +37,12 @@ module.exports = defineConfig({
     locale: 'vi-VN',
     timezoneId: 'Asia/Bangkok',
   },
+  // Chromium, Firefox, and WebKit are the three distinct engines the assignment
+  // names; installed Chrome and Edge are kept as extra Chromium-channel runs.
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
     { name: 'chrome', use: { ...devices['Desktop Chrome'], channel: 'chrome' } },
     { name: 'edge', use: { ...devices['Desktop Edge'], channel: 'msedge' } },
   ],

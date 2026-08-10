@@ -5,7 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const playwrightCli = require.resolve('@playwright/test/cli');
 const studentId = process.env.STUDENT_ID || '23127272';
-const browsers = ['chromium', 'chrome', 'edge'];
+const browsers = (process.env.BROWSERS || 'chromium,firefox,webkit,chrome,edge').split(',');
 const features = [
   { id: 'fr03', spec: 'tests/fr03-password-reset.spec.js' },
   { id: 'fr11', spec: 'tests/fr11-order-history.spec.js' },
