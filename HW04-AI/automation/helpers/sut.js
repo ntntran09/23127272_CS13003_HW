@@ -26,34 +26,36 @@ async function mockAuthenticatedProfile(page, orders, options = {}) {
   await page.route('**/api/orders/my-orders', (route) => route.fulfill(json(orders)));
 }
 
+// Account registry that stands in for the backend user table. A test never tells
+// the fixture whether an email is registered; the fixture answers from this
+// registry, so an "unregistered email" case cannot pass by construction.
+const defaultResetAccounts = {
+  'test@eshop.com': '123456',
+  'admin@eshop.com': '111222',
+  'customer.support@eshop.com': '987654',
+};
+
 async function mockForgotPassword(page, options = {}) {
-  const {
-    registeredEmails = null,
-    unregisteredEmails = [],
-    resetToken = '123456',
-    resetTokenByEmail = {},
-    resetStatus = 200,
-  } = options;
+  const { accounts = defaultResetAccounts, resetStatus = 200 } = options;
+  const state = { otpRequests: 0, issuedTokens: [], rejectedEmails: [] };
   await page.route('**/api/forgot-password', async (route) => {
     const data = route.request().postDataJSON();
     const email = data && data.email;
-    const blocked =
-      unregisteredEmails.includes(email) ||
-      (registeredEmails !== null && !registeredEmails.includes(email));
-    if (blocked) {
+    state.otpRequests += 1;
+    if (!Object.prototype.hasOwnProperty.call(accounts, email)) {
+      state.rejectedEmails.push(email);
       await route.fulfill(json({ error: 'User not found' }, 404));
       return;
     }
-    await route.fulfill(json({
-      message: 'OTP created',
-      resetToken: resetTokenByEmail[email] || resetToken,
-    }));
+    state.issuedTokens.push(accounts[email]);
+    await route.fulfill(json({ message: 'OTP created', resetToken: accounts[email] }));
   });
   await page.route('**/api/reset-password', (route) => route.fulfill(
     resetStatus === 200
       ? json({ message: 'Password reset successfully' })
       : json({ error: 'Invalid token or email' }, resetStatus),
   ));
+  return state;
 }
 
 const defaultUsers = {
@@ -140,6 +142,7 @@ module.exports = {
   API_URL,
   WEB_URL,
   createMockAdminApi,
+  defaultResetAccounts,
   defaultUser,
   json,
   mockAuthenticatedProfile,

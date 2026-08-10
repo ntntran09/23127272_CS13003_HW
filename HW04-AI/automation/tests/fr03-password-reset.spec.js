@@ -1,13 +1,31 @@
 const { test, expect } = require('@playwright/test');
 const cases = require('../data/fr03-password-reset.json');
-const { WEB_URL, mockForgotPassword } = require('../helpers/sut');
+const { WEB_URL, defaultResetAccounts, mockForgotPassword } = require('../helpers/sut');
 
-async function openStepTwo(page, input) {
-  await mockForgotPassword(page, { resetToken: input.resetToken });
+// The account registry is a backend stand-in, never a per-case answer: the OTP a
+// test expects is the one the registry issues for the requested email.
+function accountsFor(row, dataset) {
+  return dataset.accounts || row.accounts || defaultResetAccounts;
+}
+
+// FR-03 requires "Back to login"; the requirement does not fix the element type,
+// so accept either a link or a button and let the destination be the oracle.
+function backToLogin(page) {
+  const scope = page.locator('main');
+  return scope
+    .getByRole('link', { name: /login|đăng nhập/i })
+    .or(scope.getByRole('button', { name: /login|đăng nhập/i }));
+}
+
+async function openStepTwo(page, accounts, input) {
+  await mockForgotPassword(page, { accounts });
   await page.goto(`${WEB_URL}/forgot-password`);
   await page.locator('form input').first().fill(input.email);
   await page.locator('form button[type="submit"]').click();
-  await expect(page.locator('form input')).toHaveCount(2);
+  // Wait for the step transition without pinning the field count: step 2 is
+  // required to expose three inputs, so asserting the current two here would
+  // bake the missing confirmation field into every precondition.
+  await expect(page.locator('form input')).not.toHaveCount(1);
 }
 
 test.describe('FR-03 Forgot password and password reset', () => {
@@ -21,6 +39,8 @@ test.describe('FR-03 Forgot password and password reset', () => {
           );
 
           const input = dataset.input;
+          const accounts = accountsFor(row, dataset);
+          const issuedOtp = accounts[input.email];
           const dialogs = [];
           page.on('dialog', async (dialog) => {
             dialogs.push(dialog.message());
@@ -30,11 +50,11 @@ test.describe('FR-03 Forgot password and password reset', () => {
           switch (row.action) {
             case 'page-contract': {
               await page.goto(`${WEB_URL}/forgot-password`);
-              await expect.soft(page.locator('main h1')).toHaveCount(1);
+              await expect.soft(page.getByRole('heading', { name: /quên mật khẩu|forgot password/i })).toBeVisible();
               await expect.soft(page.locator('main')).toContainText(/1\s*\/\s*2/);
               await expect.soft(page.locator('form input')).toHaveCount(1);
               await expect.soft(page.locator('form button[type="submit"]')).toBeVisible();
-              await expect(page.locator('main').getByRole('link', { name: /login|đăng nhập/i })).toBeVisible();
+              await expect(backToLogin(page)).toBeVisible();
               break;
             }
             case 'login-entry': {
@@ -45,18 +65,20 @@ test.describe('FR-03 Forgot password and password reset', () => {
               break;
             }
             case 'request-otp': {
-              await openStepTwo(page, input);
+              await openStepTwo(page, accounts, input);
               await expect.soft(page.locator('main')).toContainText(/2\s*\/\s*2/);
-              await expect(page.locator('form')).toContainText(new RegExp(`(?:^|\\D)${input.resetToken}(?:\\D|$)`));
+              await expect(page.locator('form')).toContainText(new RegExp(`(?:^|\\D)${issuedOtp}(?:\\D|$)`));
               break;
             }
             case 'unregistered-email': {
-              await mockForgotPassword(page, { unregisteredEmails: [input.email] });
+              const fixture = await mockForgotPassword(page, { accounts });
               await page.goto(`${WEB_URL}/forgot-password`);
               await page.locator('form input').fill(input.email);
               await page.locator('form button[type="submit"]').click();
               await expect.soft(page.locator('form input')).toHaveCount(1);
               await expect.soft(page.locator('main .bg-red-100')).toBeVisible();
+              await expect.soft(page.locator('main')).not.toContainText(/\d{4,}/);
+              expect.soft(fixture.issuedTokens, 'No OTP may be issued for an unregistered email').toHaveLength(0);
               expect(dialogs, 'Errors must be inline rather than browser alert dialogs').toHaveLength(0);
               break;
             }
@@ -79,19 +101,21 @@ test.describe('FR-03 Forgot password and password reset', () => {
               break;
             }
             case 'otp-contract': {
-              await openStepTwo(page, input);
+              await openStepTwo(page, accounts, input);
               await expect.soft(page.locator('form label').first()).toContainText(/6/);
-              await expect(page.locator('form')).toContainText(/(?:^|\D)\d{6}(?:\D|$)/);
+              // The issued OTP must appear verbatim: a 6-digit regex alone would
+              // also accept a truncated or re-generated token.
+              await expect(page.locator('form')).toContainText(new RegExp(`(?:^|\\D)${issuedOtp}(?:\\D|$)`));
               break;
             }
             case 'password-fields': {
-              await openStepTwo(page, input);
+              await openStepTwo(page, accounts, input);
               const passwords = page.locator('input[type="password"]');
               await expect(passwords).toHaveCount(2);
               break;
             }
             case 'confirmation-required': {
-              await openStepTwo(page, input);
+              await openStepTwo(page, accounts, input);
               const passwords = page.locator('input[type="password"]');
               await expect.soft(passwords).toHaveCount(2);
               await expect(passwords.nth(1)).toHaveAttribute('required', '');
@@ -99,7 +123,7 @@ test.describe('FR-03 Forgot password and password reset', () => {
             }
             case 'valid-reset': {
               let resetRequests = 0;
-              await mockForgotPassword(page, { resetToken: input.resetToken });
+              await mockForgotPassword(page, { accounts });
               await page.route('**/api/reset-password', async (route) => {
                 resetRequests += 1;
                 await route.fulfill({ status: 200, contentType: 'application/json', body: '{"message":"ok"}' });
@@ -108,9 +132,12 @@ test.describe('FR-03 Forgot password and password reset', () => {
               await page.locator('form input').fill(input.email);
               await page.locator('form button[type="submit"]').click();
               const inputs = page.locator('form input');
-              await inputs.nth(0).fill(input.resetToken);
+              // Step 2 must expose OTP + new password + confirmation. Assert the
+              // contract, then keep driving so the submit outcome is observable
+              // even when the confirmation field is missing.
+              await expect.soft(inputs, 'Step 2 must expose OTP, new password, and confirmation').toHaveCount(3);
+              await inputs.nth(0).fill(issuedOtp);
               await inputs.nth(1).fill(input.newPassword);
-              await expect.soft(page.locator('input[type="password"]')).toHaveCount(2);
               if (await inputs.count() > 2) await inputs.nth(2).fill(input.confirmPassword);
               await page.locator('form button[type="submit"]').click();
               await expect.soft(page).toHaveURL(/\/login$/);
@@ -119,7 +146,7 @@ test.describe('FR-03 Forgot password and password reset', () => {
             }
             case 'mismatched-confirmation': {
               let resetRequests = 0;
-              await mockForgotPassword(page, { resetToken: input.resetToken });
+              await mockForgotPassword(page, { accounts });
               await page.route('**/api/reset-password', async (route) => {
                 resetRequests += 1;
                 await route.fulfill({ status: 200, contentType: 'application/json', body: '{"message":"unexpected"}' });
@@ -129,7 +156,7 @@ test.describe('FR-03 Forgot password and password reset', () => {
               await page.locator('form button[type="submit"]').click();
               const inputs = page.locator('form input');
               await expect(page.locator('input[type="password"]')).toHaveCount(2);
-              await inputs.nth(0).fill(input.resetToken);
+              await inputs.nth(0).fill(issuedOtp);
               await inputs.nth(1).fill(input.newPassword);
               await inputs.nth(2).fill(input.confirmPassword);
               await page.locator('form button[type="submit"]').click();
@@ -139,7 +166,7 @@ test.describe('FR-03 Forgot password and password reset', () => {
             }
             case 'back-to-login': {
               await page.goto(`${WEB_URL}/forgot-password`);
-              const back = page.locator('main').getByRole('link', { name: /login|đăng nhập/i });
+              const back = backToLogin(page);
               await expect(back).toBeVisible();
               await back.click();
               await expect(page).toHaveURL(/\/login$/);

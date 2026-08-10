@@ -189,19 +189,22 @@
         "id": "FR14-AUTO-009-01",
         "title": "Image-onerror payload",
         "input": { "categories": [], "name": "<img src=x onerror=alert(1)>" },
-        "expected": "Payload is displayed literally and no image element executes"
+        "forbiddenTag": "img",
+        "expected": "Payload is displayed literally, no img element is created, and no alert dialog fires"
       },
       {
         "id": "FR14-AUTO-009-02",
         "title": "Script payload",
         "input": { "categories": [], "name": "<script>alert(1)</script>" },
-        "expected": "Payload is displayed literally and no script element executes"
+        "forbiddenTag": "script",
+        "expected": "Payload is displayed literally, no script element is created, and no alert dialog fires"
       },
       {
         "id": "FR14-AUTO-009-03",
         "title": "Markup tags",
         "input": { "categories": [], "name": "<b>Bold</b>" },
-        "expected": "Markup is displayed literally and no styled element is created"
+        "forbiddenTag": "b",
+        "expected": "Markup is displayed literally, no b element is created, and no alert dialog fires"
       }
     ]
   },
@@ -250,8 +253,16 @@
       {
         "id": "FR14-AUTO-012-01",
         "title": "255-character name",
-        "input": { "categories": [], "name": "Danh mục rất dài 255 ký tự để kiểm tra giao diện vẫn hoạt động bình thường khi tên danh mục vượt quá độ dài thông thường của một tên danh mục trong hệ thống thương mại điện tử này nhé các bạn ơi hôm nay trời đẹp quá đi thôi chúng ta cùng nhau thử nghiệm một trường hợp biên vui vẻ này một hai ba bốn năm sáu bảy tám chín mười" },
-        "expected": "Long category name is accepted and the table stays readable"
+        "input": { "categories": [], "name": "Danh muc rat dai de kiem tra giao dien van hoat dong binh thuong khi ten danh muc vuot qua do dai thong thuong trong he thong thuong mai dien tu Danh muc rat dai de kiem tra giao dien van hoat dong binh thuong khi ten danh muc vuot qua do dai thong thuong" },
+        "expectedLength": 255,
+        "expected": "BVA-FR14-006 lower long-name boundary: the 255-character name is accepted and the table stays readable"
+      },
+      {
+        "id": "FR14-AUTO-012-02",
+        "title": "256-character name",
+        "input": { "categories": [], "name": "Danh muc rat dai de kiem tra giao dien van hoat dong binh thuong khi ten danh muc vuot qua do dai thong thuong trong he thong thuong mai dien tu Danh muc rat dai de kiem tra giao dien van hoat dong binh thuong khi ten danh muc vuot qua do dai thong thuongX" },
+        "expectedLength": 256,
+        "expected": "BVA-FR14-007 upper long-name boundary: the 256-character name is accepted and the table stays readable"
       }
     ]
   }

@@ -14,12 +14,13 @@
 | --- | ---: |
 | Features | 3 |
 | Automated test cases | 36 |
+| Data-driven datasets | 78 |
 | Browsers | 3 |
 | Browser runs / HTML reports | 9 |
-| Test executions | 108 |
-| Passed | 69 |
-| Failed | 39 |
-| Unique reviewed defects | 9 |
+| Test executions | 234 |
+| Passed | 144 |
+| Failed | 90 |
+| Unique reviewed defects | 11 |
 
 Browsers: Playwright Chromium, Google Chrome, Microsoft Edge.
 
@@ -53,7 +54,7 @@ Browsers: Playwright Chromium, Google Chrome, Microsoft Edge.
 
 ## Remaining Submission Blockers
 
-- Create and link nine GitHub Issues, attaching screenshots.
+- Create and link eleven GitHub Issues, attaching screenshots.
 - Record the Vietnamese narrated video with `whoami` and `hostname`.
 - Record the skill demonstration or clearly include it in the main video.
 - Review audit verdicts and AI critique in the student's own words.

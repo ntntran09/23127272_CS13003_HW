@@ -54,7 +54,10 @@ test.describe('FR-14 Category management', () => {
               await createMockAdminApi(page, [], { users: row.mockUsers });
               await login(page, input);
               await expect.soft(page.getByRole('heading', { name: 'Admin Login' })).toBeVisible();
-              await expect(page.getByRole('heading', { name: 'EShop Admin' })).toHaveCount(0);
+              await expect.soft(page.getByRole('heading', { name: 'EShop Admin' })).toHaveCount(0);
+              // Staying on the login screen is not enough: management must stay
+              // unreachable even if the form silently refused to submit.
+              await expect(page.getByText('Danh mục', { exact: true })).toHaveCount(0);
               break;
             }
             case 'non-admin-login': {
@@ -81,6 +84,9 @@ test.describe('FR-14 Category management', () => {
               break;
             }
             case 'add-category': {
+              if (dataset.expectedLength !== undefined) {
+                expect(input.name, 'Boundary length in the data file must match its declared length').toHaveLength(dataset.expectedLength);
+              }
               await openCategories(page, input.categories);
               const nameInput = page.getByPlaceholder('Tên danh mục mới');
               await nameInput.fill(input.name);
@@ -105,7 +111,10 @@ test.describe('FR-14 Category management', () => {
               const matchingRow = page.locator('tbody tr', { hasText: input.name });
               await expect.soft(matchingRow).toHaveCount(1);
               await expect.soft(matchingRow).toContainText(input.name);
-              await expect(matchingRow.locator('img')).toHaveCount(0);
+              // Assert the tag the payload would create, not a fixed 'img', and
+              // fail if the payload managed to raise a dialog.
+              await expect.soft(page.locator(`tbody ${dataset.forbiddenTag}`)).toHaveCount(0);
+              expect(dialogs, 'Category text must never execute as markup or script').toHaveLength(0);
               break;
             }
             case 'delete-category': {

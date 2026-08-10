@@ -107,15 +107,17 @@
     "datasets": [
       {
         "id": "FR11-AUTO-006-01",
-        "title": "Foreign id 999",
-        "input": { "orders": [{ "id": 104, "user_id": 2, "total_amount": 500000, "status": "confirmed", "created_at": "2026-08-08T10:30:00Z" }], "foreignOrderId": 999 },
-        "expected": "Owned order is visible and foreign order id is absent"
+        "title": "Mixed data with another user's distinctive delivered order",
+        "input": { "orders": [{ "id": 104, "user_id": 2, "total_amount": 500000, "status": "confirmed", "created_at": "2026-08-08T10:30:00Z" }, { "id": 999, "user_id": 7, "total_amount": 987654321, "status": "delivered", "created_at": "2026-08-05T10:30:00Z" }] },
+        "foreignTotal": "987.654.321",
+        "expected": "Only the current user's order 104 is rendered; foreign order 999 and its distinctive total are absent"
       },
       {
         "id": "FR11-AUTO-006-02",
-        "title": "Foreign id 777",
-        "input": { "orders": [{ "id": 555, "user_id": 2, "total_amount": 250000, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }], "foreignOrderId": 777 },
-        "expected": "Owned order is visible and foreign order id is absent"
+        "title": "Mixed data with a foreign pending order",
+        "input": { "orders": [{ "id": 555, "user_id": 2, "total_amount": 250000, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }, { "id": 777, "user_id": 9, "total_amount": 123456789, "status": "pending", "created_at": "2026-08-04T10:30:00Z" }] },
+        "foreignTotal": "123.456.789",
+        "expected": "Only the current user's order 555 is rendered; foreign order 777 and its distinctive total are absent"
       }
     ]
   },

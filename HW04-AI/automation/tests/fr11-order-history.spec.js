@@ -1,9 +1,16 @@
 const { test, expect } = require('@playwright/test');
 const cases = require('../data/fr11-order-history.json');
-const { WEB_URL, json, mockAuthenticatedProfile } = require('../helpers/sut');
+const { WEB_URL, defaultUser, json, mockAuthenticatedProfile } = require('../helpers/sut');
 
+// Match the whole money cell. A substring match over the row is not usable here:
+// a <tr> concatenates cells without separators ("8/8/20261.000 ₫"), so "1 ₫"
+// would also match "21 ₫" and a wrong amount would still pass.
 function moneyPattern(expectedTotal) {
-  return new RegExp(expectedTotal.split('.').join('[.,]') + '\\s*₫');
+  return new RegExp('^\\s*' + expectedTotal.split('.').join('[.,]') + '\\s*₫\\s*$');
+}
+
+function totalCell(row) {
+  return row.locator('td').nth(2);
 }
 
 async function openProfile(page, orders) {
@@ -52,7 +59,7 @@ test.describe('FR-11 User order history', () => {
               await expect.soft(page.locator('thead th')).toHaveCount(5);
               await expect.soft(rows).toHaveCount(1);
               await expect.soft(rows.first()).toContainText(`#${order.id}`);
-              await expect.soft(rows.first()).toContainText(moneyPattern(dataset.expectedTotal));
+              await expect.soft(totalCell(rows.first())).toHaveText(moneyPattern(dataset.expectedTotal));
               await expect(rows.first().locator('span')).toContainText(dataset.expectedLabel);
               break;
             }
@@ -65,9 +72,21 @@ test.describe('FR-11 User order history', () => {
               break;
             }
             case 'ownership': {
+              // The fixture deliberately serves mixed data (DT-FR11-007/008): the
+              // response contains another user's order, so ownership filtering has
+              // to be enforced by the SUT rather than by the fixture.
               await openProfile(page, input.orders);
-              await expect.soft(page.locator('tbody')).toContainText(`#${input.orders[0].id}`);
-              await expect(page.locator('tbody')).not.toContainText(`#${input.foreignOrderId}`);
+              const owned = input.orders.filter((order) => order.user_id === defaultUser.id);
+              const foreign = input.orders.filter((order) => order.user_id !== defaultUser.id);
+              const body = page.locator('tbody');
+              await expect.soft(page.locator('tbody tr')).toHaveCount(owned.length);
+              for (const order of owned) {
+                await expect.soft(body).toContainText(`#${order.id}`);
+              }
+              for (const order of foreign) {
+                await expect.soft(body).not.toContainText(`#${order.id}`);
+              }
+              await expect(body).not.toContainText(dataset.foreignTotal);
               break;
             }
             case 'status': {
@@ -88,7 +107,7 @@ test.describe('FR-11 User order history', () => {
             case 'formatting': {
               await openProfile(page, input.orders);
               const orderRow = page.locator('tbody tr').first();
-              await expect.soft(orderRow).toContainText(moneyPattern(dataset.expectedTotal));
+              await expect.soft(totalCell(orderRow)).toHaveText(moneyPattern(dataset.expectedTotal));
               await expect.soft(orderRow).not.toContainText(/Invalid Date/i);
               await expect(orderRow.locator('td').nth(1)).not.toBeEmpty();
               break;
