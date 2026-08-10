@@ -17,7 +17,7 @@ Create automation that preserves the test oracle from the requirements. Do not c
    - UI with deterministic network fixture;
    - not automatable, with a concrete reason.
 4. Select the minimum representative set requested by the user. Preserve positive, negative, edge, authorization, and state-transition coverage.
-5. Store variable test inputs in external JSON or CSV. For JSON, follow [references/case-data-schema.md](references/case-data-schema.md).
+5. Store variable test inputs in external JSON or CSV. For JSON, follow [references/case-data-schema.md](references/case-data-schema.md). Record the original case IDs in each case's `sourceCases` so coverage is computed from the data, and the cases you did not automate can be listed by subtraction instead of from memory.
 6. Create shared helpers or Page Objects for repeated navigation, authentication, and setup. Keep business expected values in the data file.
 7. Generate one named Playwright test per data row. Put the original case or requirement IDs in test annotations.
 8. Use resilient locators in this order: role/name, label, placeholder, test ID, then narrowly scoped CSS. Avoid layout-dependent selectors.
@@ -40,7 +40,8 @@ npx playwright test --list
 - Reject inline arrays/objects used as variable test data.
 - Replace fixed sleeps with waits for observable state.
 - Confirm each negative case proves that the forbidden outcome did not occur.
-- Confirm mocks do not replace the behavior being evaluated.
+- Confirm mocks do not replace the behavior being evaluated. Apply the falsifiability test to every case that uses a fixture: name the change to the product that would make this test fail. If the fixture supplies the answer the case asserts — an "unregistered email" list handed to the fixture by the case, a response containing only the rows the case expects to see — the test passes unconditionally and is worthless. Build the fixture as a stand-in for the real system, from its own data, and let the product decide the outcome.
+- For any case whose oracle is the absence of something, serve data that contains that something.
 - Reproduce a failing requirement assertion before writing a bug report.
 - Record every substantive correction from the first generated script to the final script.
 
