@@ -158,6 +158,20 @@ test.describe('FR-11 User order history', () => {
                 .not.toHaveText(/\d{1,2}\/\d{1,2}\/\d{4}/);
               break;
             }
+            case 'malformed-id': {
+              await openProfile(page, input.orders, { requireMain: false });
+              await expect.soft(page.locator('main'), 'Malformed data must not unmount the profile page').toBeVisible();
+              const rows = page.locator('tbody tr');
+              // DT-FR11-026 allows the row to be hidden, so an empty table is a
+              // legitimate pass here and there is nothing further to inspect.
+              if (await rows.count() === 0) break;
+              const codeCell = rows.first().locator('td').first();
+              // The SUT renders `#{o.id}`, so a missing id leaves a bare "#" and
+              // id 0 leaves "#0". Both are order codes the user cannot act on.
+              await expect(codeCell, 'Invalid order id must not render as an order code')
+                .not.toHaveText(new RegExp(`^\\s*${dataset.forbiddenCode}\\s*$`));
+              break;
+            }
             case 'formatting': {
               await openProfile(page, input.orders);
               const orderRow = page.locator('tbody tr').first();

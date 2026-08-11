@@ -349,5 +349,28 @@
         "expected": "A calendar-invalid date renders a safe placeholder instead of the Invalid Date artifact"
       }
     ]
+  },
+  {
+    "id": "FR11-AUTO-016",
+    "title": "Invalid order id is not presented as a normal order code",
+    "action": "malformed-id",
+    "requirementIds": ["FR-11"],
+    "sourceCases": ["DT-FR11-026", "BVA-FR11-004"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-016-01",
+        "title": "Order id at the invalid lower boundary",
+        "input": { "orders": [{ "id": 0, "user_id": 2, "total_amount": 100, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }] },
+        "forbiddenCode": "#0",
+        "expected": "Order id 0 is not presented as a normal valid order code"
+      },
+      {
+        "id": "FR11-AUTO-016-02",
+        "title": "Missing order id",
+        "input": { "orders": [{ "user_id": 2, "total_amount": 100, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }] },
+        "forbiddenCode": "#",
+        "expected": "A row with no id shows a placeholder or is hidden, never a blank order code"
+      }
+    ]
   }
 ]
