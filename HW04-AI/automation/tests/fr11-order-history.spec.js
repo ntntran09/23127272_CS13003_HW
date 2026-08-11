@@ -125,6 +125,19 @@ test.describe('FR-11 User order history', () => {
                 .not.toMatch(/^[A-Z][A-Z0-9 _-]*$/);
               break;
             }
+            case 'malformed-total': {
+              await openProfile(page, input.orders, { requireMain: false });
+              await expect.soft(page.locator('main'), 'Malformed data must not unmount the profile page').toBeVisible();
+              const rows = page.locator('tbody tr');
+              await expect.soft(rows).toHaveCount(input.orders.length);
+              if (await rows.count() === 0) break;
+              // The money cell is the oracle, anchored at both ends: the SUT
+              // renders `Number(total || 0).toLocaleString() + " ₫"`, so an
+              // invalid amount reaching the cell verbatim is the defect.
+              await expect(totalCell(rows.first()), 'Invalid total must not render as a normal amount')
+                .not.toHaveText(moneyPattern(dataset.forbiddenTotal));
+              break;
+            }
             case 'formatting': {
               await openProfile(page, input.orders);
               const orderRow = page.locator('tbody tr').first();

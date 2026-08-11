@@ -305,5 +305,28 @@
         "expected": "Missing status shows a safe fallback and the order table keeps rendering"
       }
     ]
+  },
+  {
+    "id": "FR11-AUTO-014",
+    "title": "Invalid total is not rendered as a normal amount",
+    "action": "malformed-total",
+    "requirementIds": ["FR-11"],
+    "sourceCases": ["DT-FR11-020", "DT-FR11-021", "BVA-FR11-006"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-014-01",
+        "title": "Negative total at the lower boundary",
+        "input": { "orders": [{ "id": 123, "user_id": 2, "total_amount": -1, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }] },
+        "forbiddenTotal": "-1",
+        "expected": "A negative total is flagged or replaced by a placeholder, not shown as a normal amount"
+      },
+      {
+        "id": "FR11-AUTO-014-02",
+        "title": "Missing total",
+        "input": { "orders": [{ "id": 124, "user_id": 2, "total_amount": null, "status": "pending", "created_at": "2026-08-08T10:30:00Z" }] },
+        "forbiddenTotal": "0",
+        "expected": "A missing total is not silently converted to zero"
+      }
+    ]
   }
 ]
