@@ -6,6 +6,10 @@
 - Mở terminal thứ tư tại `HW04-AI\automation`.
 - Đảm bảo màn hình không lộ token, mật khẩu cá nhân hoặc dữ liệu riêng tư.
 
+Mọi lệnh trong kịch bản này ghi kết quả vào `demo-run\` (đã gitignore), **không**
+đụng tới `reports\` là bằng chứng nộp bài. Nếu quay hỏng thì quay lại, không cần
+lo hỏng report đã commit.
+
 ## 0:00-0:40 - Giới thiệu và bằng chứng tác giả
 
 Nói:
@@ -34,12 +38,11 @@ Nói rõ các assertion pattern: URL/visibility, text, count, attribute/value, n
 Trong PowerShell:
 
 ```powershell
-$env:STUDENT_ID='23127272'
-$env:FEATURE='fr14'
-$env:BROWSER='chromium-chrome-edge'
-$env:RUN_TIMESTAMP=(Get-Date).ToUniversalTime().ToString('o')
-npm run test:fr14
+npm run demo:fr14
 ```
+
+Runner tự đặt `Run by: 23127272`, ISO timestamp, feature và browser cho từng
+run, nên không cần set biến môi trường thủ công trên camera.
 
 Trong lúc chạy, giải thích:
 
@@ -52,7 +55,7 @@ Trong lúc chạy, giải thích:
 Chạy:
 
 ```powershell
-npx playwright show-report playwright-report
+npx playwright show-report demo-run\reports\fr14\chromium
 ```
 
 Trong report, chỉ ra:
