@@ -64,3 +64,17 @@ Two of the 202 failures are a Firefox teardown flake, not defects; see `bug-repo
 - Record the skill demonstration or clearly include it in the main video.
 - Sign the AI Audit Report (`AI docs/AI-Audit-Report.md`, Signature section).
 - Commit spread: eight `.spec.js` commits exist, but over two calendar days rather than four.
+
+## Submission Package
+
+The zip exceeds the 20 MB limit as one file, so the HTML reports are split. Both
+files are needed; unzip them into the same folder and the report tree merges.
+
+| File | Size | Contents |
+| --- | ---: | --- |
+| `23127272_HW04_AI_Automation_100.zip` | 14.2 MB | All required documents (main report, AI Audit Report, AI Critique, git log, bug report, this README, PDFs) plus the FR-03 and FR-14 HTML reports |
+| `23127272_HW04_AI_Automation_100_reports_fr11.zip` | 9.0 MB | FR-11 HTML reports and `run-summary.json` |
+
+Playwright trace archives (`trace.zip`, ~50 MB) are excluded from both files and
+from the repository. Screenshots and videos are included, and every HTML report
+opens standalone.
