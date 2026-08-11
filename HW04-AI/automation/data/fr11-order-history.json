@@ -328,5 +328,26 @@
         "expected": "A missing total is not silently converted to zero"
       }
     ]
+  },
+  {
+    "id": "FR11-AUTO-015",
+    "title": "Invalid order date renders a safe placeholder",
+    "action": "malformed-date",
+    "requirementIds": ["FR-11"],
+    "sourceCases": ["DT-FR11-023", "BVA-FR11-012"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-015-01",
+        "title": "Missing date",
+        "input": { "orders": [{ "id": 125, "user_id": 2, "total_amount": 100, "status": "pending", "created_at": null }] },
+        "expected": "A missing date renders a safe placeholder instead of the Invalid Date artifact"
+      },
+      {
+        "id": "FR11-AUTO-015-02",
+        "title": "Non-leap 29 February",
+        "input": { "orders": [{ "id": 126, "user_id": 2, "total_amount": 100, "status": "pending", "created_at": "2023-02-29T00:00:00Z" }] },
+        "expected": "A calendar-invalid date renders a safe placeholder instead of the Invalid Date artifact"
+      }
+    ]
   }
 ]

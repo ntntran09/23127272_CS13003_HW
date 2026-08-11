@@ -138,6 +138,26 @@ test.describe('FR-11 User order history', () => {
                 .not.toHaveText(moneyPattern(dataset.forbiddenTotal));
               break;
             }
+            case 'malformed-date': {
+              await openProfile(page, input.orders, { requireMain: false });
+              await expect.soft(page.locator('main'), 'Malformed data must not unmount the profile page').toBeVisible();
+              const rows = page.locator('tbody tr');
+              await expect.soft(rows).toHaveCount(input.orders.length);
+              if (await rows.count() === 0) break;
+              const dateCell = rows.first().locator('td').nth(1);
+              // DT-FR11-023 asks for a placeholder, so an empty cell is not a
+              // pass either: the row must say something about the date.
+              await expect.soft(dateCell, 'The date cell must not be blank').not.toHaveText(/^\s*$/);
+              await expect.soft(dateCell, 'An unparseable date must not surface the Invalid Date artifact')
+                .not.toHaveText(/Invalid Date/i);
+              // Forbidding only the "Invalid Date" string is too weak an oracle.
+              // `new Date(null)` is the epoch and `new Date("2023-02-29Z")` rolls
+              // over to 1 March, so the SUT can print a plausible date it made up.
+              // A placeholder is required, so any rendered date is a failure.
+              await expect(dateCell, 'Invalid date must render a placeholder, not a fabricated date')
+                .not.toHaveText(/\d{1,2}\/\d{1,2}\/\d{4}/);
+              break;
+            }
             case 'formatting': {
               await openProfile(page, input.orders);
               const orderRow = page.locator('tbody tr').first();
