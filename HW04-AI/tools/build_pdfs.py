@@ -277,13 +277,13 @@ if __name__ == "__main__":
     outputs = [
         build(ROOT / "main-report.md", "23127272_HW04_Main_Report.pdf"),
         build(
-            ROOT / "AI docs" / "AI-Audit-Report-DRAFT.md",
-            "23127272_HW04_AI_Audit_Report_DRAFT.pdf",
+            ROOT / "AI docs" / "AI-Audit-Report.md",
+            "23127272_HW04_AI_Audit_Report.pdf",
             landscape_page=True,
         ),
         build(
-            ROOT / "AI docs" / "AI-Critique-DRAFT.md",
-            "23127272_HW04_AI_Critique_DRAFT.pdf",
+            ROOT / "AI docs" / "AI_critique.md",
+            "23127272_HW04_AI_Critique.pdf",
         ),
     ]
     for output in outputs:
