@@ -13,10 +13,13 @@ function totalCell(row) {
   return row.locator('td').nth(2);
 }
 
-async function openProfile(page, orders) {
+// requireMain is a precondition for well-formed data only. Malformed-data cases
+// must not assert it here: if the row crashes the component, `main` is gone and
+// the failure has to be reported against the requirement, not the helper.
+async function openProfile(page, orders, { requireMain = true } = {}) {
   await mockAuthenticatedProfile(page, orders);
   await page.goto(`${WEB_URL}/profile`);
-  await expect(page.locator('main')).toBeVisible();
+  if (requireMain) await expect(page.locator('main')).toBeVisible();
 }
 
 test.describe('FR-11 User order history', () => {
@@ -102,6 +105,24 @@ test.describe('FR-11 User order history', () => {
               const orderRow = page.locator('tbody tr').first();
               await expect.soft(orderRow.locator('span')).toHaveText(input.label);
               await expect(orderRow.getByRole('button')).toHaveCount(0);
+              break;
+            }
+            case 'malformed-status': {
+              await openProfile(page, input.orders, { requireMain: false });
+              // A malformed status must not take the page down. statusLabel()
+              // ends in status.toUpperCase(), so a null status unmounts the
+              // whole profile tree and leaves no row to inspect.
+              await expect.soft(page.locator('main'), 'Malformed data must not unmount the profile page').toBeVisible();
+              const rows = page.locator('tbody tr');
+              await expect.soft(rows).toHaveCount(input.orders.length);
+              if (await rows.count() === 0) break;
+              const badge = rows.first().locator('span');
+              const label = ((await badge.textContent()) || '').trim();
+              expect.soft(label, 'Status badge must not be empty').not.toBe('');
+              // FR-11 requires a Vietnamese label. An enum echoed back in upper
+              // case is the raw code, which is what DT-FR11-015 forbids.
+              expect(label, 'Status must render a Vietnamese fallback, not the raw code')
+                .not.toMatch(/^[A-Z][A-Z0-9 _-]*$/);
               break;
             }
             case 'formatting': {

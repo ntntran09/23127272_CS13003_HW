@@ -284,5 +284,26 @@
         "expected": "Invalid date does not render the raw Invalid Date artifact"
       }
     ]
+  },
+  {
+    "id": "FR11-AUTO-013",
+    "title": "Malformed status renders a safe Vietnamese fallback",
+    "action": "malformed-status",
+    "requirementIds": ["FR-11"],
+    "sourceCases": ["DT-FR11-015", "DT-FR11-016", "BVA-FR11-015"],
+    "datasets": [
+      {
+        "id": "FR11-AUTO-013-01",
+        "title": "Unsupported status code",
+        "input": { "orders": [{ "id": 121, "user_id": 2, "total_amount": 100, "status": "returned", "created_at": "2026-08-08T10:30:00Z" }] },
+        "expected": "Unsupported status shows a Vietnamese fallback, not the raw code in upper case"
+      },
+      {
+        "id": "FR11-AUTO-013-02",
+        "title": "Missing status",
+        "input": { "orders": [{ "id": 122, "user_id": 2, "total_amount": 100, "status": null, "created_at": "2026-08-08T10:30:00Z" }] },
+        "expected": "Missing status shows a safe fallback and the order table keeps rendering"
+      }
+    ]
   }
 ]
