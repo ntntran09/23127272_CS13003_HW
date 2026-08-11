@@ -13,16 +13,19 @@
 | Metric | Count |
 | --- | ---: |
 | Features | 3 |
-| Automated test cases | 36 |
-| Data-driven datasets | 78 |
-| Browsers | 3 |
-| Browser runs / HTML reports | 9 |
-| Test executions | 234 |
-| Passed | 144 |
-| Failed | 90 |
-| Unique reviewed defects | 11 |
+| Automated test cases | 41 |
+| Data-driven datasets | 88 |
+| Browsers | 5 |
+| Rendering engines | 3 |
+| Browser runs / HTML reports | 15 |
+| Test executions | 440 |
+| Passed | 238 |
+| Failed | 202 |
+| Unique reviewed defects | 17 |
 
-Browsers: Playwright Chromium, Google Chrome, Microsoft Edge.
+Browsers: Playwright Chromium, Firefox, WebKit, Google Chrome, Microsoft Edge — Blink, Gecko, and WebKit engines.
+
+Two of the 202 failures are a Firefox teardown flake, not defects; see `bug-report/bug-report.md`.
 
 ## Deliverables
 
@@ -33,15 +36,15 @@ Browsers: Playwright Chromium, Google Chrome, Microsoft Edge.
 | External test data | `automation/data/` |
 | HTML reports | `automation/reports/` |
 | Report summary | `automation/reports/run-summary.json` |
-| Bug report and screenshots | `bug-report/`; 11 issues filed at [Issues](https://github.com/ntntran09/23127272_CS13003_HW/issues) |
+| Bug report and screenshots | `bug-report/`; 17 issues filed at [ntntran09/eshop-sut Issues](https://github.com/ntntran09/eshop-sut/issues) |
 | Task skills | `skills/` |
 | AI Audit Report | `AI docs/AI-Audit-Report.md`; PDF at `output/pdf/23127272_HW04_AI_Audit_Report.pdf` |
 | AI Critique | `AI docs/AI_critique.md`; PDF at `output/pdf/23127272_HW04_AI_Critique.pdf` |
 | Appendix A prompts | `appendix_a/README.md` and `appendix_a/prompt_*.md` |
 | AI session evidence | `AI docs/evidence/implementation-session/` (Codex), `AI docs/evidence/review-session/` (Claude) |
 | Git commit log | `git_log.md` |
-| Demo video | TODO: unlisted YouTube URL |
-| Skill demo video | TODO: unlisted YouTube URL |
+| Demo video | https://youtu.be/YGdgjPMiork |
+| Skill demo video | https://youtu.be/Jsy-zFRlMDk |
 | Public repository | https://github.com/ntntran09/23127272_CS13003_HW |
 
 ## Self-Assessment
@@ -60,4 +63,4 @@ Browsers: Playwright Chromium, Google Chrome, Microsoft Edge.
 - Record the Vietnamese narrated video with `whoami` and `hostname`.
 - Record the skill demonstration or clearly include it in the main video.
 - Sign the AI Audit Report (`AI docs/AI-Audit-Report.md`, Signature section).
-- Accumulate at least eight meaningful `.spec.js` commits over four real days.
+- Commit spread: eight `.spec.js` commits exist, but over two calendar days rather than four.

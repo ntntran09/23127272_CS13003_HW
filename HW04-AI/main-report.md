@@ -17,8 +17,8 @@ The same three web features selected in HW02 were automated:
 | Pool | Feature | HW02 source | Test cases | Datasets |
 | --- | --- | --- | ---: | ---: |
 | A | FR-03 Forgot password and password reset | `../HW02-AI/main report/FR-03-domain-testing.md` | 12 | 25 |
-| B | FR-11 User order history | `../HW02-AI/main report/FR-11-domain-testing.md` | 12 | 27 |
-| C | FR-14 Category management | `../HW02-AI/main report/FR-14-domain-testing.md` | 12 | 26 |
+| B | FR-11 User order history | `../HW02-AI/main report/FR-11-domain-testing.md` | 16 | 35 |
+| C | FR-14 Category management | `../HW02-AI/main report/FR-14-domain-testing.md` | 13 | 28 |
 
 ## 3. Automation Design
 
@@ -35,13 +35,17 @@ Assertion patterns include URL, visibility, text/content, count/structure, attri
 
 ## 4. Browser and Report Configuration
 
-The locally available browser projects are:
+The browser projects are:
 
 - Playwright Chromium
+- Playwright Firefox
+- Playwright WebKit
 - Installed Google Chrome
 - Installed Microsoft Edge
 
-Each feature was invoked independently on every browser. The nine report directories are under `automation/reports/<feature>/<browser>/`. Every report contains:
+Three distinct rendering engines are covered. Chromium, Chrome, and Edge are three executables sharing one renderer, so a matrix built only from them evidences nothing about cross-browser behaviour; Firefox (Gecko) and WebKit are what make the matrix meaningful. This is the precondition the `run-playwright-browser-matrix` skill enforces.
+
+Each feature was invoked independently on every browser. The fifteen report directories are under `automation/reports/<feature>/<browser>/`. Every report contains:
 
 - visible title `Run by: 23127272`;
 - an ISO run timestamp;
@@ -54,12 +58,12 @@ Each feature was invoked independently on every browser. The nine report directo
 
 | Feature | Datasets | Browser runs | Executions | Passed | Failed | Flaky | Skipped |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| FR-03 | 25 | 3 | 75 | 6 | 69 | 0 | 0 |
-| FR-11 | 27 | 3 | 81 | 69 | 12 | 0 | 0 |
-| FR-14 | 26 | 3 | 78 | 69 | 9 | 0 | 0 |
-| **Total** | **78** | **9** | **234** | **144** | **90** | **0** | **0** |
+| FR-03 | 25 | 5 | 125 | 10 | 115 | 0 | 0 |
+| FR-11 | 35 | 5 | 175 | 115 | 60 | 0 | 0 |
+| FR-14 | 28 | 5 | 140 | 113 | 27 | 0 | 0 |
+| **Total** | **88** | **15** | **440** | **238** | **202** | **0** | **0** |
 
-The result is deterministic across the three browsers: every case has the same outcome on each browser. Failures were consolidated into eleven unique defects in `bug-report/bug-report.md`.
+The result is deterministic across all five projects with one exception: `FR14-AUTO-009-01` and `FR14-AUTO-009-02` fail on Firefox only, in `browserContext.close` with a protocol error raised during teardown after the requirement assertions have already passed. That is an environment flake, not a product defect, and it is excluded from the defect count. The remaining 200 failed executions consolidate into seventeen unique defects in `bug-report/bug-report.md`.
 
 ## 6. AI-generated Script Review and Human Fixes
 
@@ -69,7 +73,7 @@ The initial OTP assertion used word boundaries. Rendered React text concatenated
 
 The initial 7.5-second assertion timeout made known missing-element failures unnecessarily slow. It was reduced to three seconds after confirming that mocked UI states render in under one second.
 
-The original browser plan assumed Firefox and WebKit runtimes. Installation was not authorized, so the environment was inspected and the executable projects were changed to Chromium, installed Chrome, and installed Edge. This limitation is explicit because all three use the Chromium engine.
+The original browser plan assumed Firefox and WebKit runtimes before checking whether they were installed. At implementation time they were not, and the matrix ran on Chromium, Chrome, and Edge — three executables sharing one renderer. Once the runtimes were available the matrix was re-run across all five projects, which is what the assignment's cross-browser requirement actually asks for. The single-engine period is recorded here rather than erased: the numbers in this report come from the five-project run.
 
 Selectors were scoped to the target feature. For example, the back-to-login locator was restricted to `main`; otherwise the global header login link caused a false pass.
 
@@ -130,11 +134,11 @@ Every automated case declares a `sourceCases` field naming the HW02 domain cases
 | Feature | HW02 cases | Covered | Not automated | Coverage |
 | --- | ---: | ---: | ---: | ---: |
 | FR-03 | 42 | 20 | 22 | 48% |
-| FR-11 | 46 | 29 | 17 | 63% |
-| FR-14 | 44 | 21 | 23 | 48% |
-| **Total** | **132** | **70** | **62** | **53%** |
+| FR-11 | 46 | 39 | 7 | 85% |
+| FR-14 | 44 | 23 | 21 | 52% |
+| **Total** | **132** | **82** | **50** | **62%** |
 
-The assignment requires at least 12 converted cases per feature; 36 automated cases carrying 78 datasets cover 70 domain cases. The 62 remaining cases were not automated, grouped by reason:
+The assignment requires at least 12 converted cases per feature; 41 automated cases carrying 88 datasets cover 82 domain cases. The 50 remaining cases were not automated, grouped by reason:
 
 **Blocked by a defect already filed (19 cases).** `DT-FR03-010` to `DT-FR03-012`, `DT-FR03-014` to `DT-FR03-020`, `DT-FR03-027`, `BVA-FR03-001`, `BVA-FR03-003`, `BVA-FR03-005`, `BVA-FR03-006`, `BVA-FR03-008` all assert an inline error on step 2 for a wrong OTP length, a non-numeric OTP, or a weak password. Step 2 is non-functional per BUG-FR03-06 and BUG-FR03-07: there is no confirmation field, the reset request never fires, and every error surfaces through `alert()`. Automating them today would re-assert those two defects sixteen times with different inputs rather than test the rule. `DT-FR14-017`, `BVA-FR14-003`, and `BVA-FR14-005` collapse the same way into BUG-FR14-01, which shows that no trim or required validation exists at all. These become automatable once the defects are fixed, and the ids are recorded here so they can be picked up then.
 
@@ -142,7 +146,9 @@ The assignment requires at least 12 converted cases per feature; 36 automated ca
 
 **Belongs to another feature (8 cases).** `DT-FR03-026` and `DT-FR03-028` are FR-01 registration and FR-02 login-page checks; `DT-FR11-030` and `DT-FR11-031` are FR-04 profile phone validation; `DT-FR11-028` is the FR-10 cancel transition; `DT-FR14-007` and `DT-FR14-032` are FR-13/FR-15 dashboard and product tabs; `BVA-FR03-011` needs an `a@b.co` account seeded into the real user table.
 
-**Malformed-fixture robustness, deferred (12 cases).** `DT-FR11-015`, `DT-FR11-016`, `DT-FR11-020`, `DT-FR11-021`, `DT-FR11-023`, `DT-FR11-026`, `BVA-FR11-004`, `BVA-FR11-006`, `BVA-FR11-012`, `BVA-FR11-015`, `DT-FR14-027`, `BVA-FR14-011` feed impossible values — a negative total, a null date, an unknown status code, id `0`. They are legitimate robustness checks and are the highest-value group to automate next, because the single case of this kind that was automated (`FR11-AUTO-012-02`, unparseable date) found BUG-FR11-03 immediately.
+**Malformed-fixture robustness — now automated (was 12 cases, now 0).** This group was previously deferred and named as the highest-value one to automate next, on the evidence that the single case of its kind already automated (`FR11-AUTO-012-02`, unparseable date) found BUG-FR11-03 immediately. All twelve are now covered by `FR11-AUTO-013` through `FR11-AUTO-016` and `FR14-AUTO-013`, and the prediction held: every one of them failed, yielding six further defects, BUG-FR11-04 through BUG-FR11-08 and BUG-FR14-02.
+
+One of these deserves recording as a review finding rather than only as a defect. The first oracle written for the invalid-date cases forbade only the literal string `Invalid Date`, and both datasets passed. That was wrong: `new Date(null)` is the epoch and `new Date("2023-02-29T00:00:00Z")` rolls over to 1 March, so the SUT renders a plausible date it invented rather than the artifact. DT-FR11-023 asks for a placeholder, so the oracle now rejects any rendered date and both cases fail. A weak oracle producing a green result is the same failure mode as the tautological fixtures in section 6.1, reached by a different route.
 
 **Low-yield duplication of an automated case (10 cases).** `DT-FR03-004` and `DT-FR14-014` re-run an automated flow with Enter instead of a click; `DT-FR03-024` is back-to-login from step 2, already covered by BUG-FR03-02; `DT-FR11-003` and `DT-FR14-010` restate navigation and row-count assertions; `DT-FR14-018` is a duplicate-name case whose expected result HW02 itself left open; `BVA-FR11-005`, `BVA-FR14-009`, `BVA-FR14-010`, `BVA-FR14-012` restate id and row-count assertions already made. These were traded for the browser matrix and the boundary datasets.
 
@@ -153,7 +159,8 @@ The assignment requires at least 12 converted cases per feature; 36 automated ca
 - Network fixtures make edge-state UI tests deterministic; they do not replace separate backend/API authorization testing.
 - Two defects are UI-contract findings observed behind a fixture (BUG-FR03-05 OTP length, BUG-FR11-01 ownership filtering). Confirming whether the backend shares the defect requires API-level testing that is out of scope here.
 - The narrated Vietnamese video, `whoami`/`hostname` evidence, and the YouTube links require the student.
-- The assignment requires at least eight meaningful test-script commits over at least four real days. Commit count is genuine, but the calendar spread cannot be manufactured retroactively.
+- The assignment requires at least eight meaningful test-script commits over at least four real days. There are now eight commits touching `.spec.js`, all genuine and each verified by a run, but they fall on two calendar days; the spread cannot be manufactured retroactively.
+- Two FR-14 executions fail on Firefox during browser teardown. The assertions pass first, so no requirement evidence is lost, but the flake is unresolved.
 
 ## 11. Reproduction Commands
 
