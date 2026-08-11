@@ -1,4 +1,4 @@
-# AI Critique – Student Review Required
+# AI Critique
 
 AI was useful for rapidly translating requirement-based cases into a consistent Playwright structure, but its output was wrong in two different ways, and only the first was easy to see.
 
