@@ -277,5 +277,28 @@
         "expected": "BVA-FR14-007 upper long-name boundary: the 256-character name is accepted and the table stays readable"
       }
     ]
+  },
+  {
+    "id": "FR14-AUTO-013",
+    "title": "Malformed category row is not shown as an actionable category",
+    "action": "malformed-category",
+    "requirementIds": ["FR-14"],
+    "sourceCases": ["DT-FR14-027", "BVA-FR14-011"],
+    "datasets": [
+      {
+        "id": "FR14-AUTO-013-01",
+        "title": "Category id at the invalid lower boundary",
+        "input": { "categories": [{ "id": 0, "name": "Danh muc loi" }] },
+        "forbiddenCode": "#0",
+        "expected": "Category id 0 is not presented as a normal valid category id"
+      },
+      {
+        "id": "FR14-AUTO-013-02",
+        "title": "Missing category id",
+        "input": { "categories": [{ "name": "Danh muc thieu id" }] },
+        "forbiddenCode": "#",
+        "expected": "A row with no id shows a placeholder or is hidden, and offers no misleading delete action"
+      }
+    ]
   }
 ]

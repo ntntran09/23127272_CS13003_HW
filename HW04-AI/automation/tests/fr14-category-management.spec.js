@@ -117,6 +117,22 @@ test.describe('FR-14 Category management', () => {
               expect(dialogs, 'Category text must never execute as markup or script').toHaveLength(0);
               break;
             }
+            case 'malformed-category': {
+              await openCategories(page, input.categories);
+              const rows = page.locator('tbody tr');
+              // DT-FR14-027 allows the malformed row to be hidden, so an empty
+              // table is a legitimate pass.
+              if (await rows.count() === 0) break;
+              const row = rows.first();
+              // The SUT renders `#{c.id}` and always attaches a delete button
+              // bound to that id, so a row with no usable id still offers an
+              // action that cannot target anything.
+              await expect.soft(row.locator('td').first(), 'Invalid category id must not render as a category id')
+                .not.toHaveText(new RegExp(`^\\s*${dataset.forbiddenCode}\\s*$`));
+              await expect(row.getByRole('button', { name: 'Xóa' }), 'A row with no usable id must not offer a delete action')
+                .toHaveCount(0);
+              break;
+            }
             case 'delete-category': {
               const state = await openCategories(page, input.categories);
               const deleteRow = page.locator('tbody tr', { hasText: `#${input.deleteId}` });
