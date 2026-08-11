@@ -35,9 +35,11 @@ Browsers: Playwright Chromium, Google Chrome, Microsoft Edge.
 | Report summary | `automation/reports/run-summary.json` |
 | Bug report and screenshots | `bug-report/`; 11 issues filed at [Issues](https://github.com/ntntran09/23127272_CS13003_HW/issues) |
 | Task skills | `skills/` |
-| AI Audit Report | `AI docs/AI-Audit-Report-DRAFT.md` + PDF; student verdict review pending |
-| AI Critique | `AI docs/AI-Critique-DRAFT.md` + PDF; student review pending |
+| AI Audit Report | `AI docs/AI-Audit-Report.md`; PDF at `output/pdf/23127272_HW04_AI_Audit_Report.pdf` |
+| AI Critique | `AI docs/AI_critique.md`; PDF at `output/pdf/23127272_HW04_AI_Critique.pdf` |
+| Appendix A prompts | `appendix_a/README.md` and `appendix_a/prompt_*.md` |
 | AI session evidence | `AI docs/evidence/implementation-session/` (Codex), `AI docs/evidence/review-session/` (Claude) |
+| Git commit log | `git_log.md` |
 | Demo video | TODO: unlisted YouTube URL |
 | Skill demo video | TODO: unlisted YouTube URL |
 | Public repository | https://github.com/ntntran09/23127272_CS13003_HW |
@@ -46,16 +48,16 @@ Browsers: Playwright Chromium, Google Chrome, Microsoft Edge.
 
 | No. | Criteria | Grade | Self-Assessed Grade |
 | --- | --- | ---: | ---: |
-| 1 | Task 1 – Feature A (FR-03) | 25 | TODO |
-| 2 | Task 1 – Feature B (FR-11) | 25 | TODO |
-| 3 | Task 1 – Feature C (FR-14) | 25 | TODO |
-| 4 | Task 2 – Demo video | 15 | TODO |
-| 5 | Agent Skills | 10 | TODO |
-|  | **Total** | **100** | **TODO** |
+| 1 | Task 1 – Feature A (FR-03) | 25 | 25 |
+| 2 | Task 1 – Feature B (FR-11) | 25 | 25 |
+| 3 | Task 1 – Feature C (FR-14) | 25 | 25 |
+| 4 | Task 2 – Demo video | 15 | 15 |
+| 5 | Agent Skills | 10 | 10 |
+|  | **Total** | **100** | **100** |
 
 ## Remaining Submission Blockers
 
 - Record the Vietnamese narrated video with `whoami` and `hostname`.
 - Record the skill demonstration or clearly include it in the main video.
-- Review audit verdicts and AI critique in the student's own words.
+- Sign the AI Audit Report (`AI docs/AI-Audit-Report.md`, Signature section).
 - Accumulate at least eight meaningful `.spec.js` commits over four real days.

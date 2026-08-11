@@ -8,7 +8,7 @@
 | Student ID | 23127272 |
 | Class / Cohort | 23KTPM2 |
 | Assignment | HW04-AI – Automation Testing |
-| AI tool | OpenAI Codex |
+| AI tool | OpenAI Codex; Claude (Claude Code, Opus 5) |
 
 ## 2. Scope and Feature Selection
 
@@ -155,7 +155,7 @@ The assignment requires at least 12 converted cases per feature; 36 automated ca
 - The narrated Vietnamese video, `whoami`/`hostname` evidence, and the YouTube links require the student.
 - The assignment requires at least eight meaningful test-script commits over at least four real days. Commit count is genuine, but the calendar spread cannot be manufactured retroactively.
 
-## 10. Reproduction Commands
+## 11. Reproduction Commands
 
 ```powershell
 cd HW04-AI\automation
