@@ -30,5 +30,5 @@
 - [x] Review AI outputs; confirm/change the audit verdicts; sign audit.
 - [x] Fill self-assessment marks and choose grade `090`.
 - [x] Export Markdown reports to PDF and visually inspect every page.
-- [ ] Generate fresh `git-commit-log.txt` after final commits.
-- [ ] Zip as `23127272_HW05_AI_Performance_<grade>.zip`.
+- [x] Generate fresh `git-commit-log.txt` after final content commit.
+- [x] Zip as `23127272_HW05_AI_Performance_090.zip`.
