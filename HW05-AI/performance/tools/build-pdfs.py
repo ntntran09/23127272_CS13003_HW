@@ -10,7 +10,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
-from reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
@@ -179,8 +179,9 @@ def markdown_story(md: Path, sty, width: float, flow_png: Path):
     return story
 
 
-def build(source: Path, output: Path, title: str, flow_png: Path) -> None:
-    page_w, page_h = A4
+def build(source: Path, output: Path, title: str, flow_png: Path, landscape_page: bool = False) -> None:
+    page_size = landscape(A4) if landscape_page else A4
+    page_w, page_h = page_size
     left = right = 17 * mm
     top = 19 * mm
     bottom = 17 * mm
@@ -197,7 +198,7 @@ def build(source: Path, output: Path, title: str, flow_png: Path) -> None:
         canvas.drawRightString(page_w - right, 8.5 * mm, f"Page {doc.page}")
         canvas.restoreState()
 
-    doc = BaseDocTemplate(str(output), pagesize=A4, leftMargin=left, rightMargin=right, topMargin=top, bottomMargin=bottom, title=title, author="NGUYEN THIEN NHA TRAN - 23127272")
+    doc = BaseDocTemplate(str(output), pagesize=page_size, leftMargin=left, rightMargin=right, topMargin=top, bottomMargin=bottom, title=title, author="NGUYEN THIEN NHA TRAN - 23127272")
     doc.addPageTemplates([PageTemplate(id="main", frames=[frame], onPage=decorate)])
     doc.build(markdown_story(source, styles(), width, flow_png))
 
@@ -209,9 +210,11 @@ def main() -> None:
     flow_png = TMP / "continuous-performance-flow.png"
     pipeline_image(flow_png)
     build(ROOT / "main-report.md", OUT / "23127272_HW05_Performance_Report.pdf", "HW05 Performance Report - 23127272", flow_png)
-    build(ROOT / "AI docs" / "AI-Audit-Report.md", OUT / "23127272_HW05_AI_Audit_Report.pdf", "HW05 AI Audit Report - 23127272", flow_png)
+    build(ROOT / "AI docs" / "AI-Audit-Report.md", OUT / "23127272_HW05_AI_Audit_Report.pdf", "HW05 AI Audit Report - 23127272", flow_png, landscape_page=True)
+    build(ROOT / "AI docs" / "AI_critique.md", OUT / "23127272_HW05_AI_Critique.pdf", "HW05 AI Critique - 23127272", flow_png)
     print(OUT / "23127272_HW05_Performance_Report.pdf")
     print(OUT / "23127272_HW05_AI_Audit_Report.pdf")
+    print(OUT / "23127272_HW05_AI_Critique.pdf")
 
 
 if __name__ == "__main__":

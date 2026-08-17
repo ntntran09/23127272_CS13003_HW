@@ -1,6 +1,6 @@
 # Hardware and Test Environment
 
-Generated from Windows CIM and the run metadata on 2026-08-17. The student must also attach a visible `dxdiag` or Task Manager screenshot showing hostname `TRAN`.
+Generated from Windows CIM and the run metadata on 2026-08-17. Visual evidence is attached as `hardware-dxdiag.png` and shows hostname `TRAN`.
 
 | Item | Measured value |
 | --- | --- |
@@ -19,6 +19,6 @@ Because JMeter and EShop share the host, the measured ceiling belongs to the com
 
 ## Required visual evidence
 
-- [ ] Attach `hardware-dxdiag.png` showing hostname `TRAN`.
-- [ ] Confirm the hostname matches every `*.run.json` file.
-- [ ] Do not substitute a screenshot from another machine.
+- [x] Attach `hardware-dxdiag.png` showing hostname `TRAN`.
+- [x] Confirm the hostname matches every `*.run.json` file.
+- [x] Confirm the screenshot was captured on the test machine rather than substituted from another machine.

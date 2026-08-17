@@ -9,6 +9,7 @@
 | Class | 23KTPM2 |
 | Tool | Apache JMeter 5.6.3 |
 | Workflow | Admin login -> orders -> products/categories -> update status -> verify |
+| Public repository | <https://github.com/ntntran09/23127272_CS13003_HW> |
 
 ## Test summary
 
@@ -19,9 +20,23 @@
 | Spike | `performance/plans/23127272_Spike_20260817.jmx` | 10,727 samples; peak 135 VU; recovery p95 mean 83.32 ms; 0 errors |
 | Endurance | `performance/plans/23127272_Endurance_20260817.jmx` | 42,094 samples; 47.55 req/s after warm-up; p95 97 ms; 0 errors; memory plateau |
 
-Endpoint groups covered: auth-heavy, read-heavy, and transactional. One source-confirmed access-control bug is documented locally; GitHub publication is pending.
+Endpoint groups covered: auth-heavy, read-heavy, and transactional. One source-confirmed access-control bug is published at <https://github.com/ntntran09/eshop-sut/issues/56>.
 
 Demo video: `TBD - student must record own Vietnamese narration and add unlisted YouTube URL`.
+
+## Submission documents
+
+| Artifact | Location |
+| --- | --- |
+| Main report | `main-report.md`; PDF at `output/pdf/23127272_HW05_Performance_Report.pdf` |
+| AI Audit Report | `AI docs/AI-Audit-Report.md`; PDF at `output/pdf/23127272_HW05_AI_Audit_Report.pdf` |
+| AI Critique | `AI docs/AI_critique.md`; PDF at `output/pdf/23127272_HW05_AI_Critique.pdf` |
+| Appendix A - AI prompts | `appendix_a/README.md` and `appendix_a/prompt_*.md` |
+| Readable AI logs | `AI docs/evidence/*/codex-chat-logs/codex-chat-log.md` |
+| Raw AI log backups | `AI docs/evidence/*/codex-chat-logs/rollout-*.jsonl` |
+| Git commit log | `git-commit-log.txt` |
+| Peak/hardware screenshots | `performance/evidence/*-peak.png`; `performance/evidence/hardware-dxdiag.png` |
+| Bug report | `bug-report/BUG-ADMIN-001-missing-role-enforcement.md`; evidence PNG; [GitHub issue #56](https://github.com/ntntran09/eshop-sut/issues/56) |
 
 ## Reproduce
 
@@ -60,16 +75,18 @@ node .\skills\design-api-performance-suite\scripts\validate-test-plan.js `
 
 ## Self-assessment
 
-The student must fill this after adding screenshots, video, issue URL, and signing the audit.
+Provisional self-assessment with the requested video exception. The score deducts for the missing video and for weaker one-to-one traceability because the peak screenshots were captured during later reruns while the earlier accepted raw-result folders were restored.
 
 | No. | Criterion | Maximum | Self-assessed |
 | ---: | --- | ---: | ---: |
-| 1 | Load testing | 30 | TBD |
-| 2 | Stress testing | 20 | TBD |
-| 3 | Spike testing | 20 | TBD |
-| 4 | AI analysis + misinterpretation hunt | 10 | TBD |
-| 5 | Continuous performance testing proposal | 10 | TBD |
-| 6 | Agent skills | 10 | TBD |
-| | Total | 100 | TBD |
+| 1 | Load testing | 30 | 26 |
+| 2 | Stress testing | 20 | 17 |
+| 3 | Spike testing | 20 | 17 |
+| 4 | AI analysis + misinterpretation hunt | 10 | 10 |
+| 5 | Continuous performance testing proposal | 10 | 10 |
+| 6 | Agent skills | 10 | 10 |
+| | Total | 100 | **90** |
 
-Final archive name: `23127272_HW05_AI_Performance_<SelfAssessedGrade>.zip`.
+Grade rationale: full credit is claimed for the raw-log AI analysis, CI proposal, and reusable Agent Skills. Task 1 is reduced because the required narrated video is not included and the peak screenshots were captured during later reruns rather than the exact restored raw-result runs. The assignment's missing-document regulation may allow the instructor to apply a larger completeness penalty until the video is supplied.
+
+Final archive name: `23127272_HW05_AI_Performance_090.zip`.

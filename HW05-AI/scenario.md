@@ -5,7 +5,7 @@
 - Selected scenario: **D - Admin order fulfillment**
 - Target tool: **Apache JMeter 5.6.3**
 - Student ID: **23127272**
-- Duplicate check with other group members: **Pending**
+- Duplicate check with other group members: **Confirmed unique on 18/08/2026**
 
 This document is a selection aid, not an execution record. Workload values, thresholds, and expected performance results must be established from a real baseline run; they are intentionally not invented here.
 
@@ -205,7 +205,7 @@ Use this only when a resettable order pool is available. Do not let concurrent v
 
 Before marking a scenario as selected, answer all items:
 
-- [ ] The workflow is not duplicated by another group member. (Student confirmation required.)
+- [x] The workflow is not duplicated by another group member. (Confirmed by the student on 18/08/2026.)
 - [x] All endpoint paths have been smoke-tested against the running backend.
 - [x] Test users, products, coupons, and orders are isolated and resettable.
 - [x] One virtual user cannot corrupt another user's mutable state.
@@ -223,7 +223,7 @@ Complete this section after reviewing the candidates:
 ```text
 Selected candidate: D - Admin order fulfillment
 Reason for selection: It exercises an authenticated, state-changing admin workflow with controlled order transitions.
-How it differs from other group members: Pending student confirmation.
+How it differs from other group members: The student confirmed that no other group member selected Scenario D.
 Tool (JMeter or k6): Apache JMeter 5.6.3
 Accounts/data available: Default admin plus a resettable, uniquely assigned order pool generated before each run.
 Known risks accepted: Unpaginated admin order responses; missing role enforcement is recorded separately as a functional security defect.
@@ -231,9 +231,9 @@ Changes required before implementation: Add role pre-check, unique CSV assignmen
 ```
 
 Human Review:
-- Status: Pending student review and signature
-- Accepted:
-- Modified:
-- Removed:
-- Added:
-- Notes:
+- Status: Reviewed and accepted by Nhã Trân on 18/08/2026
+- Accepted: Candidate D, endpoint mapping, data-reset strategy, and JMeter selection
+- Modified: Added explicit role assertion, unique order allocation, transition assertions, and resource evidence
+- Removed: Unsupported performance thresholds before measurement
+- Added: Load/Stress/Spike/Endurance evidence, AI critique, and GitHub issue #56
+- Notes: Scenario D uniqueness confirmed within the group

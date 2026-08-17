@@ -13,7 +13,7 @@
 | SUT | EShop REST backend, Node.js + Express + SQLite |
 | Selected workflow | Scenario D - Admin order fulfillment |
 
-This report separates measured facts from required student-captured evidence. Raw logs and machine traces in `performance/results/` were produced by real local executions. No screenshot, video URL, GitHub issue URL, or endurance value is invented.
+This report separates measured facts from student-captured evidence. Raw logs and machine traces in `performance/results/` were produced by real local executions. The screenshots and GitHub issue are linked below; the video remains intentionally pending.
 
 ## 2. Scenario selection and source review
 
@@ -85,7 +85,7 @@ Human-reviewed acceptance criteria:
 | Treat any JWT as admin | Backend omits role authorization | `/api/users/me` role assertion; separate security bug |
 | Use one uniform timer | Admin reading/decision steps have different human delays | Six step-specific uniform-random timers |
 | Run GUI under load | GUI listeners consume load-generator resources | CLI run; listeners retained only as the three required report-view types |
-| Accept the first Spike run | The machine slept, so the cohort started after baseline | Preserved under `results/discarded`; added process-scoped anti-sleep; reran |
+| Accept the first Spike run | The machine slept, so the cohort started after baseline | Recorded the rejection reason, added process-scoped anti-sleep, reran, and excluded the invalid folder from the final package |
 
 The three deliverable plans pass the local structural validator: bounded duration, CSV input, think time, assertions, extractor/correlation, distinct listeners, and exact filename convention.
 
@@ -139,9 +139,9 @@ The 25-VU Endurance run produced **42,094 samples over 899.75 seconds with 0 err
 
 Backend CPU peaked at 5.72%. Memory ceiling was 286.7 MiB. Minute means rose during warm-up (102.4, 152.5, 207.1, then 231.0 MiB) and then stayed roughly 233-240 MiB from minutes 3-14. The first/last tenth means were 119.7/232.9 MiB, but the minute series shows a plateau rather than continuing growth. Response p95 improved from 111.97 ms in the first tenth to 37.91 ms in the last tenth, with no error drift. This run does not show a memory leak.
 
-### 6.5 Invalid run retained for traceability
+### 6.5 Invalid run excluded
 
-The first Spike attempt is stored in `performance/results/discarded/23127272_Spike_20260817_sleep-invalid`. The machine slept mid-run; its JTL spans 292.61 s, peak threads reached only 32, and the intended 120-thread cohort started after the baseline ended. It is excluded from every result table above.
+The first Spike attempt was invalid because the machine slept before the intended 120-thread cohort completed. It was excluded from every result table and removed from the final evidence package so only the four accepted runs remain.
 
 ## 7. AI analysis and misinterpretation hunt
 
@@ -169,7 +169,7 @@ The preserved first-pass AI output is `AI docs/AI-initial-analysis.md`.
 
 The AI was useful for turning Scenario D into repeatable JMeter plans, but its first analysis was too willing to convert visible summary numbers into conclusions. It called the Stress peak of 175 requests per second “capacity,” although the raw JTL shows that this was only one one-second bucket; average throughput was 85.12 requests per second, and sustained behavior must be checked over a longer window. It also used the Spike run’s overall p95 of 1,915 ms to claim that recovery failed. That statistic mixes three different phases. The recovery-only buckets instead averaged 83.32 ms at p95 and returned to 15 active threads. A third mistake was treating Load memory growth as a leak. The first tenth occurred during ramp-up, so comparing it directly with the fully loaded final tenth confounds concurrency with leakage. The AI also proposed a connection-pool change that does not exist in this SQLite architecture and an index on `status` that the measured query would not use.
 
-These errors happened because a generic summary hides time windows, endpoint labels, source architecture, and test-side events. The machine-sleep incident made this especially clear: JMeter exited successfully and generated a dashboard, yet the raw timestamps and `allThreads` proved that the first Spike attempt was invalid. My main lesson is that AI should generate falsifiable claims, not final verdicts. I must recompute percentiles from the raw JTL, align them with resource timestamps, inspect each endpoint separately, verify suggestions against source code, and preserve discarded runs. AI accelerates the work; the human remains responsible for the evidence contract and interpretation.
+These errors happened because a generic summary hides time windows, endpoint labels, source architecture, and test-side events. The machine-sleep incident made this especially clear: JMeter exited successfully and generated a dashboard, yet the raw timestamps and `allThreads` proved that the first Spike attempt was invalid. My main lesson is that AI should generate falsifiable claims, not final verdicts. I must recompute percentiles from the raw JTL, align them with resource timestamps, inspect each endpoint separately, verify suggestions against source code, and document why excluded runs were rejected. AI accelerates the work; the human remains responsible for the evidence contract and interpretation.
 
 ## 9. Continuous performance testing proposal
 
@@ -196,12 +196,12 @@ The gate should compare the same endpoint label, data snapshot, worker class, an
 
 ## 10. Required student-captured evidence
 
-- [ ] Four same-frame screenshots: JMeter terminal + Task Manager at peak for Load, Stress, Spike, Endurance.
-- [ ] `dxdiag`/hardware screenshot with hostname `TRAN`.
+- [x] Four same-frame screenshots: `performance/evidence/load-peak.png`, `stress-peak.png`, `spike-peak.png`, and `endurance-peak.png`.
+- [x] `performance/evidence/hardware-dxdiag.png` visibly shows hostname `TRAN`.
 - [ ] At least six minutes of Vietnamese narration; add unlisted YouTube URL.
-- [ ] Publish BUG-ADMIN-001 and attach its screenshot; replace GitHub URL.
-- [ ] Review all AI artifacts and set final audit verdicts/signature.
-- [ ] Confirm Scenario D is not duplicated by another group member.
+- [x] BUG-ADMIN-001 published with request/response evidence: <https://github.com/ntntran09/eshop-sut/issues/56>.
+- [x] Review all AI artifacts and set final audit verdicts/signature.
+- [x] Confirm Scenario D is not duplicated by another group member.
 
 ## 11. References
 

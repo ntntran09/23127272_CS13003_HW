@@ -29,7 +29,7 @@ Show the staged plan and report. Explain 25 -> 50 -> 100 VU, 25,530 samples, 0 e
 
 ## 3:50-4:50 - Spike and invalid-run handling
 
-Show peak 135 threads, spike p95, and recovery buckets. State pre-spike p95 mean 63.90 ms, spike 1,512.18 ms, recovery 83.32 ms. Briefly show the discarded sleep-invalid folder and explain why exit code 0 was not enough.
+Show peak 135 threads, spike p95, and recovery buckets. State pre-spike p95 mean 63.90 ms, spike 1,512.18 ms, recovery 83.32 ms. Explain that the first sleep-interrupted attempt was rejected and removed from the final package because exit code 0 alone did not prove the intended cohort ran.
 
 ## 4:50-5:35 - Endurance
 

@@ -5,8 +5,8 @@
 | Feature | FR-12 Access Control / FR-18 Order Management |
 | Severity | High |
 | Priority | High |
-| Status | Reproduced locally on 2026-08-17; GitHub issue and screenshot pending |
-| GitHub Issue URL | `TBD - student must publish` |
+| Status | Reproduced with request/response evidence and published on 2026-08-18 |
+| GitHub Issue URL | <https://github.com/ntntran09/eshop-sut/issues/56> |
 
 ## Preconditions
 
@@ -28,15 +28,17 @@ Both calls return `403 Forbidden`, because FR-12 requires `role = admin` for `/a
 
 The routes use `authenticateToken` only. That middleware verifies the token but does not check `req.user.role`. A normal authenticated account can list and modify all orders.
 
-Local reproduction after the Endurance run:
+Fresh-backend reproduction on 2026-08-18:
 
 | Observation | Actual value |
 | --- | --- |
 | JWT user role | `user` |
-| `GET /api/admin/orders` | Accepted; returned 7,500 orders |
-| Target order | ID 7500, `pending` |
+| `GET /api/admin/orders` | HTTP 200; accepted and returned all orders |
+| Target order | ID 1, `pending` |
 | Non-admin update response | `Order status updated` |
 | Re-read status | `confirmed` |
+
+Screenshot: `BUG-ADMIN-001-evidence.png`.
 
 ## Source evidence
 
@@ -49,6 +51,6 @@ The Scenario D plan therefore performs an explicit `/api/users/me` role assertio
 
 ## Required submission evidence
 
-- [ ] Reproduce with a non-admin token after the measured runs.
-- [ ] Attach request/response screenshot.
-- [ ] Publish to the student's GitHub Issues page and replace the TBD URL.
+- [x] Reproduce with a non-admin token after the measured runs.
+- [x] Attach request/response screenshot.
+- [x] Publish to the student's EShop fork and replace the placeholder URL.

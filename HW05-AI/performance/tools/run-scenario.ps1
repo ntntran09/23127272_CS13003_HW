@@ -52,8 +52,19 @@ foreach ($OwningPid in $OwningPids) {
 $ServerOut = Join-Path $Results "$Stem.server.stdout.log"
 $ServerErr = Join-Path $Results "$Stem.server.stderr.log"
 $Server = Start-Process -FilePath 'node.exe' -ArgumentList 'server.js' -WorkingDirectory $Backend -RedirectStandardOutput $ServerOut -RedirectStandardError $ServerErr -WindowStyle Hidden -PassThru
-Start-Sleep -Seconds 2
-if ($Server.HasExited) { throw "EShop backend exited during startup. Read $ServerErr" }
+$Ready = $false
+$ReadyDeadline = (Get-Date).AddSeconds(30)
+do {
+    if ($Server.HasExited) { throw "EShop backend exited during startup. Read $ServerErr" }
+    try {
+        $LoginBody = @{ email = 'admin@eshop.com'; password = 'Admin123!' } | ConvertTo-Json
+        $Response = Invoke-WebRequest -Uri 'http://127.0.0.1:3000/api/login' -Method Post -ContentType 'application/json' -Body $LoginBody -UseBasicParsing -TimeoutSec 2
+        if ($Response.StatusCode -eq 200) { $Ready = $true; break }
+    } catch {
+        Start-Sleep -Milliseconds 500
+    }
+} while ((Get-Date) -lt $ReadyDeadline)
+if (-not $Ready) { throw "EShop backend did not become database-ready within 30 seconds. Read $ServerOut and $ServerErr" }
 
 $SeedCount = if ($Scenario -eq 'Endurance') { 7500 } else { 6000 }
 node $Seed --count $SeedCount --concurrency 24

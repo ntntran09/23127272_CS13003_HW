@@ -1,0 +1,68 @@
+﻿[
+    {
+        "tool":  "Codex",
+        "time":  "2026-08-17T04:50:43.879Z",
+        "prompt":  "là product đang giống nhau đko",
+        "output":  "Bạn đang hỏi **product nào với product nào**? Gửi tên hoặc ảnh/file cần so sánh nhé.",
+        "output_scope":  "last_assistant_message",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-1",
+        "verdict":  "",
+        "reasoning":  "",
+        "student_fix":  ""
+    },
+    {
+        "tool":  "Codex",
+        "time":  "2026-08-17T04:51:42.473Z",
+        "prompt":  "product để làm load test á",
+        "output":  "Đúng. Trong load test, tất cả VU đều gọi cùng endpoint `GET /api/products`, nên nhận cùng danh sách product.\n\nCái được chia riêng là `order_id`: mỗi VU lấy một order khác nhau từ CSV, tránh cập nhật trùng order.\n\nThiết kế hiện tại đúng với Scenario D và yêu cầu ba test Load/Stress/Spike chạy cùng workflow.",
+        "output_scope":  "last_assistant_message",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-2",
+        "verdict":  "",
+        "reasoning":  "",
+        "student_fix":  ""
+    },
+    {
+        "tool":  "Codex",
+        "time":  "2026-08-17T04:52:44.636Z",
+        "prompt":  "product là giống nhau hêtts",
+        "output":  "Đúng. Tất cả VU đều đọc cùng một danh sách **5 products**.\n\nQuan trọng hơn: các order được seed **không gắn với product nào cả**. API `/api/checkout` chỉ lưu:\n\n- `total_amount`\n- `shipping_address`\n- `status`\n\nNên hiện tại chỉ có `order_id` khác nhau; không có product riêng cho từng order. Với Scenario D thì vẫn chạy load test hợp lệ.",
+        "output_scope":  "last_assistant_message",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-3",
+        "verdict":  "",
+        "reasoning":  "",
+        "student_fix":  ""
+    },
+    {
+        "tool":  "Codex",
+        "time":  "2026-08-17T04:55:52.363Z",
+        "prompt":  "nma có lúc nó load lần mấy cái product á",
+        "output":  "Đúng. Nó “load products” nhiều lần vì:\n\n- Mỗi VU chạy nhiều vòng.\n- Mỗi vòng gọi `GET /api/products` đúng 1 lần.\n- Mỗi lần API trả về cùng danh sách 5 products.\n\nVí dụ Load test đã gọi `/api/products` **788 lần**, tất cả thành công và cùng kích thước response `1238 bytes`.\n\nVậy không phải nhiều product khác nhau được chọn. Chỉ là cùng danh sách product được tải lặp lại để tạo tải.",
+        "output_scope":  "last_assistant_message",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-4",
+        "verdict":  "",
+        "reasoning":  "",
+        "student_fix":  ""
+    },
+    {
+        "tool":  "Codex",
+        "time":  "2026-08-17T04:57:41.509Z",
+        "prompt":  "tôi muốn nhiều product hơn, trích csv ở trên mạng được ko",
+        "output":  "Được.\n\nNên dùng khoảng **1.000 sản phẩm** từ bộ dữ liệu Walmart công khai, rồi chuẩn hóa thành:\n\n```csv\nname,price,description,imageUrl,category_id\n```\n\nNguồn có 1.001 sản phẩm và các trường tên, giá, mô tả, ảnh, danh mục: [Walmart dataset sample](https://github.com/luminati-io/Walmart-dataset-samples).\n\nNên lưu CSV vào repo và import lúc seed, không tải Internet mỗi lần chạy. Sau khi đổi phải chạy lại Load/Stress/Spike/Endurance vì kết quả JTL cũ chỉ đo danh sách 5 sản phẩm.",
+        "output_scope":  "last_assistant_message",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-5",
+        "verdict":  "",
+        "reasoning":  "",
+        "student_fix":  ""
+    },
+    {
+        "tool":  "Codex",
+        "time":  "2026-08-17T05:00:08.536Z",
+        "prompt":  "oki, lưu cho tôi",
+        "output":  "Đã lưu:\n\n- [products.csv](D:\\CODE\\23127272_CS13003_HW\\HW05-AI\\performance\\data\\products.csv): 1.000 sản phẩm, đúng 5 cột, UTF-8.\n- [products-source.md](D:\\CODE\\23127272_CS13003_HW\\HW05-AI\\performance\\data\\products-source.md): nguồn và quy tắc chuẩn hóa.\n\nNguồn: [Walmart dataset sample](https://github.com/luminati-io/Walmart-dataset-samples).\n\nFile mới chỉ được lưu, chưa import vào SUT và chưa chạy lại load test.",
+        "output_scope":  "last_assistant_message",
+        "source":  "codex-chat-logs/codex-chat-log.md#interaction-6",
+        "verdict":  "",
+        "reasoning":  "",
+        "student_fix":  ""
+    }
+]
