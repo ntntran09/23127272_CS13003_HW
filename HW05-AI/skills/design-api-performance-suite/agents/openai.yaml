@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design API Performance Suite"
+  short_description: "Design load, stress, and spike plans for one API workflow"
+  default_prompt: "Use $design-api-performance-suite to turn this API workflow into reviewable load, stress, and spike test plans with external data files."

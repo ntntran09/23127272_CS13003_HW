@@ -1,0 +1,4 @@
+interface:
+  display_name: "Analyse Performance Result Log"
+  short_description: "Recompute performance statistics and fact-check the analysis"
+  default_prompt: "Use $analyse-performance-result-log to recompute the statistics from this raw result log and check every claim made about it."

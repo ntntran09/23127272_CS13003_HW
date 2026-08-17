@@ -1,0 +1,4 @@
+interface:
+  display_name: "Run Performance Scenario With Evidence"
+  short_description: "Run a load test while tracing the service's CPU and memory"
+  default_prompt: "Use $run-performance-scenario-with-evidence to execute this performance scenario headlessly and capture its raw log, report, and resource trace."
