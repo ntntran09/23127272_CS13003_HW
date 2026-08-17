@@ -1,0 +1,72 @@
+{
+  "label": "23127272_Load_20260817",
+  "command": [
+    "D:\\CODE\\tools\\apache-jmeter-5.6.3\\bin\\jmeter.bat",
+    "-n",
+    "-t",
+    "D:\\CODE\\23127272_CS13003_HW\\HW05-AI\\performance\\plans\\23127272_Load_20260817.jmx",
+    "-l",
+    "D:\\CODE\\23127272_CS13003_HW\\HW05-AI\\performance\\results\\23127272_Load_20260817\\23127272_Load_20260817.jtl",
+    "-e",
+    "-o",
+    "D:\\CODE\\23127272_CS13003_HW\\HW05-AI\\performance\\results\\23127272_Load_20260817\\23127272_Load_20260817-report",
+    "-j",
+    "D:\\CODE\\23127272_CS13003_HW\\HW05-AI\\performance\\results\\23127272_Load_20260817\\23127272_Load_20260817.jmeter.log",
+    "-Jjmeter",
+    ".save.saveservice.output_format=csv",
+    "-Jjmeter",
+    ".save.saveservice.print_field_names=true",
+    "-Jjmeter",
+    ".save.saveservice.assertion_results_failure_message=true",
+    "-Jjmeter",
+    ".save.saveservice.thread_counts=true",
+    "-Jjmeter",
+    ".save.saveservice.url=true",
+    "-Jjmeter",
+    ".save.saveservice.connect_time=true"
+  ],
+  "exitCode": 0,
+  "startedAt": "2026-08-17T02:46:59.389Z",
+  "finishedAt": "2026-08-17T02:50:05.268Z",
+  "durationSeconds": 186,
+  "watched": {
+    "pid": 25408,
+    "resolvedBy": "listening on port 3000",
+    "samplingIntervalMs": 1000
+  },
+  "environment": {
+    "hostname": "TRAN",
+    "platform": "win32 10.0.26200",
+    "arch": "x64",
+    "cpuModel": "13th Gen Intel(R) Core(TM) i9-13900H",
+    "cpuCount": 20,
+    "totalMemoryBytes": 16833511424,
+    "nodeVersion": "v24.11.0",
+    "loadGeneratorOnSameHost": true
+  },
+  "resourceTrace": {
+    "samples": 183,
+    "firstSampleMs": 1786934819545,
+    "lastSampleMs": 1786935005028,
+    "coveredSeconds": 185,
+    "cpuPercent": {
+      "mean": 3.35,
+      "peak": 5.22
+    },
+    "memoryBytes": {
+      "mean": 126570944,
+      "ceiling": 176025600,
+      "first": 71573504,
+      "last": 165269504,
+      "firstTenthMean": 69607652,
+      "lastTenthMean": 158489486
+    }
+  },
+  "notes": [
+    "Backend restarted and seeded with 6000 unique pending orders immediately before this run.",
+    "JMeter and SUT ran on the same Windows host."
+  ],
+  "artefacts": {
+    "resourceCsv": "D:\\CODE\\23127272_CS13003_HW\\HW05-AI\\performance\\results\\23127272_Load_20260817\\23127272_Load_20260817.resources.csv"
+  }
+}

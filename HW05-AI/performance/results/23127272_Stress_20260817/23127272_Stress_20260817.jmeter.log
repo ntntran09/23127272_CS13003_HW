@@ -1,0 +1,408 @@
+2026-08-17 09:51:26,493 INFO o.a.j.u.JMeterUtils: Setting Locale to en_EN
+2026-08-17 09:51:26,509 INFO o.a.j.JMeter: Loading user properties from: D:\CODE\tools\apache-jmeter-5.6.3\bin\user.properties
+2026-08-17 09:51:26,513 INFO o.a.j.JMeter: Loading system properties from: D:\CODE\tools\apache-jmeter-5.6.3\bin\system.properties
+2026-08-17 09:51:26,513 INFO o.a.j.JMeter: Setting JMeter property: jmeter.save.saveservice.output_format=csv
+2026-08-17 09:51:26,513 INFO o.a.j.JMeter: Setting JMeter property: jmeter.save.saveservice.print_field_names=true
+2026-08-17 09:51:26,513 INFO o.a.j.JMeter: Setting JMeter property: jmeter.save.saveservice.assertion_results_failure_message=true
+2026-08-17 09:51:26,519 INFO o.a.j.JMeter: Setting JMeter property: jmeter.save.saveservice.thread_counts=true
+2026-08-17 09:51:26,519 INFO o.a.j.JMeter: Setting JMeter property: jmeter.save.saveservice.url=true
+2026-08-17 09:51:26,519 INFO o.a.j.JMeter: Setting JMeter property: jmeter.save.saveservice.connect_time=true
+2026-08-17 09:51:26,520 INFO o.a.j.JMeter: Copyright (c) 1998-2024 The Apache Software Foundation
+2026-08-17 09:51:26,520 INFO o.a.j.JMeter: Version 5.6.3
+2026-08-17 09:51:26,520 INFO o.a.j.JMeter: java.version=21.0.12
+2026-08-17 09:51:26,520 INFO o.a.j.JMeter: java.vm.name=OpenJDK 64-Bit Server VM
+2026-08-17 09:51:26,520 INFO o.a.j.JMeter: os.name=Windows 11
+2026-08-17 09:51:26,520 INFO o.a.j.JMeter: os.arch=amd64
+2026-08-17 09:51:26,520 INFO o.a.j.JMeter: os.version=10.0
+2026-08-17 09:51:26,520 INFO o.a.j.JMeter: file.encoding=UTF-8
+2026-08-17 09:51:26,520 INFO o.a.j.JMeter: java.awt.headless=true
+2026-08-17 09:51:26,520 INFO o.a.j.JMeter: Max memory     =1073741824
+2026-08-17 09:51:26,520 INFO o.a.j.JMeter: Available Processors =20
+2026-08-17 09:51:26,531 INFO o.a.j.JMeter: Default Locale=English (EN)
+2026-08-17 09:51:26,531 INFO o.a.j.JMeter: JMeter  Locale=English (EN)
+2026-08-17 09:51:26,531 INFO o.a.j.JMeter: JMeterHome=D:\CODE\tools\apache-jmeter-5.6.3
+2026-08-17 09:51:26,531 INFO o.a.j.JMeter: user.dir  =D:\CODE\23127272_CS13003_HW\HW05-AI
+2026-08-17 09:51:26,531 INFO o.a.j.JMeter: PWD       =D:\CODE\23127272_CS13003_HW\HW05-AI
+2026-08-17 09:51:26,542 INFO o.a.j.JMeter: IP: 10.126.9.141 Name: TRAN FullName: 10.126.9.141
+2026-08-17 09:51:26,551 INFO o.a.j.JMeter: Setting property 'jmeter.reportgenerator.outputdir' to:'D:\CODE\23127272_CS13003_HW\HW05-AI\performance\results\23127272_Stress_20260817\23127272_Stress_20260817-report'
+2026-08-17 09:51:26,553 INFO o.a.j.s.FileServer: Default base='D:\CODE\23127272_CS13003_HW\HW05-AI'
+2026-08-17 09:51:26,554 INFO o.a.j.s.FileServer: Set new base='D:\CODE\23127272_CS13003_HW\HW05-AI\performance\plans'
+2026-08-17 09:51:26,710 INFO o.a.j.s.SaveService: Testplan (JMX) version: 2.2. Testlog (JTL) version: 2.2
+2026-08-17 09:51:26,729 INFO o.a.j.s.SaveService: Using SaveService properties version 5.0
+2026-08-17 09:51:26,732 INFO o.a.j.s.SaveService: Using SaveService properties file encoding UTF-8
+2026-08-17 09:51:26,738 INFO o.a.j.s.SaveService: Loading file: D:\CODE\23127272_CS13003_HW\HW05-AI\performance\plans\23127272_Stress_20260817.jmx
+2026-08-17 09:51:26,793 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/html is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-08-17 09:51:26,794 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xhtml+xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-08-17 09:51:26,794 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-08-17 09:51:26,794 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2026-08-17 09:51:26,794 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/vnd.wap.wml is org.apache.jmeter.protocol.http.parser.RegexpHTMLParser
+2026-08-17 09:51:26,794 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/css is org.apache.jmeter.protocol.http.parser.CssParser
+2026-08-17 09:51:26,841 INFO o.a.j.JMeter: Creating summariser <summary>
+2026-08-17 09:51:26,844 INFO o.a.j.r.d.ReportGenerator: ReportGenerator will use for Parsing the separator: ','
+2026-08-17 09:51:26,844 INFO o.a.j.r.d.ReportGenerator: Will generate report at end of test from  results file: D:\CODE\23127272_CS13003_HW\HW05-AI\performance\results\23127272_Stress_20260817\23127272_Stress_20260817.jtl
+2026-08-17 09:51:26,844 INFO o.a.j.r.d.ReportGenerator: Reading report generator properties from: D:\CODE\tools\apache-jmeter-5.6.3\bin\reportgenerator.properties
+2026-08-17 09:51:26,844 INFO o.a.j.r.d.ReportGenerator: Merging with JMeter properties
+2026-08-17 09:51:26,844 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.temp_dir' not found, using default value 'temp' instead.
+2026-08-17 09:51:26,844 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.apdex_per_transaction' not found, using default value 'null' instead.
+2026-08-17 09:51:26,844 INFO o.a.j.r.c.ReportGeneratorConfiguration: apdex_per_transaction is empty, not APDEX per transaction customization
+2026-08-17 09:51:26,844 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.sample_filter' not found, using default value 'null' instead.
+2026-08-17 09:51:26,844 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.report_title' not found, using default value 'null' instead.
+2026-08-17 09:51:26,844 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.start_date' not found, using default value 'null' instead.
+2026-08-17 09:51:26,844 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.end_date' not found, using default value 'null' instead.
+2026-08-17 09:51:26,844 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.date_format' not found, using default value 'null' instead.
+2026-08-17 09:51:26,844 INFO o.a.j.r.c.ReportGeneratorConfiguration: Will use date range start date: null, end date: null
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.totalTPS.exclude_controllers' not found, using default value 'false' instead.
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.activeThreadsOverTime.exclude_controllers' not found, using default value 'false' instead.
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.timeVsThreads.exclude_controllers' not found, using default value 'false' instead.
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimeDistribution.exclude_controllers' not found, using default value 'false' instead.
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.transactionsPerSecond.exclude_controllers' not found, using default value 'false' instead.
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimePercentiles.exclude_controllers' not found, using default value 'false' instead.
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimePercentilesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.responseTimesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.connectTimeOverTime.exclude_controllers' not found, using default value 'false' instead.
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.graph.latenciesOverTime.exclude_controllers' not found, using default value 'false' instead.
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.filters_only_sample_series' not found, using default value 'true' instead.
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.series_filter' not found, using default value '' instead.
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.json.show_controllers_only' not found, using default value 'false' instead.
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.filters_only_sample_series' not found, using default value 'true' instead.
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.series_filter' not found, using default value '' instead.
+2026-08-17 09:51:26,852 INFO o.a.j.r.c.ReportGeneratorConfiguration: Property 'jmeter.reportgenerator.exporter.html.show_controllers_only' not found, using default value 'false' instead.
+2026-08-17 09:51:26,867 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2026-08-17 09:51:26,867 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2026-08-17 09:51:26,867 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2026-08-17 09:51:26,871 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must contain the string: '.functions.'
+2026-08-17 09:51:26,871 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must not contain the string: '.gui.'
+2026-08-17 09:51:27,061 INFO o.a.j.JMeter: Running test (1786935087061)
+2026-08-17 09:51:27,076 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : Stage 1 - 25 VU
+2026-08-17 09:51:27,076 INFO o.a.j.e.StandardJMeterEngine: Starting 25 threads for group Stage 1 - 25 VU.
+2026-08-17 09:51:27,076 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2026-08-17 09:51:27,076 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=25 ramp-up=20 delayedStart=false
+2026-08-17 09:51:27,105 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2026-08-17 09:51:27,105 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : Stage 2 - add 25 VU
+2026-08-17 09:51:27,105 INFO o.a.j.e.StandardJMeterEngine: Starting 25 threads for group Stage 2 - add 25 VU.
+2026-08-17 09:51:27,105 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2026-08-17 09:51:27,105 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=25 ramp-up=20 delayedStart=false
+2026-08-17 09:51:27,113 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-1
+2026-08-17 09:51:27,118 INFO o.a.j.s.FileServer: Stored: ../data/admin-orders.csv
+2026-08-17 09:51:27,125 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2026-08-17 09:51:27,125 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : Stage 3 - add 50 VU
+2026-08-17 09:51:27,125 INFO o.a.j.e.StandardJMeterEngine: Starting 50 threads for group Stage 3 - add 50 VU.
+2026-08-17 09:51:27,125 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2026-08-17 09:51:27,125 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=50 ramp-up=20 delayedStart=false
+2026-08-17 09:51:27,155 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2026-08-17 09:51:27,155 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2026-08-17 09:51:27,223 INFO o.a.j.p.h.s.HTTPHCAbstractImpl: Local host = TRAN
+2026-08-17 09:51:27,239 INFO o.a.j.p.h.s.HTTPHC4Impl: HTTP request retry count = 0
+2026-08-17 09:51:27,241 INFO o.a.j.s.SampleResult: Note: Sample TimeStamps are START times
+2026-08-17 09:51:27,241 INFO o.a.j.s.SampleResult: sampleresult.default.encoding is set to UTF-8
+2026-08-17 09:51:27,241 INFO o.a.j.s.SampleResult: sampleresult.useNanoTime=true
+2026-08-17 09:51:27,241 INFO o.a.j.s.SampleResult: sampleresult.nanoThreadSleep=5000
+2026-08-17 09:51:27,908 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-2
+2026-08-17 09:51:28,705 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-3
+2026-08-17 09:51:29,509 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-4
+2026-08-17 09:51:30,040 INFO o.a.j.r.Summariser: summary +     12 in 00:00:03 =    4.0/s Avg:    42 Min:     3 Max:   222 Err:     0 (0.00%) Active: 4 Started: 4 Finished: 0
+2026-08-17 09:51:30,315 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-5
+2026-08-17 09:51:31,105 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-6
+2026-08-17 09:51:31,900 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-7
+2026-08-17 09:51:32,707 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-8
+2026-08-17 09:51:33,507 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-9
+2026-08-17 09:51:34,306 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-10
+2026-08-17 09:51:35,106 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-11
+2026-08-17 09:51:35,910 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-12
+2026-08-17 09:51:36,695 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-13
+2026-08-17 09:51:37,500 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-14
+2026-08-17 09:51:38,294 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-15
+2026-08-17 09:51:39,095 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-16
+2026-08-17 09:51:39,899 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-17
+2026-08-17 09:51:40,687 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-18
+2026-08-17 09:51:41,497 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-19
+2026-08-17 09:51:42,295 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-20
+2026-08-17 09:51:43,095 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-21
+2026-08-17 09:51:43,895 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-22
+2026-08-17 09:51:44,694 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-23
+2026-08-17 09:51:45,492 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-24
+2026-08-17 09:51:46,283 INFO o.a.j.t.JMeterThread: Thread started: Stage 1 - 25 VU 1-25
+2026-08-17 09:52:00,008 INFO o.a.j.r.Summariser: summary +    905 in 00:00:30 =   30.2/s Avg:   118 Min:     1 Max:   591 Err:     0 (0.00%) Active: 25 Started: 25 Finished: 0
+2026-08-17 09:52:00,008 INFO o.a.j.r.Summariser: summary =    917 in 00:00:33 =   27.8/s Avg:   117 Min:     1 Max:   591 Err:     0 (0.00%)
+2026-08-17 09:52:30,069 INFO o.a.j.r.Summariser: summary +   1149 in 00:00:30 =   38.2/s Avg:   154 Min:     1 Max:  1038 Err:     0 (0.00%) Active: 25 Started: 25 Finished: 0
+2026-08-17 09:52:30,070 INFO o.a.j.r.Summariser: summary =   2066 in 00:01:03 =   32.8/s Avg:   137 Min:     1 Max:  1038 Err:     0 (0.00%)
+2026-08-17 09:52:57,110 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-1
+2026-08-17 09:52:57,914 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-2
+2026-08-17 09:52:58,722 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-3
+2026-08-17 09:52:59,519 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-4
+2026-08-17 09:53:00,016 INFO o.a.j.r.Summariser: summary +   1148 in 00:00:30 =   38.3/s Avg:   142 Min:     1 Max:   905 Err:     0 (0.00%) Active: 29 Started: 29 Finished: 0
+2026-08-17 09:53:00,016 INFO o.a.j.r.Summariser: summary =   3214 in 00:01:33 =   34.6/s Avg:   139 Min:     1 Max:  1038 Err:     0 (0.00%)
+2026-08-17 09:53:00,320 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-5
+2026-08-17 09:53:01,111 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-6
+2026-08-17 09:53:01,929 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-7
+2026-08-17 09:53:02,728 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-8
+2026-08-17 09:53:03,517 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-9
+2026-08-17 09:53:04,332 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-10
+2026-08-17 09:53:05,125 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-11
+2026-08-17 09:53:05,929 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-12
+2026-08-17 09:53:06,716 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-13
+2026-08-17 09:53:07,520 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-14
+2026-08-17 09:53:08,320 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-15
+2026-08-17 09:53:09,126 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-16
+2026-08-17 09:53:09,930 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-17
+2026-08-17 09:53:10,715 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-18
+2026-08-17 09:53:11,515 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-19
+2026-08-17 09:53:12,315 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-20
+2026-08-17 09:53:13,114 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-21
+2026-08-17 09:53:13,914 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-22
+2026-08-17 09:53:14,715 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-23
+2026-08-17 09:53:15,513 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-24
+2026-08-17 09:53:16,314 INFO o.a.j.t.JMeterThread: Thread started: Stage 2 - add 25 VU 2-25
+2026-08-17 09:53:30,002 INFO o.a.j.r.Summariser: summary +   1475 in 00:00:30 =   49.2/s Avg:   400 Min:     1 Max:  1671 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+2026-08-17 09:53:30,003 INFO o.a.j.r.Summariser: summary =   4689 in 00:02:03 =   38.1/s Avg:   221 Min:     1 Max:  1671 Err:     0 (0.00%)
+2026-08-17 09:54:00,005 INFO o.a.j.r.Summariser: summary +   2804 in 00:00:30 =   93.5/s Avg:    38 Min:     0 Max:   264 Err:     0 (0.00%) Active: 50 Started: 50 Finished: 0
+2026-08-17 09:54:00,005 INFO o.a.j.r.Summariser: summary =   7493 in 00:02:33 =   49.0/s Avg:   153 Min:     0 Max:  1671 Err:     0 (0.00%)
+2026-08-17 09:54:27,125 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-1
+2026-08-17 09:54:27,527 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-2
+2026-08-17 09:54:27,926 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-3
+2026-08-17 09:54:28,327 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-4
+2026-08-17 09:54:28,727 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-5
+2026-08-17 09:54:29,126 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-6
+2026-08-17 09:54:29,525 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-7
+2026-08-17 09:54:29,926 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-8
+2026-08-17 09:54:30,006 INFO o.a.j.r.Summariser: summary +   2947 in 00:00:30 =   98.2/s Avg:    18 Min:     0 Max:   136 Err:     0 (0.00%) Active: 58 Started: 58 Finished: 0
+2026-08-17 09:54:30,006 INFO o.a.j.r.Summariser: summary =  10440 in 00:03:03 =   57.1/s Avg:   115 Min:     0 Max:  1671 Err:     0 (0.00%)
+2026-08-17 09:54:30,326 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-9
+2026-08-17 09:54:30,726 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-10
+2026-08-17 09:54:31,126 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-11
+2026-08-17 09:54:31,525 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-12
+2026-08-17 09:54:31,926 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-13
+2026-08-17 09:54:32,326 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-14
+2026-08-17 09:54:32,725 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-15
+2026-08-17 09:54:33,126 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-16
+2026-08-17 09:54:33,525 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-17
+2026-08-17 09:54:33,925 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-18
+2026-08-17 09:54:34,327 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-19
+2026-08-17 09:54:34,727 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-20
+2026-08-17 09:54:35,126 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-21
+2026-08-17 09:54:35,525 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-22
+2026-08-17 09:54:35,925 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-23
+2026-08-17 09:54:36,325 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-24
+2026-08-17 09:54:36,726 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-25
+2026-08-17 09:54:37,126 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-26
+2026-08-17 09:54:37,525 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-27
+2026-08-17 09:54:37,926 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-28
+2026-08-17 09:54:38,326 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-29
+2026-08-17 09:54:38,726 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-30
+2026-08-17 09:54:39,125 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-31
+2026-08-17 09:54:39,526 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-32
+2026-08-17 09:54:39,927 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-33
+2026-08-17 09:54:40,327 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-34
+2026-08-17 09:54:40,727 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-35
+2026-08-17 09:54:41,126 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-36
+2026-08-17 09:54:41,526 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-37
+2026-08-17 09:54:41,927 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-38
+2026-08-17 09:54:42,328 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-39
+2026-08-17 09:54:42,726 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-40
+2026-08-17 09:54:43,125 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-41
+2026-08-17 09:54:43,527 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-42
+2026-08-17 09:54:43,927 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-43
+2026-08-17 09:54:44,329 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-44
+2026-08-17 09:54:44,727 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-45
+2026-08-17 09:54:45,126 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-46
+2026-08-17 09:54:45,526 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-47
+2026-08-17 09:54:45,927 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-48
+2026-08-17 09:54:46,325 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-49
+2026-08-17 09:54:46,726 INFO o.a.j.t.JMeterThread: Thread started: Stage 3 - add 50 VU 3-50
+2026-08-17 09:55:00,004 INFO o.a.j.r.Summariser: summary +   4015 in 00:00:30 =  133.8/s Avg:   156 Min:     0 Max:  1020 Err:     0 (0.00%) Active: 100 Started: 100 Finished: 0
+2026-08-17 09:55:00,004 INFO o.a.j.r.Summariser: summary =  14455 in 00:03:33 =   67.9/s Avg:   126 Min:     0 Max:  1671 Err:     0 (0.00%)
+2026-08-17 09:55:30,004 INFO o.a.j.r.Summariser: summary +   3666 in 00:00:30 =  122.2/s Avg:   324 Min:     0 Max:  1471 Err:     0 (0.00%) Active: 100 Started: 100 Finished: 0
+2026-08-17 09:55:30,004 INFO o.a.j.r.Summariser: summary =  18121 in 00:04:03 =   74.6/s Avg:   166 Min:     0 Max:  1671 Err:     0 (0.00%)
+2026-08-17 09:56:00,002 INFO o.a.j.r.Summariser: summary +   3823 in 00:00:30 =  127.4/s Avg:   284 Min:     0 Max:  1151 Err:     0 (0.00%) Active: 100 Started: 100 Finished: 0
+2026-08-17 09:56:00,002 INFO o.a.j.r.Summariser: summary =  21944 in 00:04:33 =   80.4/s Avg:   187 Min:     0 Max:  1671 Err:     0 (0.00%)
+2026-08-17 09:56:26,039 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-45
+2026-08-17 09:56:26,425 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-20
+2026-08-17 09:56:26,476 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-16
+2026-08-17 09:56:26,485 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-12
+2026-08-17 09:56:26,485 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-18
+2026-08-17 09:56:26,485 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-24
+2026-08-17 09:56:26,490 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-32
+2026-08-17 09:56:26,613 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-4
+2026-08-17 09:56:26,613 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-8
+2026-08-17 09:56:26,677 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-6
+2026-08-17 09:56:26,744 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-38
+2026-08-17 09:56:26,782 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-33
+2026-08-17 09:56:26,787 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-43
+2026-08-17 09:56:26,799 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-13
+2026-08-17 09:56:26,799 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-37
+2026-08-17 09:56:26,816 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-25
+2026-08-17 09:56:26,817 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-46
+2026-08-17 09:56:26,817 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-23
+2026-08-17 09:56:26,817 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-7
+2026-08-17 09:56:26,817 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-22
+2026-08-17 09:56:26,818 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-7
+2026-08-17 09:56:26,818 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-5
+2026-08-17 09:56:26,818 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-4
+2026-08-17 09:56:26,823 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-21
+2026-08-17 09:56:26,834 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-2
+2026-08-17 09:56:26,834 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-14
+2026-08-17 09:56:26,834 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-5
+2026-08-17 09:56:26,866 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-41
+2026-08-17 09:56:26,915 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-16
+2026-08-17 09:56:26,915 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-8
+2026-08-17 09:56:26,929 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-4
+2026-08-17 09:56:26,929 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-22
+2026-08-17 09:56:26,929 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-1
+2026-08-17 09:56:26,930 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-20
+2026-08-17 09:56:26,970 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-16
+2026-08-17 09:56:27,013 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-11
+2026-08-17 09:56:27,031 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-40
+2026-08-17 09:56:27,031 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-2
+2026-08-17 09:56:27,031 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-23
+2026-08-17 09:56:27,032 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-35
+2026-08-17 09:56:27,033 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-24
+2026-08-17 09:56:27,055 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-2
+2026-08-17 09:56:27,056 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-9
+2026-08-17 09:56:27,056 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-1
+2026-08-17 09:56:27,078 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-27
+2026-08-17 09:56:27,078 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-15
+2026-08-17 09:56:27,078 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-12
+2026-08-17 09:56:27,078 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-48
+2026-08-17 09:56:27,078 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-6
+2026-08-17 09:56:27,078 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-10
+2026-08-17 09:56:27,079 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-18
+2026-08-17 09:56:27,079 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-26
+2026-08-17 09:56:27,095 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-50
+2026-08-17 09:56:27,101 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 1 - 25 VU 1-14
+2026-08-17 09:56:27,102 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-14
+2026-08-17 09:56:27,113 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-12
+2026-08-17 09:56:27,132 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-3
+2026-08-17 09:56:27,132 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-3
+2026-08-17 09:56:27,135 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 1 - 25 VU 1-15
+2026-08-17 09:56:27,135 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-15
+2026-08-17 09:56:27,151 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-47
+2026-08-17 09:56:27,155 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 1 - 25 VU 1-20
+2026-08-17 09:56:27,155 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-20
+2026-08-17 09:56:27,158 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 1 - 25 VU 1-21
+2026-08-17 09:56:27,158 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-18
+2026-08-17 09:56:27,158 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-21
+2026-08-17 09:56:27,158 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-18
+2026-08-17 09:56:27,159 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 2 - add 25 VU 2-11
+2026-08-17 09:56:27,159 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-11
+2026-08-17 09:56:27,160 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-49
+2026-08-17 09:56:27,161 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-49
+2026-08-17 09:56:27,166 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 2 - add 25 VU 2-19
+2026-08-17 09:56:27,166 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-19
+2026-08-17 09:56:27,172 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-9
+2026-08-17 09:56:27,172 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-9
+2026-08-17 09:56:27,172 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-29
+2026-08-17 09:56:27,172 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-21
+2026-08-17 09:56:27,172 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-29
+2026-08-17 09:56:27,172 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-21
+2026-08-17 09:56:27,173 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-17
+2026-08-17 09:56:27,173 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-11
+2026-08-17 09:56:27,173 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-17
+2026-08-17 09:56:27,173 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-11
+2026-08-17 09:56:27,188 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-13
+2026-08-17 09:56:27,188 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 1 - 25 VU 1-17
+2026-08-17 09:56:27,188 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 2 - add 25 VU 2-6
+2026-08-17 09:56:27,188 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-6
+2026-08-17 09:56:27,188 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-17
+2026-08-17 09:56:27,188 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-28
+2026-08-17 09:56:27,188 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-28
+2026-08-17 09:56:27,188 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-42
+2026-08-17 09:56:27,188 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-13
+2026-08-17 09:56:27,188 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-42
+2026-08-17 09:56:27,189 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 2 - add 25 VU 2-3
+2026-08-17 09:56:27,189 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-3
+2026-08-17 09:56:27,189 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-34
+2026-08-17 09:56:27,189 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-34
+2026-08-17 09:56:27,189 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 2 - add 25 VU 2-25
+2026-08-17 09:56:27,189 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-25
+2026-08-17 09:56:27,190 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 2 - add 25 VU 2-13
+2026-08-17 09:56:27,190 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 2 - add 25 VU 2-17
+2026-08-17 09:56:27,190 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-13
+2026-08-17 09:56:27,190 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-17
+2026-08-17 09:56:27,190 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-30
+2026-08-17 09:56:27,190 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-30
+2026-08-17 09:56:27,192 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 2 - add 25 VU 2-5
+2026-08-17 09:56:27,192 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-5
+2026-08-17 09:56:27,209 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 1 - 25 VU 1-3
+2026-08-17 09:56:27,209 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 2 - add 25 VU 2-22
+2026-08-17 09:56:27,209 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 2 - add 25 VU 2-15
+2026-08-17 09:56:27,209 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-15
+2026-08-17 09:56:27,209 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 1 - 25 VU 1-19
+2026-08-17 09:56:27,209 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-22
+2026-08-17 09:56:27,209 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-19
+2026-08-17 09:56:27,209 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-3
+2026-08-17 09:56:27,214 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-8
+2026-08-17 09:56:27,214 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-8
+2026-08-17 09:56:27,228 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 1 - 25 VU 1-9
+2026-08-17 09:56:27,228 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-9
+2026-08-17 09:56:27,228 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 1 - 25 VU 1-25
+2026-08-17 09:56:27,228 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 2 - add 25 VU 2-7
+2026-08-17 09:56:27,228 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-25
+2026-08-17 09:56:27,228 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-7
+2026-08-17 09:56:27,234 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 2 - add 25 VU 2-23
+2026-08-17 09:56:27,234 INFO o.a.j.t.JMeterThread: Thread finished: Stage 2 - add 25 VU 2-23
+2026-08-17 09:56:27,249 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-31
+2026-08-17 09:56:27,249 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-39
+2026-08-17 09:56:27,249 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-31
+2026-08-17 09:56:27,249 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-14
+2026-08-17 09:56:27,249 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-36
+2026-08-17 09:56:27,249 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 1 - 25 VU 1-10
+2026-08-17 09:56:27,249 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-39
+2026-08-17 09:56:27,249 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-14
+2026-08-17 09:56:27,249 INFO o.a.j.t.JMeterThread: Thread finished: Stage 1 - 25 VU 1-10
+2026-08-17 09:56:27,249 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-36
+2026-08-17 09:56:27,250 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-1
+2026-08-17 09:56:27,250 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-1
+2026-08-17 09:56:27,250 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-24
+2026-08-17 09:56:27,250 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-24
+2026-08-17 09:56:27,250 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-44
+2026-08-17 09:56:27,250 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-44
+2026-08-17 09:56:27,254 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-19
+2026-08-17 09:56:27,254 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-19
+2026-08-17 09:56:27,256 INFO o.a.j.t.JMeterThread: Stopping because end time detected by thread: Stage 3 - add 50 VU 3-10
+2026-08-17 09:56:27,256 INFO o.a.j.t.JMeterThread: Thread finished: Stage 3 - add 50 VU 3-10
+2026-08-17 09:56:27,257 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2026-08-17 09:56:27,257 INFO o.a.j.s.FileServer: Close: ../data/admin-orders.csv
+2026-08-17 09:56:27,261 INFO o.a.j.r.Summariser: summary +   3586 in 00:00:27 =  131.6/s Avg:   276 Min:     0 Max:  1073 Err:     0 (0.00%) Active: 0 Started: 100 Finished: 100
+2026-08-17 09:56:27,261 INFO o.a.j.r.Summariser: summary =  25530 in 00:05:00 =   85.0/s Avg:   199 Min:     0 Max:  1671 Err:     0 (0.00%)
+2026-08-17 09:56:27,261 INFO o.a.j.JMeter: Generating Dashboard
+2026-08-17 09:56:27,261 INFO o.a.j.r.d.ReportGenerator: Flushing result collector before report Generation
+2026-08-17 09:56:27,286 INFO o.a.j.r.p.NormalizerSampleConsumer: Using format, 'ms', to parse timeStamp field
+2026-08-17 09:56:27,940 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.AggregateConsumer#stopProducing(): beginDate produced 0 samples
+2026-08-17 09:56:27,940 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.AggregateConsumer#stopProducing(): endDate produced 0 samples
+2026-08-17 09:56:27,943 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.ApdexSummaryConsumer#stopProducing(): apdexSummary produced 0 samples
+2026-08-17 09:56:27,943 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.RequestsSummaryConsumer#stopProducing(): requestsSummary produced 0 samples
+2026-08-17 09:56:27,952 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.StatisticsSummaryConsumer#stopProducing(): statisticsSummary produced 0 samples
+2026-08-17 09:56:27,957 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.Top5ErrorsBySamplerConsumer#stopProducing(): top5ErrorsBySampler produced 0 samples
+2026-08-17 09:56:27,958 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.ErrorsSummaryConsumer#stopProducing(): errorsSummary produced 0 samples
+2026-08-17 09:56:27,958 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.HitsPerSecondGraphConsumer#stopProducing(): hitsPerSecond produced 0 samples
+2026-08-17 09:56:28,171 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.LatencyVSRequestGraphConsumer#stopProducing(): latencyVsRequest produced 0 samples
+2026-08-17 09:56:28,173 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.SyntheticResponseTimeDistributionGraphConsumer#stopProducing(): syntheticResponseTimeDistribution produced 0 samples
+2026-08-17 09:56:28,174 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.BytesThroughputGraphConsumer#stopProducing(): bytesThroughputOverTime produced 0 samples
+2026-08-17 09:56:28,174 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.CodesPerSecondGraphConsumer#stopProducing(): codesPerSecond produced 0 samples
+2026-08-17 09:56:28,341 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimeVSRequestGraphConsumer#stopProducing(): responseTimeVsRequest produced 0 samples
+2026-08-17 09:56:28,344 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.FilterConsumer#stopProducing(): startIntervalControlerFilter produced 178710 samples
+2026-08-17 09:56:28,344 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.TotalTPSGraphConsumer#stopProducing(): totalTPS produced 0 samples
+2026-08-17 09:56:28,345 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ActiveThreadsGraphConsumer#stopProducing(): activeThreadsOverTime produced 0 samples
+2026-08-17 09:56:28,345 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.TimeVSThreadGraphConsumer#stopProducing(): timeVsThreads produced 0 samples
+2026-08-17 09:56:28,346 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimeDistributionGraphConsumer#stopProducing(): responseTimeDistribution produced 0 samples
+2026-08-17 09:56:28,346 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.TransactionsPerSecondGraphConsumer#stopProducing(): transactionsPerSecond produced 0 samples
+2026-08-17 09:56:28,346 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimePercentilesGraphConsumer#stopProducing(): responseTimePercentiles produced 0 samples
+2026-08-17 09:56:28,352 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimePercentilesOverTimeGraphConsumer#stopProducing(): responseTimePercentilesOverTime produced 0 samples
+2026-08-17 09:56:28,354 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ResponseTimeOverTimeGraphConsumer#stopProducing(): responseTimesOverTime produced 0 samples
+2026-08-17 09:56:28,354 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.ConnectTimeOverTimeGraphConsumer#stopProducing(): connectTimeOverTime produced 0 samples
+2026-08-17 09:56:28,355 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.graph.impl.LatencyOverTimeGraphConsumer#stopProducing(): latenciesOverTime produced 0 samples
+2026-08-17 09:56:28,355 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.FilterConsumer#stopProducing(): nameFilter produced 382950 samples
+2026-08-17 09:56:28,355 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.FilterConsumer#stopProducing(): dateRangeFilter produced 76590 samples
+2026-08-17 09:56:28,355 INFO o.a.j.r.p.AbstractSampleConsumer: class org.apache.jmeter.report.processor.NormalizerSampleConsumer#stopProducing(): normalizer produced 25530 samples
+2026-08-17 09:56:28,356 INFO o.a.j.r.p.CsvFileSampleSource: produce(): 25530 samples produced in 1s 49 ms on channel 0
+2026-08-17 09:56:28,356 INFO o.a.j.r.d.ReportGenerator: Exporting data using exporter:'json' of className:'org.apache.jmeter.report.dashboard.JsonExporter'
+2026-08-17 09:56:28,467 INFO o.a.j.r.d.JsonExporter: Found data for consumer statisticsSummary in context
+2026-08-17 09:56:28,467 INFO o.a.j.r.d.JsonExporter: Creating statistics for overall
+2026-08-17 09:56:28,468 INFO o.a.j.r.d.JsonExporter: Creating statistics for other transactions
+2026-08-17 09:56:28,469 INFO o.a.j.r.d.JsonExporter: Checking output folder
+2026-08-17 09:56:28,469 INFO o.a.j.r.d.JsonExporter: Writing statistics JSON to D:\CODE\23127272_CS13003_HW\HW05-AI\performance\results\23127272_Stress_20260817\23127272_Stress_20260817-report\statistics.json
+2026-08-17 09:56:28,514 INFO o.a.j.r.d.ReportGenerator: Exporting data using exporter:'html' of className:'org.apache.jmeter.report.dashboard.HtmlTemplateExporter'
+2026-08-17 09:56:28,516 INFO o.a.j.r.d.HtmlTemplateExporter: Will generate dashboard in folder: D:\CODE\23127272_CS13003_HW\HW05-AI\performance\results\23127272_Stress_20260817\23127272_Stress_20260817-report
+2026-08-17 09:56:28,659 INFO o.a.j.r.d.HtmlTemplateExporter: Report will be generated in: D:\CODE\23127272_CS13003_HW\HW05-AI\performance\results\23127272_Stress_20260817\23127272_Stress_20260817-report, creating folder structure
+2026-08-17 09:56:28,661 INFO o.a.j.r.d.TemplateVisitor: Copying folder from 'D:\CODE\tools\apache-jmeter-5.6.3\bin\report-template' to 'D:\CODE\23127272_CS13003_HW\HW05-AI\performance\results\23127272_Stress_20260817\23127272_Stress_20260817-report', got message: D:\CODE\23127272_CS13003_HW\HW05-AI\performance\results\23127272_Stress_20260817\23127272_Stress_20260817-report, found non empty folder with following content [D:\CODE\23127272_CS13003_HW\HW05-AI\performance\results\23127272_Stress_20260817\23127272_Stress_20260817-report\statistics.json], will be ignored
+2026-08-17 09:56:28,912 INFO o.a.j.JMeter: Dashboard generated
