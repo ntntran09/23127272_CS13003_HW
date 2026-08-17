@@ -1,0 +1,61 @@
+{
+  "base": "http://127.0.0.1:3000",
+  "iterations": 5,
+  "measuredWith": "one virtual user, sequential, no think time, after Scenario D seed",
+  "steps": {
+    "01 login": {
+      "samples": 5,
+      "meanMs": 4.86,
+      "p95Ms": 9.21,
+      "maxMs": 9.21,
+      "meanBytes": 371
+    },
+    "02 profile": {
+      "samples": 5,
+      "meanMs": 2.47,
+      "p95Ms": 3.16,
+      "maxMs": 3.16,
+      "meanBytes": 187
+    },
+    "03 orders before": {
+      "samples": 5,
+      "meanMs": 79.52,
+      "p95Ms": 87.77,
+      "maxMs": 87.77,
+      "meanBytes": 1072898
+    },
+    "04 products": {
+      "samples": 5,
+      "meanMs": 2.22,
+      "p95Ms": 2.83,
+      "maxMs": 2.83,
+      "meanBytes": 969
+    },
+    "05 categories": {
+      "samples": 5,
+      "meanMs": 1.95,
+      "p95Ms": 2.23,
+      "maxMs": 2.23,
+      "meanBytes": 91
+    },
+    "06 update status": {
+      "samples": 5,
+      "meanMs": 8.17,
+      "p95Ms": 11.78,
+      "maxMs": 11.78,
+      "meanBytes": 34
+    },
+    "07 orders verify": {
+      "samples": 5,
+      "meanMs": 77.98,
+      "p95Ms": 105.93,
+      "maxMs": 105.93,
+      "meanBytes": 1072900
+    }
+  },
+  "workflow": {
+    "meanMs": 193.53,
+    "p95Ms": 246.33,
+    "maxMs": 246.33
+  }
+}

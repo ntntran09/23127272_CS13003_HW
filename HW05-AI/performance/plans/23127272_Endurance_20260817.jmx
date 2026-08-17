@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3"><hashTree>
+  <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="23127272_Endurance_20260817" enabled="true">
+    <stringProp name="TestPlan.comments">Scenario D - Admin order fulfillment. Restart and seed the SUT before every measured run.</stringProp>
+    <boolProp name="TestPlan.functional_mode">false</boolProp><boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+    <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true"><collectionProp name="Arguments.arguments"><elementProp name="scenario" elementType="Argument"><stringProp name="Argument.name">scenario</stringProp><stringProp name="Argument.value">Endurance</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp><elementProp name="student_id" elementType="Argument"><stringProp name="Argument.name">student_id</stringProp><stringProp name="Argument.value">23127272</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp></collectionProp></elementProp>
+  </TestPlan><hashTree><ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+    <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true"><collectionProp name="Arguments.arguments"/></elementProp>
+    <stringProp name="HTTPSampler.domain">${__P(host,127.0.0.1)}</stringProp>
+    <stringProp name="HTTPSampler.port">${__P(port,3000)}</stringProp>
+    <stringProp name="HTTPSampler.protocol">http</stringProp>
+    <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+    <stringProp name="HTTPSampler.connect_timeout">5000</stringProp>
+    <stringProp name="HTTPSampler.response_timeout">15000</stringProp>
+  </ConfigTestElement><hashTree/><HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="JSON and JWT headers" enabled="true">
+    <collectionProp name="HeaderManager.headers">
+      <elementProp name="Content-Type" elementType="Header"><stringProp name="Header.name">Content-Type</stringProp><stringProp name="Header.value">application/json</stringProp></elementProp>
+      <elementProp name="Authorization" elementType="Header"><stringProp name="Header.name">Authorization</stringProp><stringProp name="Header.value">Bearer ${auth_token}</stringProp></elementProp>
+    </collectionProp>
+  </HeaderManager><hashTree/><ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Sustained candidate threshold - 25 VU" enabled="true">
+    <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+    <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true"><boolProp name="LoopController.continue_forever">false</boolProp><stringProp name="LoopController.loops">-1</stringProp></elementProp>
+    <stringProp name="ThreadGroup.num_threads">25</stringProp><stringProp name="ThreadGroup.ramp_time">30</stringProp>
+    <boolProp name="ThreadGroup.scheduler">true</boolProp><stringProp name="ThreadGroup.duration">900</stringProp><stringProp name="ThreadGroup.delay">0</stringProp>
+    <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+  </ThreadGroup><hashTree><CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Unique admin order rows" enabled="true">
+    <stringProp name="delimiter">,</stringProp>
+    <stringProp name="fileEncoding">UTF-8</stringProp>
+    <stringProp name="filename">../data/admin-orders.csv</stringProp>
+    <boolProp name="ignoreFirstLine">true</boolProp>
+    <boolProp name="quotedData">true</boolProp>
+    <boolProp name="recycle">false</boolProp>
+    <stringProp name="shareMode">shareMode.all</stringProp>
+    <boolProp name="stopThread">true</boolProp>
+    <stringProp name="variableNames">admin_email,admin_password,order_id,current_status,next_status</stringProp>
+  </CSVDataSet><hashTree/><HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="01 Auth - POST /api/login" enabled="true">
+    <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true"><collectionProp name="Arguments.arguments"><elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{&quot;email&quot;:&quot;${admin_email}&quot;,&quot;password&quot;:&quot;${admin_password}&quot;}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp></collectionProp></elementProp>
+    <stringProp name="HTTPSampler.path">/api/login</stringProp><stringProp name="HTTPSampler.method">POST</stringProp>
+    <boolProp name="HTTPSampler.follow_redirects">true</boolProp><boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+    <boolProp name="HTTPSampler.use_keepalive">true</boolProp><boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+    <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+  </HTTPSamplerProxy><hashTree><JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract per-iteration JWT" enabled="true">
+    <stringProp name="JSONPostProcessor.referenceNames">auth_token</stringProp>
+    <stringProp name="JSONPostProcessor.jsonPathExprs">$.token</stringProp>
+    <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
+    <stringProp name="JSONPostProcessor.defaultValues">TOKEN_NOT_FOUND</stringProp>
+  </JSONPostProcessor><hashTree/><JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="Login returns token and admin role" enabled="true">
+    <stringProp name="cacheKey">true</stringProp><stringProp name="filename"></stringProp><stringProp name="parameters"></stringProp>
+    <stringProp name="script">if (!prev.isSuccessful() || prev.getResponseCode() != '200') { AssertionResult.setFailure(true); AssertionResult.setFailureMessage('Expected HTTP 200, got ' + prev.getResponseCode()); return }; def data = new groovy.json.JsonSlurper().parseText(prev.getResponseDataAsString()); if (!data.token || data.user?.role != 'admin' || vars.get('auth_token') == 'TOKEN_NOT_FOUND') { AssertionResult.setFailure(true); AssertionResult.setFailureMessage('Missing token or role is not admin') }</stringProp><stringProp name="scriptLanguage">groovy</stringProp>
+  </JSR223Assertion><hashTree/></hashTree><HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="02 Auth - GET /api/users/me" enabled="true">
+    <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true"><collectionProp name="Arguments.arguments"></collectionProp></elementProp>
+    <stringProp name="HTTPSampler.path">/api/users/me</stringProp><stringProp name="HTTPSampler.method">GET</stringProp>
+    <boolProp name="HTTPSampler.follow_redirects">true</boolProp><boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+    <boolProp name="HTTPSampler.use_keepalive">true</boolProp><boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+    <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+  </HTTPSamplerProxy><hashTree><UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Human think time 200-500 ms" enabled="true"><stringProp name="ConstantTimer.delay">200</stringProp><stringProp name="RandomTimer.range">300</stringProp></UniformRandomTimer><hashTree/><JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="Profile confirms admin identity" enabled="true">
+    <stringProp name="cacheKey">true</stringProp><stringProp name="filename"></stringProp><stringProp name="parameters"></stringProp>
+    <stringProp name="script">if (!prev.isSuccessful() || prev.getResponseCode() != '200') { AssertionResult.setFailure(true); AssertionResult.setFailureMessage('Expected HTTP 200, got ' + prev.getResponseCode()); return }; def data = new groovy.json.JsonSlurper().parseText(prev.getResponseDataAsString()); if (data.role != 'admin' || data.email != vars.get('admin_email')) { AssertionResult.setFailure(true); AssertionResult.setFailureMessage('Authenticated identity/role mismatch') }</stringProp><stringProp name="scriptLanguage">groovy</stringProp>
+  </JSR223Assertion><hashTree/></hashTree><HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="03 Read - GET /api/admin/orders (before)" enabled="true">
+    <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true"><collectionProp name="Arguments.arguments"></collectionProp></elementProp>
+    <stringProp name="HTTPSampler.path">/api/admin/orders</stringProp><stringProp name="HTTPSampler.method">GET</stringProp>
+    <boolProp name="HTTPSampler.follow_redirects">true</boolProp><boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+    <boolProp name="HTTPSampler.use_keepalive">true</boolProp><boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+    <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+  </HTTPSamplerProxy><hashTree><UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Human think time 500-1200 ms" enabled="true"><stringProp name="ConstantTimer.delay">500</stringProp><stringProp name="RandomTimer.range">700</stringProp></UniformRandomTimer><hashTree/><JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="Order pool contains eligible row" enabled="true">
+    <stringProp name="cacheKey">true</stringProp><stringProp name="filename"></stringProp><stringProp name="parameters"></stringProp>
+    <stringProp name="script">if (!prev.isSuccessful() || prev.getResponseCode() != '200') { AssertionResult.setFailure(true); AssertionResult.setFailureMessage('Expected HTTP 200, got ' + prev.getResponseCode()); return }; def data = new groovy.json.JsonSlurper().parseText(prev.getResponseDataAsString()); if (!(data instanceof List) || !data.any { String.valueOf(it.id) == vars.get('order_id') &amp;&amp; it.status == vars.get('current_status') }) { AssertionResult.setFailure(true); AssertionResult.setFailureMessage('CSV order missing or current status mismatch') }</stringProp><stringProp name="scriptLanguage">groovy</stringProp>
+  </JSR223Assertion><hashTree/></hashTree><HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="04 Read - GET /api/products" enabled="true">
+    <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true"><collectionProp name="Arguments.arguments"></collectionProp></elementProp>
+    <stringProp name="HTTPSampler.path">/api/products</stringProp><stringProp name="HTTPSampler.method">GET</stringProp>
+    <boolProp name="HTTPSampler.follow_redirects">true</boolProp><boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+    <boolProp name="HTTPSampler.use_keepalive">true</boolProp><boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+    <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+  </HTTPSamplerProxy><hashTree><UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Human think time 250-600 ms" enabled="true"><stringProp name="ConstantTimer.delay">250</stringProp><stringProp name="RandomTimer.range">350</stringProp></UniformRandomTimer><hashTree/><JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="Products returns non-empty array" enabled="true">
+    <stringProp name="cacheKey">true</stringProp><stringProp name="filename"></stringProp><stringProp name="parameters"></stringProp>
+    <stringProp name="script">if (!prev.isSuccessful() || prev.getResponseCode() != '200') { AssertionResult.setFailure(true); AssertionResult.setFailureMessage('Expected HTTP 200, got ' + prev.getResponseCode()); return }; def data = new groovy.json.JsonSlurper().parseText(prev.getResponseDataAsString()); if (!(data instanceof List) || data.isEmpty()) { AssertionResult.setFailure(true); AssertionResult.setFailureMessage('Product list empty/not array') }</stringProp><stringProp name="scriptLanguage">groovy</stringProp>
+  </JSR223Assertion><hashTree/></hashTree><HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="05 Read - GET /api/categories" enabled="true">
+    <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true"><collectionProp name="Arguments.arguments"></collectionProp></elementProp>
+    <stringProp name="HTTPSampler.path">/api/categories</stringProp><stringProp name="HTTPSampler.method">GET</stringProp>
+    <boolProp name="HTTPSampler.follow_redirects">true</boolProp><boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+    <boolProp name="HTTPSampler.use_keepalive">true</boolProp><boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+    <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+  </HTTPSamplerProxy><hashTree><UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Human think time 250-600 ms" enabled="true"><stringProp name="ConstantTimer.delay">250</stringProp><stringProp name="RandomTimer.range">350</stringProp></UniformRandomTimer><hashTree/><JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="Categories returns non-empty array" enabled="true">
+    <stringProp name="cacheKey">true</stringProp><stringProp name="filename"></stringProp><stringProp name="parameters"></stringProp>
+    <stringProp name="script">if (!prev.isSuccessful() || prev.getResponseCode() != '200') { AssertionResult.setFailure(true); AssertionResult.setFailureMessage('Expected HTTP 200, got ' + prev.getResponseCode()); return }; def data = new groovy.json.JsonSlurper().parseText(prev.getResponseDataAsString()); if (!(data instanceof List) || data.isEmpty()) { AssertionResult.setFailure(true); AssertionResult.setFailureMessage('Category list empty/not array') }</stringProp><stringProp name="scriptLanguage">groovy</stringProp>
+  </JSR223Assertion><hashTree/></hashTree><HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="06 Transaction - PUT /api/admin/orders/{id}/status" enabled="true">
+    <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true"><collectionProp name="Arguments.arguments"><elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{&quot;status&quot;:&quot;${next_status}&quot;}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp></collectionProp></elementProp>
+    <stringProp name="HTTPSampler.path">/api/admin/orders/${order_id}/status</stringProp><stringProp name="HTTPSampler.method">PUT</stringProp>
+    <boolProp name="HTTPSampler.follow_redirects">true</boolProp><boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+    <boolProp name="HTTPSampler.use_keepalive">true</boolProp><boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+    <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+  </HTTPSamplerProxy><hashTree><UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Human think time 600-1200 ms" enabled="true"><stringProp name="ConstantTimer.delay">600</stringProp><stringProp name="RandomTimer.range">600</stringProp></UniformRandomTimer><hashTree/><JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="Status update reports business success" enabled="true">
+    <stringProp name="cacheKey">true</stringProp><stringProp name="filename"></stringProp><stringProp name="parameters"></stringProp>
+    <stringProp name="script">if (!prev.isSuccessful() || prev.getResponseCode() != '200') { AssertionResult.setFailure(true); AssertionResult.setFailureMessage('Expected HTTP 200, got ' + prev.getResponseCode()); return }; def data = new groovy.json.JsonSlurper().parseText(prev.getResponseDataAsString()); if (data.message != 'Order status updated') { AssertionResult.setFailure(true); AssertionResult.setFailureMessage('Update response did not confirm success') }</stringProp><stringProp name="scriptLanguage">groovy</stringProp>
+  </JSR223Assertion><hashTree/></hashTree><HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="07 Read - GET /api/admin/orders (verify)" enabled="true">
+    <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true"><collectionProp name="Arguments.arguments"></collectionProp></elementProp>
+    <stringProp name="HTTPSampler.path">/api/admin/orders</stringProp><stringProp name="HTTPSampler.method">GET</stringProp>
+    <boolProp name="HTTPSampler.follow_redirects">true</boolProp><boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+    <boolProp name="HTTPSampler.use_keepalive">true</boolProp><boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+    <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+  </HTTPSamplerProxy><hashTree><UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Human think time 300-700 ms" enabled="true"><stringProp name="ConstantTimer.delay">300</stringProp><stringProp name="RandomTimer.range">400</stringProp></UniformRandomTimer><hashTree/><JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="Re-read proves requested transition" enabled="true">
+    <stringProp name="cacheKey">true</stringProp><stringProp name="filename"></stringProp><stringProp name="parameters"></stringProp>
+    <stringProp name="script">if (!prev.isSuccessful() || prev.getResponseCode() != '200') { AssertionResult.setFailure(true); AssertionResult.setFailureMessage('Expected HTTP 200, got ' + prev.getResponseCode()); return }; def data = new groovy.json.JsonSlurper().parseText(prev.getResponseDataAsString()); if (!(data instanceof List) || !data.any { String.valueOf(it.id) == vars.get('order_id') &amp;&amp; it.status == vars.get('next_status') }) { AssertionResult.setFailure(true); AssertionResult.setFailureMessage('Updated order/status not observed') }</stringProp><stringProp name="scriptLanguage">groovy</stringProp>
+  </JSR223Assertion><hashTree/></hashTree></hashTree><ResultCollector guiclass="RespTimeGraphVisualizer" testclass="ResultCollector" testname="Response Time Graph" enabled="true"><boolProp name="ResultCollector.error_logging">false</boolProp><objProp><name>saveConfig</name><value class="SampleSaveConfiguration"><time>true</time><latency>true</latency><timestamp>true</timestamp><success>true</success><label>true</label><code>true</code><message>true</message><threadName>true</threadName><dataType>true</dataType><encoding>false</encoding><assertions>true</assertions><subresults>true</subresults><responseData>false</responseData><samplerData>false</samplerData><xml>false</xml><fieldNames>true</fieldNames><responseHeaders>false</responseHeaders><requestHeaders>false</requestHeaders><responseDataOnError>false</responseDataOnError><saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage><assertionsResultsToSave>0</assertionsResultsToSave><bytes>true</bytes><sentBytes>true</sentBytes><url>true</url><threadCounts>true</threadCounts><idleTime>true</idleTime><connectTime>true</connectTime></value></objProp><stringProp name="filename"></stringProp></ResultCollector><hashTree/></hashTree>
+</hashTree></jmeterTestPlan>
