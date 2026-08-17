@@ -1,0 +1,9 @@
+HW05-AI Git commit history
+Generated: 2026-08-17 (Asia/Bangkok)
+
+7ce57ff 2026-08-17T10:21:23+07:00 HW05: Design Scenario D JMeter performance plans
+920e833 2026-08-17T10:21:30+07:00 HW05: Add reusable performance testing agent skills
+c6c9c97 2026-08-17T10:31:18+07:00 HW05: Record Scenario D execution evidence
+66e7ba6 2026-08-17T10:33:56+07:00 HW05: Analyze Scenario D and publish reports
+
+Note: this file is added by the final packaging commit, so that commit is not self-listed.
