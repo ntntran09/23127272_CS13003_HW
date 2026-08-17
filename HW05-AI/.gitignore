@@ -1,0 +1,5 @@
+tmp/
+.server.log
+.server.err.log
+jmeter.log
+AI docs/evidence/**/rollout-*.jsonl

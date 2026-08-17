@@ -1,0 +1,13 @@
+[
+  {
+    "tool": "Codex",
+    "time": "2026-08-17T02:35:49.114Z",
+    "prompt": "Làm theo bt của tôi, theo scenario D",
+    "output": "See generated artifact files; the session final answer was not available during the in-progress export.",
+    "output_scope": "artifact references",
+    "source": "codex-chat-logs/codex-chat-log.md#interaction-1",
+    "verdict": "INCOMPLETE",
+    "reasoning": "Mandatory student screenshots, video, group uniqueness confirmation, and signed review are pending.",
+    "student_fix": "Student must review the generated artifacts, capture personal evidence, and sign the audit."
+  }
+]
