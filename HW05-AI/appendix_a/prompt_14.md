@@ -12,3 +12,9 @@
 ```text
 Scenario D uniqueness: group coordination, not video. yep it is
 ```
+
+## AI Output
+
+~~~~text
+Confirmed: Scenario D is unique within the group, so keep that item checked `[x]`. It is not part of the video task.
+~~~~

@@ -13,3 +13,12 @@
 product để làm load test á
 ```
 
+## AI Output
+
+~~~~text
+Đúng. Trong load test, tất cả VU đều gọi cùng endpoint `GET /api/products`, nên nhận cùng danh sách product.
+
+Cái được chia riêng là `order_id`: mỗi VU lấy một order khác nhau từ CSV, tránh cập nhật trùng order.
+
+Thiết kế hiện tại đúng với Scenario D và yêu cầu ba test Load/Stress/Spike chạy cùng workflow.
+~~~~

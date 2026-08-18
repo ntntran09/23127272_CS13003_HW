@@ -1,8 +1,8 @@
-# Appendix A - AI Prompts
+# Appendix A - AI Prompts and Outputs
 
-This appendix collects the user prompts recorded for HW05-AI. Session bootstrap turns, installed-plugin lists, environment context, and auto-injected instruction bodies are excluded. Reusable skill source files are submitted separately in `../skills/`. All user prompts remain here for traceability, including short follow-ups; the AI Audit Report consolidates them into substantive task-level artifacts instead of listing `Continue`, status-only, clarification, or other granular prompts as separate rows.
+This appendix collects each recorded user prompt together with the final AI output delivered for that interaction. Session bootstrap turns, installed-plugin lists, environment context, auto-injected instruction bodies, progress updates, tool logs, and hidden reasoning are excluded. Reusable skill source files are submitted separately in `../skills/`. All user prompts and final outputs remain here for traceability, including short follow-ups; the AI Audit Report consolidates them into substantive task-level artifacts instead of listing `Continue`, status-only, clarification, or other granular prompts as separate rows.
 
-| No. | Time | Tool | Source group | Prompt file |
+| No. | Time | Tool | Source group | Prompt + output file |
 | ---: | --- | --- | --- | --- |
 | 1 | 2026-08-16T14:39:45.548Z | Codex | status-session | [prompt_01.md](prompt_01.md) |
 | 2 | 2026-08-17T02:35:49.114Z | Codex | scenario-d-session | [prompt_02.md](prompt_02.md) |
@@ -23,15 +23,5 @@ This appendix collects the user prompts recorded for HW05-AI. Session bootstrap 
 | 17 | 2026-08-17T19:24:46.489Z | Codex | finalization-session | [prompt_17.md](prompt_17.md) |
 | 18 | 2026-08-17T19:27:34.948Z | Codex | finalization-session | [prompt_18.md](prompt_18.md) |
 | 19 | 2026-08-17T19:28:30.868Z | Codex | finalization-session | [prompt_19.md](prompt_19.md) |
-| 20 | 2026-08-17T19:35:26.894Z | Codex | finalization-session | [prompt_20.md](prompt_20.md) |
-| 21 | 2026-08-17T19:36:13.315Z | Codex | finalization-session | [prompt_21.md](prompt_21.md) |
-| 22 | 2026-08-17T19:36:47.721Z | Codex | finalization-session | [prompt_22.md](prompt_22.md) |
-| 23 | 2026-08-17T20:48:22.838Z | Codex | finalization-session | [prompt_23.md](prompt_23.md) |
-| 24 | 2026-08-17T20:53:39.750Z | Codex | finalization-session | [prompt_24.md](prompt_24.md) |
-| 25 | 2026-08-17T20:59:14.443Z | Codex | finalization-session | [prompt_25.md](prompt_25.md) |
-| 26 | 2026-08-17T21:34:56.842Z | Codex | finalization-session | [prompt_26.md](prompt_26.md) |
-| 27 | 2026-08-17T21:39:00.589Z | Codex | finalization-session | [prompt_27.md](prompt_27.md) |
-| 28 | 2026-08-17T21:42:24.146Z | Codex | finalization-session | [prompt_28.md](prompt_28.md) |
-| 29 | 2026-08-17T21:46:53.253Z | Codex | finalization-session | [prompt_29.md](prompt_29.md) |
 
-Readable transcripts, extracted final answers, and raw JSONL backups for five substantive work sessions are stored under `../AI docs/evidence/`. Prompt 12 records the audit-formatting request; prompts 13-29 preserve later evidence, troubleshooting, grading, and issue-publication follow-ups without expanding them into separate audit-table rows.
+Each linked file contains both the prompt and its final AI output. Readable transcripts, extracted final answers, and raw JSONL backups for five substantive work sessions are also stored under `../AI docs/evidence/`. Prompt 12 records the three-step audit-formatting request and its three corresponding responses; prompts 13-19 preserve later evidence, troubleshooting, grading, issue-publication, and server-start follow-ups without expanding them into separate audit-table rows.

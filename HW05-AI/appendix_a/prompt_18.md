@@ -12,3 +12,13 @@
 ```text
 dxdiag.txt where is this
 ```
+
+## AI Output
+
+~~~~text
+It is here:
+
+[dxdiag.txt](D:/CODE/23127272_CS13003_HW/HW05-AI/performance/evidence/dxdiag.txt)
+
+You still need a visible `dxdiag` screenshot showing hostname `TRAN`.
+~~~~

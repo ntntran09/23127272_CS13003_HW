@@ -13,7 +13,7 @@
 | SUT | EShop REST backend, Node.js + Express + SQLite |
 | Selected workflow | Scenario D - Admin order fulfillment |
 
-This report separates measured facts from student-captured evidence. Raw logs and machine traces in `performance/results/` were produced by real local executions. The screenshots and GitHub issue are linked below; the video remains intentionally pending.
+This report separates measured facts from student-captured evidence. Raw logs and machine traces in `performance/results/` were produced by real local executions. The screenshots, GitHub issue, and three student-narrated scenario videos are linked below.
 
 ## 2. Scenario selection and source review
 
@@ -198,7 +198,7 @@ The gate should compare the same endpoint label, data snapshot, worker class, an
 
 - [x] Four same-frame screenshots: `performance/evidence/load-peak.png`, `stress-peak.png`, `spike-peak.png`, and `endurance-peak.png`.
 - [x] `performance/evidence/hardware-dxdiag.png` visibly shows hostname `TRAN`.
-- [ ] At least six minutes of Vietnamese narration; add unlisted YouTube URL.
+- [x] At least six minutes total of Vietnamese narration, split by scenario as permitted by the assignment: [Load](https://youtu.be/V9yUT83EWaQ), [Stress](https://youtu.be/Kezjr_zH-vo), and [Spike](https://youtu.be/NZoZCMwne4I).
 - [x] BUG-ADMIN-001 published with request/response evidence: <https://github.com/ntntran09/eshop-sut/issues/56>.
 - [x] Review all AI artifacts and set final audit verdicts/signature.
 - [x] Confirm Scenario D is not duplicated by another group member.

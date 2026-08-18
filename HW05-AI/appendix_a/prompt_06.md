@@ -13,3 +13,8 @@
 là product đang giống nhau đko
 ```
 
+## AI Output
+
+~~~~text
+Bạn đang hỏi **product nào với product nào**? Gửi tên hoặc ảnh/file cần so sánh nhé.
+~~~~
