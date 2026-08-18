@@ -1,6 +1,4 @@
-# HW06 API Selection Gate
-
-No API is selected in this file yet.
+# HW06 API Selection
 
 ## Selection rules
 
@@ -34,10 +32,12 @@ No API is selected in this file yet.
 
 | Pool | Selected FR | Selected method/path(s) | Why this API | Group uniqueness confirmed? |
 | --- | --- | --- | --- | --- |
-| A | TBD | TBD | TBD | No |
-| B | TBD | TBD | TBD | No |
-| C | TBD | TBD | TBD | No |
+| A | FR-03 | `POST /api/forgot-password`; `POST /api/reset-password` | Reuses the password-reset feature selected and tested in HW02/HW04; supports domain, OTP lifecycle, security, and schema coverage. | Student confirmation required |
+| B | FR-11 | `GET /api/orders/my-orders`; supporting `GET /api/orders/:id`; `PUT /api/orders/:id/cancel` | Reuses the order-history/cancellation behavior selected in HW02/HW04; supports ownership, state, and IDOR coverage. | Student confirmation required |
+| C | FR-14 | `GET/POST /api/categories`; `PUT/DELETE /api/categories/:id` | Reuses category CRUD selected in HW02/HW04; supports validation, role authorization, CRUD state, and schema coverage. | Student confirmation required |
 
-**Student confirmation:** I selected these APIs and verified that no group member uses the same combination.
+**Selection basis:** the student instructed that HW06 use the choices from HW02/HW04. The prior final artifacts identify FR-03, FR-11, and FR-14.
+
+**Student confirmation still required:** verify that no group member uses the same three-feature combination.
 
 Signature/date: TBD
