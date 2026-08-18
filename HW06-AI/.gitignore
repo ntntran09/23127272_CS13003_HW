@@ -1,7 +1,11 @@
 automation/node_modules/
 reports/*.tmp
 reports/*.log
+reports/harness-defect-run/*.json
+reports/harness-defect-run/*.html
 postman/*-local-secret*.json
 skills/**/__pycache__/
 skills/**/*.pyc
+tools/**/__pycache__/
+tools/**/*.pyc
 tmp/
