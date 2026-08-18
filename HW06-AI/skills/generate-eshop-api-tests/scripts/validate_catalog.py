@@ -188,6 +188,15 @@ def validate_catalog(data: dict[str, Any], allow_partial: bool = False) -> list[
             if not has_schema:
                 errors.append(f"{label}: needs at least one JSON Schema assertion")
 
+    dispositions = meta.get("security_dispositions", {})
+    if isinstance(dispositions, dict):
+        for sec_id, disposition in dispositions.items():
+            if sec_id not in REQUIRED_SECS:
+                errors.append(f"unknown security disposition {sec_id}")
+            elif not isinstance(disposition, dict) or disposition.get("status") not in {"COVERED", "DEFERRED_NOT_APPLICABLE"} or not str(disposition.get("reason", "")).strip():
+                errors.append(f"{sec_id} security disposition needs COVERED/DEFERRED_NOT_APPLICABLE and a reason")
+            elif disposition.get("status") == "DEFERRED_NOT_APPLICABLE":
+                suite_secs.add(sec_id)
     if not allow_partial:
         missing_secs = REQUIRED_SECS - suite_secs
         if missing_secs:
