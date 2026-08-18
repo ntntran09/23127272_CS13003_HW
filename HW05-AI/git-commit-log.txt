@@ -1,11 +1,14 @@
 HW05-AI Git commit history
 Generated: 2026-08-18 (Asia/Bangkok)
 
+bdd4359 2026-08-18T04:59:58+07:00 HW05: Finalize graded submission package
 587fd8c 2026-08-18T04:58:04+07:00 HW05: Complete non-video evidence and publish final reports
 b4ca685 2026-08-17T10:40:39+07:00 HW05: Add submission commit log
-7ce57ff 2026-08-17T10:21:23+07:00 HW05: Design Scenario D JMeter performance plans
-920e833 2026-08-17T10:21:30+07:00 HW05: Add reusable performance testing agent skills
-c6c9c97 2026-08-17T10:31:18+07:00 HW05: Record Scenario D execution evidence
 66e7ba6 2026-08-17T10:33:56+07:00 HW05: Analyze Scenario D and publish reports
+c6c9c97 2026-08-17T10:31:18+07:00 HW05: Record Scenario D execution evidence
+920e833 2026-08-17T10:21:30+07:00 HW05: Add reusable performance testing agent skills
+7ce57ff 2026-08-17T10:21:23+07:00 HW05: Design Scenario D JMeter performance plans
 
-Note: the final packaging commit is not self-listed because it contains this generated file.
+Note: the final packaging commit (HW05: Trim to required submission and
+remove AI-audit prompts 20-30) is not self-listed because it contains this
+generated file.
