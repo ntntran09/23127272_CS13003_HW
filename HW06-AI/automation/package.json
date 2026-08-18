@@ -1,0 +1,16 @@
+{
+  "name": "23127272-hw06-api-testing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Newman runner for HW06 EShop API tests",
+  "scripts": {
+    "validate:skill": "python ../skills/generate-eshop-api-tests/scripts/validate_catalog.py ../test-design/test-cases.json",
+    "validate:partial": "python ../skills/generate-eshop-api-tests/scripts/validate_catalog.py ../test-design/test-cases.json --allow-partial",
+    "test:skill": "python ../skills/generate-eshop-api-tests/scripts/test_skill_scripts.py -v",
+    "test:api": "newman run ../postman/23127272_HW06.postman_collection.json -e ../postman/23127272_HW06.local.postman_environment.json -r cli,json,htmlextra --reporter-json-export ../reports/newman-report.json --reporter-htmlextra-export ../reports/newman-report.html --timeout-request 10000"
+  },
+  "devDependencies": {
+    "newman": "6.2.2",
+    "newman-reporter-htmlextra": "1.23.1"
+  }
+}

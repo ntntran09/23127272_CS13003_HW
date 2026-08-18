@@ -1,0 +1,76 @@
+name: HW06 API Tests
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  newman:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out homework repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: HW06-AI/automation/package-lock.json
+
+      - name: Install Newman dependencies
+        working-directory: HW06-AI/automation
+        run: npm ci
+
+      - name: Validate generator and reviewed catalog
+        working-directory: HW06-AI/automation
+        run: |
+          npm run test:skill
+          npm run validate:skill
+
+      - name: Check out pinned EShop SUT
+        uses: actions/checkout@v6
+        with:
+          repository: ttbhanh/eshop-sut
+          ref: 85af3ba875c88283615e22cb108f13e2fccaf0e9
+          path: .tmp/eshop-sut
+
+      - name: Install and seed EShop backend
+        working-directory: .tmp/eshop-sut/backend
+        run: |
+          npm ci
+          node database.js
+
+      - name: Start EShop backend
+        working-directory: .tmp/eshop-sut/backend
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/HW06-AI/reports"
+          node server.js > "$GITHUB_WORKSPACE/HW06-AI/reports/backend.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/eshop.pid"
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:3000/api/products > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat "$GITHUB_WORKSPACE/HW06-AI/reports/backend.log"
+          exit 1
+
+      - name: Run reviewed Postman collection
+        working-directory: HW06-AI/automation
+        run: npm run test:api
+
+      - name: Upload Newman and backend evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hw06-newman-${{ github.run_id }}
+          path: |
+            HW06-AI/reports/newman-report.json
+            HW06-AI/reports/newman-report.html
+            HW06-AI/reports/backend.log
+          if-no-files-found: warn

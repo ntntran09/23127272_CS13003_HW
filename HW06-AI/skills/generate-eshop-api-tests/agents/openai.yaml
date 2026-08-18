@@ -1,0 +1,4 @@
+interface:
+  display_name: "Generate EShop API Tests"
+  short_description: "Generate auditable EShop API test suites"
+  default_prompt: "Use $generate-eshop-api-tests to generate and validate an auditable Postman test suite for my selected EShop APIs."

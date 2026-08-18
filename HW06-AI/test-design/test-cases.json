@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "assignment": "HW06-AI",
+    "student_id": "23127272",
+    "base_url": "http://localhost:3000",
+    "sut_repository": "https://github.com/ttbhanh/eshop-sut",
+    "sut_commit": "85af3ba875c88283615e22cb108f13e2fccaf0e9",
+    "generated_at": "TBD_AFTER_API_SELECTION"
+  },
+  "apis": []
+}

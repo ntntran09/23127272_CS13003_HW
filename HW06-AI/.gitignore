@@ -1,0 +1,7 @@
+automation/node_modules/
+reports/*.tmp
+reports/*.log
+postman/*-local-secret*.json
+skills/**/__pycache__/
+skills/**/*.pyc
+tmp/
