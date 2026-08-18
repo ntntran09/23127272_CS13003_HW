@@ -34,6 +34,7 @@
 
 - [x] Main report Markdown + visually verified PDF.
 - [x] AI Audit Report Markdown + visually verified PDF.
+- [x] Appendix A prompt/output index and one file per recorded interaction.
 - [x] AI Critique 200-300 words included in main PDF.
 - [ ] Excel test cases and summary visually verified.
 - [x] Postman collection, environment, Newman HTML/JSON/CLI evidence.

@@ -25,7 +25,7 @@ The student must still confirm that no group member has the same three-feature c
 
 The reusable skill follows this pipeline: inspect requirements and API specification; enumerate request/response variables; derive valid and invalid equivalence classes; add boundary values; model state and ownership transitions; trace SEC-01 through SEC-07; define exact JSON schemas; generate at least 35 AI cases; audit them; add five student-origin extensions; build Postman v2.1; execute with Newman; and triage only reproducible contract deviations as bugs.
 
-The reviewed catalog is `test-design/test-cases.json`. The untouched generation snapshot is `test-design/test-cases-ai-original.json`. Their comparison is under `AI docs/evidence/setup-session/ai-final-comparisons/test-catalog.md`. All 120 reviewed cases include an audit verdict and rationale. `A-STU-038` remains `INCOMPLETE`/manual because OTP expiry needs a controllable clock or authorized wait fixture; immediately exercising it would produce invalid evidence.
+The reviewed catalog is `test-design/test-cases.json`. The untouched generation snapshot is `test-design/test-cases-ai-original.json`. Their comparison is under `AI docs/evidence/setup-session/ai-final-comparisons/test-catalog.md`. All 120 reviewed cases include an audit verdict and rationale. `A-STU-038` remains `INCOMPLETE`/manual because OTP expiry needs a controllable clock or authorized wait fixture; immediately exercising it would produce invalid evidence. The AI Audit uses the six-section HW05 format, while `appendix_a/` preserves each recorded user prompt and delivered output separately.
 
 ## 3. Pool A - FR-03
 

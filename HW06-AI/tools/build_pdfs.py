@@ -19,7 +19,7 @@ OUT = ROOT / "output" / "pdf"
 
 
 def inline_markup(text: str) -> str:
-    value = html.escape(text.strip())
+    value = "<br/>".join(html.escape(part) for part in text.strip().split("<br>"))
     value = re.sub(r"`([^`]+)`", r"<font name='Courier'>\1</font>", value)
     value = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", value)
     value = re.sub(r"\*([^*]+)\*", r"<i>\1</i>", value)

@@ -1,8 +1,8 @@
 # Codex Chat Log
 
 - Source session: `C:\Users\tinal\.codex\sessions\2026\08\18\rollout-2026-08-18T10-53-07-01a01300-60f5-7803-ab52-03f9c32c7db4.jsonl`
-- Exported at: `2026-08-18T11:42:28`
-- Interactions: `4`
+- Exported at: `2026-08-18T11:53:49`
+- Interactions: `5`
 
 ## Interaction 1
 
@@ -201,5 +201,57 @@ Còn api thì lấy theo nhx lựa chọn của Hw02 và Hw04
 **AI Output (final answer only):**
 
 ```text
-Mình dùng thêm các skill `ai-audit-report`, `Spreadsheets`, và `PDF` để xuất đúng bộ nộp: bảng test Excel, audit appendix, và PDF có kiểm tra render. Các mục bắt buộc do sinh viên tự làm (screenshot thật, GitHub Issue/CI link, sơ đồ tự vẽ) sẽ được đánh dấu rõ, không tạo bằng chứng giả.
+Đã hoàn thiện phần HW06 có thể thực hiện cục bộ, chọn API theo HW02/HW04:
+
+- Pool A: FR-03.
+- Pool B: FR-11.
+- Pool C: FR-14.
+- 120 test case: 105 AI + 15 student-origin.
+- Newman: 119 chạy, 71 pass, 48 fail, 1 manual.
+- 601 assertions; 0 lỗi setup/script.
+- Phát hiện 10 nhóm bug.
+- Skill hợp lệ; unit test 3/3.
+- Git sạch, HEAD `9649034`.
+
+Tài liệu chính:
+
+- [README](/D:/CODE/23127272_CS13003_HW/HW06-AI/README.md)
+- [Test catalog](/D:/CODE/23127272_CS13003_HW/HW06-AI/test-design/test-cases.md)
+- [Postman collection](/D:/CODE/23127272_CS13003_HW/HW06-AI/postman/23127272_HW06.postman_collection.json)
+- [Newman HTML](/D:/CODE/23127272_CS13003_HW/HW06-AI/reports/newman-report.html)
+- [Bug reports](/D:/CODE/23127272_CS13003_HW/HW06-AI/bug-reports.md)
+- [Submission checklist](/D:/CODE/23127272_CS13003_HW/HW06-AI/submission-checklist.md)
+- Main report: :codex-file-citation{path="D:/CODE/23127272_CS13003_HW/HW06-AI/output/pdf/23127272_HW06_Main_Report.pdf" purpose="output"}
+- AI Audit: :codex-file-citation{path="D:/CODE/23127272_CS13003_HW/HW06-AI/output/pdf/23127272_HW06_AI_Audit.pdf" purpose="output"}
+
+Còn các mục bắt buộc sinh viên tự hoàn thành:
+
+- Xác nhận lựa chọn không trùng nhóm.
+- Review/ký audit.
+- Tự vẽ diagram.
+- Chụp screenshot thật.
+- Đăng GitHub Issues.
+- Chạy và lưu hai CI run.
+- Thực hiện OTP-expiry manual case.
+- Xuất XLSX: runtime hiện thiếu dependency loader bắt buộc của Spreadsheet skill; đã cung cấp [CSV đầy đủ](/D:/CODE/23127272_CS13003_HW/HW06-AI/reports/test-case-results.csv).
+
+Chưa tạo ZIP cuối vì các bằng chứng trên còn thiếu; tạo ZIP lúc này sẽ thành bộ nộp chưa hợp lệ.
+```
+
+## Interaction 5
+
+**Tool:** Codex
+
+**Time:** 2026-08-18T04:53:17.289Z
+
+**Prompt:**
+
+```text
+AI audit và appendix a như hw 5
+```
+
+**AI Output (final answer only):**
+
+```text
+Mẫu HW05 có hai điểm chính: AI Audit dạng 6 phần (thêm Accuracy Summary, Conclusion, Mandatory Disclosure, Signature) và `appendix_a/` chứa từng prompt + output riêng. Mình sẽ áp đúng cấu trúc đó cho HW06, đồng thời lọc bỏ bootstrap/plugin/tool noise khỏi Appendix A.
 ```

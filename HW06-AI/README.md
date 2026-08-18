@@ -52,6 +52,7 @@ Newman executed 348 sequential setup/test requests and 601 assertions. There wer
 | Bug drafts | `bug-reports.md` |
 | Reusable generator skill | `skills/generate-eshop-api-tests/` |
 | AI audit and critique | `AI docs/` |
+| Appendix A - AI prompts and outputs | `appendix_a/README.md` and `appendix_a/prompt_*.md` |
 | CI workflow/report | `.github/workflows/hw06-api.yml`; `ci-cd-report.md` |
 
 ## Reproduce
