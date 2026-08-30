@@ -4,15 +4,15 @@ These are locally reproduced issue drafts. Each must receive a student-captured 
 
 | ID | Feature | Severity | Title | Test IDs | GitHub Issue | Screenshot |
 | --- | --- | --- | --- | --- | --- | --- |
-| BUG-01 | FR-02 | Critical | Login success exposes the plaintext password and internal account fields | A-AI-001 | https://github.com/ntntran09/eshop-sut/issues/57 | STUDENT ACTION |
-| BUG-02 | FR-02 | High | Login does not validate missing, malformed, or wrong-type fields | A-AI-003, A-AI-004, A-AI-005, A-AI-006, A-AI-007, A-AI-008, A-AI-009, A-AI-010, A-AI-011, A-AI-012, A-AI-013, A-AI-014, A-AI-015, A-AI-016, A-AI-017, A-AI-018, A-AI-021 | https://github.com/ntntran09/eshop-sut/issues/58 | STUDENT ACTION |
-| BUG-03 | Cross-cutting | Medium | Malformed JSON returns HTML instead of the API JSON error schema | A-AI-022, B-AI-030, C-AI-032 | https://github.com/ntntran09/eshop-sut/issues/59 | STUDENT ACTION |
-| BUG-04 | FR-02 | High | Failed-login counter advances too quickly and locks after two failures | A-AI-029 | https://github.com/ntntran09/eshop-sut/issues/60 | STUDENT ACTION |
-| BUG-05 | FR-07 | High | Cart accepts invalid IDs, quantities, names, and prices | B-AI-007, B-AI-008, B-AI-009, B-AI-010, B-AI-011, B-AI-012, B-AI-013, B-AI-014, B-AI-015, B-AI-016, B-AI-017, B-AI-018, B-AI-019, B-AI-020, B-AI-021, B-AI-022, B-AI-023, B-AI-024, B-AI-025, B-AI-031, B-STU-039 | https://github.com/ntntran09/eshop-sut/issues/61 | STUDENT ACTION |
-| BUG-06 | FR-07 | High | Adding the same product creates a duplicate row instead of merging quantity | B-AI-028, B-STU-036 | https://github.com/ntntran09/eshop-sut/issues/62 | STUDENT ACTION |
-| BUG-07 | FR-07 | Critical | Cart trusts client-supplied product name and price | B-AI-034, B-AI-035 | https://github.com/ntntran09/eshop-sut/issues/63 | STUDENT ACTION |
-| BUG-08 | FR-15 | Critical | Product creation is accessible without an admin JWT | C-AI-002, C-AI-003, C-AI-004, C-AI-005, C-STU-037 | https://github.com/ntntran09/eshop-sut/issues/64 | STUDENT ACTION |
-| BUG-09 | FR-15 | High | Product creation omits required name, price, and category validation | C-AI-006, C-AI-007, C-AI-008, C-AI-009, C-AI-010, C-AI-014, C-AI-015, C-AI-016, C-AI-017, C-AI-018, C-AI-021, C-AI-022, C-AI-023, C-AI-024, C-AI-025, C-AI-026, C-AI-027, C-AI-028, C-AI-029, C-STU-039 | https://github.com/ntntran09/eshop-sut/issues/65 | STUDENT ACTION |
+| BUG-01 | FR-02 | Critical | Login success exposes the plaintext password and internal account fields | A-AI-001 | https://github.com/ntntran09/eshop-sut/issues/57 | `reports/screenshots/bug-console/BUG-01_A-AI-001_console.png` |
+| BUG-02 | FR-02 | High | Login does not validate missing, malformed, or wrong-type fields | A-AI-003, A-AI-004, A-AI-005, A-AI-006, A-AI-007, A-AI-008, A-AI-009, A-AI-010, A-AI-011, A-AI-012, A-AI-013, A-AI-014, A-AI-015, A-AI-016, A-AI-017, A-AI-018, A-AI-021 | https://github.com/ntntran09/eshop-sut/issues/58 | `reports/screenshots/bug-console/BUG-02_A-AI-003_console.png` |
+| BUG-03 | Cross-cutting | Medium | Malformed JSON returns HTML instead of the API JSON error schema | A-AI-022, B-AI-030, C-AI-032 | https://github.com/ntntran09/eshop-sut/issues/59 | `reports/screenshots/bug-console/BUG-03_A-AI-022_console.png` |
+| BUG-04 | FR-02 | High | Failed-login counter advances too quickly and locks after two failures | A-AI-029 | https://github.com/ntntran09/eshop-sut/issues/60 | `reports/screenshots/bug-console/BUG-04_A-AI-029_console.png` |
+| BUG-05 | FR-07 | High | Cart accepts invalid IDs, quantities, names, and prices | B-AI-007, B-AI-008, B-AI-009, B-AI-010, B-AI-011, B-AI-012, B-AI-013, B-AI-014, B-AI-015, B-AI-016, B-AI-017, B-AI-018, B-AI-019, B-AI-020, B-AI-021, B-AI-022, B-AI-023, B-AI-024, B-AI-025, B-AI-031, B-STU-039 | https://github.com/ntntran09/eshop-sut/issues/61 | `reports/screenshots/bug-console/BUG-05_B-AI-007_console.png` |
+| BUG-06 | FR-07 | High | Adding the same product creates a duplicate row instead of merging quantity | B-AI-028, B-STU-036 | https://github.com/ntntran09/eshop-sut/issues/62 | `reports/screenshots/bug-console/BUG-06_B-AI-028_console.png` |
+| BUG-07 | FR-07 | Critical | Cart trusts client-supplied product name and price | B-AI-034, B-AI-035 | https://github.com/ntntran09/eshop-sut/issues/63 | `reports/screenshots/bug-console/BUG-07_B-AI-034_console.png` |
+| BUG-08 | FR-15 | Critical | Product creation is accessible without an admin JWT | C-AI-002, C-AI-003, C-AI-004, C-AI-005, C-STU-037 | https://github.com/ntntran09/eshop-sut/issues/64 | `reports/screenshots/bug-console/BUG-08_C-AI-002_console.png` |
+| BUG-09 | FR-15 | High | Product creation omits required name, price, and category validation | C-AI-006, C-AI-007, C-AI-008, C-AI-009, C-AI-010, C-AI-014, C-AI-015, C-AI-016, C-AI-017, C-AI-018, C-AI-021, C-AI-022, C-AI-023, C-AI-024, C-AI-025, C-AI-026, C-AI-027, C-AI-028, C-AI-029, C-STU-039 | https://github.com/ntntran09/eshop-sut/issues/65 | `reports/screenshots/bug-console/BUG-09_C-AI-006_console.png` |
 
 ## BUG-01 - Login success exposes the plaintext password and internal account fields
 
@@ -28,7 +28,8 @@ These are locally reproduced issue drafts. Each must receive a student-captured 
 {"message":"Login successful","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3ODgwNjMzMTB9.oMiPw1XvcqZMkrEoAX5XbkVMD-w71QFWMP4U5UGJXGs","user":{"id":2,"name":"Test User","email":"test@eshop.com","password":"Test1234!","role":"user","login_attempts":0,"locked_until":null,"reset_token":null,"shipping_address":null,"phone":null}}
 ```
 
-Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
+- Bug/console screenshot: `reports/screenshots/bug-console/BUG-01_A-AI-001_console.png` (shows the request with `X-Student-Id: 23127272`, the response, and the failed assertion).
+- GitHub Issue screenshot: `reports/screenshots/github-issues/BUG-01_issue-57.png`
 
 GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/57
 
@@ -46,7 +47,8 @@ GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/57
 {"error":"Invalid email or password"}
 ```
 
-Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
+- Bug/console screenshot: `reports/screenshots/bug-console/BUG-02_A-AI-003_console.png` (shows the request with `X-Student-Id: 23127272`, the response, and the failed assertion).
+- GitHub Issue screenshot: `reports/screenshots/github-issues/BUG-02_issue-58.png`
 
 GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/58
 
@@ -64,7 +66,8 @@ GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/58
 <!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <title>Error</title> </head> <body> <pre>SyntaxError: Expected double-quoted property name in JSON at position 13 (line 1 column 14)<br> &nbsp; &nbsp;at JSON.parse (&lt;anonymous&gt;)<br> &nbsp; &nbsp;at parse (D:\CODE\eshop-sut\backend\node_modules\body-parser\lib\types\json.js:72:19)<br> &nbsp; &nbsp;at D:\CODE\eshop-sut\backend\node_modules\body-parser\lib\read.js:162:18<br> &nbsp; &nbsp;at AsyncResource.runInAsyncScope (node:asyn
 ```
 
-Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
+- Bug/console screenshot: `reports/screenshots/bug-console/BUG-03_A-AI-022_console.png` (shows the request with `X-Student-Id: 23127272`, the response, and the failed assertion).
+- GitHub Issue screenshot: `reports/screenshots/github-issues/BUG-03_issue-59.png`
 
 GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/59
 
@@ -82,7 +85,8 @@ GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/59
 {"error":"Tài khoản đã bị khóa. Vui lòng thử lại sau."}
 ```
 
-Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
+- Bug/console screenshot: `reports/screenshots/bug-console/BUG-04_A-AI-029_console.png` (shows the request with `X-Student-Id: 23127272`, the response, and the failed assertion).
+- GitHub Issue screenshot: `reports/screenshots/github-issues/BUG-04_issue-60.png`
 
 GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/60
 
@@ -100,7 +104,8 @@ GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/60
 {"message":"Added to cart"}
 ```
 
-Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
+- Bug/console screenshot: `reports/screenshots/bug-console/BUG-05_B-AI-007_console.png` (shows the request with `X-Student-Id: 23127272`, the response, and the failed assertion).
+- GitHub Issue screenshot: `reports/screenshots/github-issues/BUG-05_issue-61.png`
 
 GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/61
 
@@ -118,7 +123,8 @@ GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/61
 [{"id":1,"name":"iPhone 15 Pro Max","price":30000000,"quantity":1},{"id":1,"name":"iPhone 15 Pro Max","price":30000000,"quantity":2}]
 ```
 
-Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
+- Bug/console screenshot: `reports/screenshots/bug-console/BUG-06_B-AI-028_console.png` (shows the request with `X-Student-Id: 23127272`, the response, and the failed assertion).
+- GitHub Issue screenshot: `reports/screenshots/github-issues/BUG-06_issue-62.png`
 
 GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/62
 
@@ -136,7 +142,8 @@ GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/62
 {"message":"Added to cart"}
 ```
 
-Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
+- Bug/console screenshot: `reports/screenshots/bug-console/BUG-07_B-AI-034_console.png` (shows the request with `X-Student-Id: 23127272`, the response, and the failed assertion).
+- GitHub Issue screenshot: `reports/screenshots/github-issues/BUG-07_issue-63.png`
 
 GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/63
 
@@ -154,7 +161,8 @@ GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/63
 {"message":"Product created","id":7}
 ```
 
-Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
+- Bug/console screenshot: `reports/screenshots/bug-console/BUG-08_C-AI-002_console.png` (shows the request with `X-Student-Id: 23127272`, the response, and the failed assertion).
+- GitHub Issue screenshot: `reports/screenshots/github-issues/BUG-08_issue-64.png`
 
 GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/64
 
@@ -172,6 +180,7 @@ GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/64
 {"message":"Product created","id":11}
 ```
 
-Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
+- Bug/console screenshot: `reports/screenshots/bug-console/BUG-09_C-AI-006_console.png` (shows the request with `X-Student-Id: 23127272`, the response, and the failed assertion).
+- GitHub Issue screenshot: `reports/screenshots/github-issues/BUG-09_issue-65.png`
 
 GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/65

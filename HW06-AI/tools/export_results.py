@@ -167,9 +167,17 @@ def main() -> None:
     execution_by_name = executions
 
     bug_md =["# HW06 Bug Reports", "", "These are locally reproduced issue drafts. Each must receive a student-captured screenshot and a public GitHub Issue URL before submission.", "", "| ID | Feature | Severity | Title | Test IDs | GitHub Issue | Screenshot |", "| --- | --- | --- | --- | --- | --- | --- |"]
+    def console_shot(bug_id, ids):
+        return f"reports/screenshots/bug-console/{bug_id}_{ids[0]}_console.png"
+
+    def issue_shot(bug_id):
+        url = ISSUE_URLS.get(bug_id, "")
+        num = url.rsplit("/", 1)[-1] if url else ""
+        return f"reports/screenshots/github-issues/{bug_id}_issue-{num}.png" if num else "STUDENT ACTION"
+
     for bug_id, feature, title, ids, severity in BUGS:
         issue = ISSUE_URLS.get(bug_id, "STUDENT ACTION")
-        bug_md.append(f"| {bug_id} | {feature} | {severity} | {title} | {', '.join(ids)} | {issue} | STUDENT ACTION |")
+        bug_md.append(f"| {bug_id} | {feature} | {severity} | {title} | {', '.join(ids)} | {issue} | `{console_shot(bug_id, ids)}` |")
     for bug_id, feature, title, ids, severity in BUGS:
         representative = next((case_id for case_id in ids if case_id in execution_by_name), None)
         bug_md += ["", f"## {bug_id} - {title}", "", f"- Severity: **{severity}**", f"- Feature: `{feature}`", f"- Reproduced by: `{', '.join(ids)}`", "- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 30/08/2026", "- Expected: The request follows the reviewed EShop contract and security/state rules.", "- Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report."]
@@ -178,7 +186,13 @@ def main() -> None:
             body = response_text(execution["response"]).replace("\n", " ")[:500]
             bug_md += [f"- Representative evidence (`{representative}`): `{execution['request']['method']} {request_url(execution['request'])}` -> HTTP `{execution['response']['code']}`", "", "```json", body, "```"]
         issue_url = ISSUE_URLS.get(bug_id, "**STUDENT ACTION - publish after reviewing this draft.**")
-        bug_md += ["", "Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**", "", f"GitHub Issue URL: {issue_url}"]
+        bug_md += [
+            "",
+            f"- Bug/console screenshot: `{console_shot(bug_id, ids)}` (shows the request with `X-Student-Id: 23127272`, the response, and the failed assertion).",
+            f"- GitHub Issue screenshot: `{issue_shot(bug_id)}`",
+            "",
+            f"GitHub Issue URL: {issue_url}",
+        ]
     (ROOT / "bug-reports.md").write_text("\n".join(bug_md) + "\n", encoding="utf-8")
 
     print(json.dumps(summary, ensure_ascii=False, indent=2))

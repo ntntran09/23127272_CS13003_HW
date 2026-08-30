@@ -29,7 +29,7 @@
 - [x] Security and exact response schemas complete.
 - [x] Executed with `X-Student-Id: 23127272`.
 - [x] Genuine Newman evidence retained.
-- [ ] Confirmed bugs reported in Markdown and GitHub Issues with student screenshots.
+- [x] Confirmed bugs reported in Markdown and as GitHub Issues #57-#65 on `ntntran09/eshop-sut`, with screenshots in `reports/screenshots/`.
 
 ## Final submission
 

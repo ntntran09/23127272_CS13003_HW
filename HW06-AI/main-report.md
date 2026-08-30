@@ -125,9 +125,9 @@ The student-drawn diagram is `test-generator/23127272_HW06_test_generator_diagra
 ## 12. Remaining student actions
 
 - (Done) Reviewed and confirmed all audit verdicts and adopted/refined the 15 extensions.
-- Capture the real Postman Console showing `X-Student-Id: 23127272`.
+- (Done) `X-Student-Id: 23127272` evidenced in `reports/screenshots/bug-console/` (request headers) and `reports/newman-cli.txt` (pre-request console log).
 - Execute the 30-second lockout-expiry case with a controlled/timed fixture.
-- Review and publish the nine issue drafts with real screenshots.
+- (Done) Published the nine bugs as GitHub Issues (#57-#65 on `ntntran09/eshop-sut`) with screenshots in `reports/screenshots/github-issues/`.
 - Push and record the required green and deliberate-failure CI runs.
 - (Done) Generator diagram drawn personally in Excalidraw.
 - Regenerate final PDFs after completing the human-owned evidence.
