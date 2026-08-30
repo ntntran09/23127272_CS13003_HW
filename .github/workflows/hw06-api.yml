@@ -1,19 +1,44 @@
-name: HW06 API Tests
+name: HW06 API CI Evidence
+run-name: "HW06 API CI - ${{ inputs.evidence_mode }} - ${{ inputs.sut_ref }}"
 
 on:
   workflow_dispatch:
+    inputs:
+      evidence_mode:
+        description: Evidence run to produce
+        required: true
+        default: passing
+        type: choice
+        options:
+          - passing
+          - deliberate-failure
+      sut_repository:
+        description: Repository containing the EShop SUT
+        required: true
+        default: ntntran09/eshop-sut
+        type: string
+      sut_ref:
+        description: Exact SUT commit; replace default with a fixed commit for green evidence
+        required: true
+        default: 85af3ba875c88283615e22cb108f13e2fccaf0e9
+        type: string
 
 permissions:
   contents: read
 
+concurrency:
+  group: hw06-api-${{ github.ref }}-${{ inputs.evidence_mode }}
+  cancel-in-progress: false
+
 jobs:
   newman:
+    name: Newman ${{ inputs.evidence_mode }} evidence
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Check out homework repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -22,22 +47,24 @@ jobs:
           cache: npm
           cache-dependency-path: HW06-AI/automation/package-lock.json
 
-      - name: Install Newman dependencies
+      - name: Install pinned Newman dependencies
         working-directory: HW06-AI/automation
         run: npm ci
 
-      - name: Validate generator and reviewed catalog
+      - name: Validate skills and reviewed catalog
         working-directory: HW06-AI/automation
         run: |
           npm run test:skill
+          npm run test:ci-skill
           npm run validate:skill
 
-      - name: Check out pinned EShop SUT
-        uses: actions/checkout@v6
+      - name: Check out selected EShop SUT commit
+        uses: actions/checkout@v7
         with:
-          repository: ttbhanh/eshop-sut
-          ref: 85af3ba875c88283615e22cb108f13e2fccaf0e9
+          repository: ${{ inputs.sut_repository }}
+          ref: ${{ inputs.sut_ref }}
           path: .tmp/eshop-sut
+          persist-credentials: false
 
       - name: Install and seed EShop backend
         working-directory: .tmp/eshop-sut/backend
@@ -45,11 +72,11 @@ jobs:
           npm ci
           node database.js
 
-      - name: Start EShop backend
+      - name: Start EShop backend and wait for health check
         working-directory: .tmp/eshop-sut/backend
         run: |
-          mkdir -p "$GITHUB_WORKSPACE/HW06-AI/reports"
-          node server.js > "$GITHUB_WORKSPACE/HW06-AI/reports/backend.log" 2>&1 &
+          mkdir -p "$GITHUB_WORKSPACE/HW06-AI/reports/ci"
+          node server.js > "$GITHUB_WORKSPACE/HW06-AI/reports/ci/backend.log" 2>&1 &
           echo $! > "$RUNNER_TEMP/eshop.pid"
           for attempt in {1..30}; do
             if curl --fail --silent http://127.0.0.1:3000/api/products > /dev/null; then
@@ -57,20 +84,58 @@ jobs:
             fi
             sleep 1
           done
-          cat "$GITHUB_WORKSPACE/HW06-AI/reports/backend.log"
+          cat "$GITHUB_WORKSPACE/HW06-AI/reports/ci/backend.log"
           exit 1
 
-      - name: Run reviewed Postman collection
+      - name: Run full reviewed Postman collection
         working-directory: HW06-AI/automation
-        run: npm run test:api
+        run: |
+          npx --no-install newman run ../postman/23127272_HW06.postman_collection.json \
+            -e ../postman/23127272_HW06.local.postman_environment.json \
+            --env-var base_url=http://127.0.0.1:3000 \
+            --env-var student_id=23127272 \
+            -r cli,json,htmlextra \
+            --reporter-json-export ../reports/ci/main-newman.json \
+            --reporter-htmlextra-export ../reports/ci/main-newman.html \
+            --timeout-request 10000
+
+      - name: Run exactly one deliberate failing API test
+        if: ${{ inputs.evidence_mode == 'deliberate-failure' }}
+        working-directory: HW06-AI/automation
+        shell: bash
+        run: |
+          set +e
+          npx --no-install newman run ../ci/deliberate-failure.postman_collection.json \
+            --env-var base_url=http://127.0.0.1:3000 \
+            --env-var student_id=23127272 \
+            -r cli,json,htmlextra \
+            --reporter-json-export ../reports/ci/deliberate-newman.json \
+            --reporter-htmlextra-export ../reports/ci/deliberate-newman.html \
+            --timeout-request 10000
+          newman_status=$?
+          set -e
+
+          if [ "$newman_status" -eq 0 ]; then
+            echo "Expected the deliberate test to fail, but Newman exited successfully."
+            exit 1
+          fi
+
+          python ../skills/setup-newman-ci-evidence/scripts/verify_newman_failure_count.py \
+            ../reports/ci/deliberate-newman.json \
+            --expected-failures 1 \
+            --expected-assertion "DELIBERATE FAILURE - controlled CI evidence"
+
+          echo "Verified exactly one controlled assertion failure."
+          exit 1
 
       - name: Upload Newman and backend evidence
-        if: always()
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: hw06-newman-${{ github.run_id }}
+          name: hw06-newman-${{ inputs.evidence_mode }}-${{ github.run_id }}
           path: |
-            HW06-AI/reports/newman-report.json
-            HW06-AI/reports/newman-report.html
-            HW06-AI/reports/backend.log
+            HW06-AI/reports/ci/*.json
+            HW06-AI/reports/ci/*.html
+            HW06-AI/reports/ci/backend.log
           if-no-files-found: warn
+          retention-days: 30

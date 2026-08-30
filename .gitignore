@@ -1,4 +1,6 @@
 *.zip
+__pycache__/
+*.py[cod]
 
 # HW04 Playwright generated artifacts
 HW04-AI/automation/node_modules/
@@ -7,3 +9,6 @@ HW04-AI/automation/playwright-report/
 HW04-AI/automation/blob-report/
 HW04-AI/automation/demo-run/
 HW04-AI/tmp/
+
+# HW06 CI runtime artifacts (uploaded by GitHub Actions)
+HW06-AI/reports/ci/

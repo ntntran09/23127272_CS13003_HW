@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Build the reviewed HW06 catalog for the FR-03, FR-11, and FR-14 selection."""
-
+"""Build HW06 catalogs for the revised FR-02, FR-07, FR-15 selection."""
 from __future__ import annotations
 
 import copy
@@ -8,594 +7,273 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "test-design" / "test-cases.json"
-ORIGINAL = ROOT / "test-design" / "test-cases-ai-original.json"
-AI_REVIEWED = ROOT / "test-design" / "test-cases-ai-reviewed.json"
+OUT = ROOT / "test-design/test-cases.json"
+ORIGINAL = ROOT / "test-design/test-cases-ai-original.json"
+REVIEWED = ROOT / "test-design/test-cases-ai-reviewed.json"
+MISSING = object()
 
-ERROR_SCHEMA = {
-    "type": "object",
-    "required": ["error"],
-    "properties": {"error": {"type": "string"}},
-    "additionalProperties": False,
-}
-MESSAGE_SCHEMA = {
-    "type": "object",
-    "required": ["message"],
-    "properties": {"message": {"type": "string"}},
-    "additionalProperties": False,
-}
-FORGOT_SCHEMA = {
-    "type": "object",
-    "required": ["message", "resetToken"],
+ERROR = {"type": "object", "required": ["error"], "properties": {"error": {"type": "string", "minLength": 1}}, "additionalProperties": False}
+MESSAGE = {"type": "object", "required": ["message"], "properties": {"message": {"type": "string", "minLength": 1}}, "additionalProperties": False}
+LOGIN = {
+    "type": "object", "required": ["message", "token", "user"],
     "properties": {
-        "message": {"type": "string"},
-        "resetToken": {"type": "string", "pattern": r"^\d{6}$"},
-    },
-    "additionalProperties": False,
-}
-CATEGORY_SCHEMA = {
-    "type": "object",
-    "required": ["id", "name"],
-    "properties": {"id": {"type": "integer", "minimum": 1}, "name": {"type": "string", "minLength": 1}},
-    "additionalProperties": False,
-}
-CATEGORY_LIST_SCHEMA = {"type": "array", "items": CATEGORY_SCHEMA}
-CATEGORY_CREATE_SCHEMA = {
-    "type": "object",
-    "required": ["message", "id"],
-    "properties": {"message": {"const": "Category created"}, "id": {"type": "integer", "minimum": 1}},
-    "additionalProperties": False,
-}
-ORDER_SCHEMA = {
-    "type": "object",
-    "required": ["id", "user_id", "total_amount", "status", "shipping_address", "created_at"],
-    "properties": {
-        "id": {"type": "integer", "minimum": 1},
-        "user_id": {"type": "integer", "minimum": 1},
-        "total_amount": {"type": "integer", "minimum": 0},
-        "status": {"enum": ["pending", "confirmed", "shipping", "delivered", "canceled"]},
-        "shipping_address": {"type": "string"},
-        "created_at": {"type": "string", "minLength": 1},
-    },
-    "additionalProperties": False,
-}
-ORDER_LIST_SCHEMA = {"type": "array", "items": ORDER_SCHEMA}
+        "message": {"const": "Login successful"}, "token": {"type": "string", "minLength": 1},
+        "user": {"type": "object", "required": ["id", "name", "email", "role"], "properties": {
+            "id": {"type": "integer", "minimum": 1}, "name": {"type": "string"}, "email": {"type": "string"},
+            "role": {"enum": ["user", "admin"]}}, "additionalProperties": True}},
+    "additionalProperties": False}
+CART_OK = {"type": "object", "required": ["message"], "properties": {"message": {"const": "Added to cart"}}, "additionalProperties": False}
+PRODUCT_OK = {"type": "object", "required": ["message", "id"], "properties": {
+    "message": {"const": "Product created"}, "id": {"type": "integer", "minimum": 1}}, "additionalProperties": False}
 
 
-def ec(ec_id, variable, klass, validity, rationale):
-    return {"id": ec_id, "variable": variable, "class": klass, "validity": validity, "rationale": rationale}
+def ec(i, variable, klass, validity, why):
+    return {"id": i, "variable": variable, "class": klass, "validity": validity, "rationale": why}
 
 
-def case(prefix, index, title, method, path, statuses, *, body=None, raw_body=None, headers=None,
-         query=None, setup=None, coverage=None, ecs=None, secs=None, schema=None, assertions=None,
-         tests=None, prerequisite="Clean seeded local SUT", oracle="EShop README/API specification",
-         missed=""):
-    origin = "AI" if index <= 35 else "STUDENT"
-    request = {"method": method, "path": path, "headers": headers or {}, "query": query or []}
-    if body is not None:
-        request["body"] = body
-    if raw_body is not None:
-        request["raw_body"] = raw_body
+def tc(pool, n, title, method, path, statuses, *, body=MISSING, raw=None, headers=None, setup=None,
+       coverage=None, ecs=None, secs=None, schema=MISSING, assertions=None, tests=None,
+       oracle="EShop README and api_specification.md", missed="", manual=False):
+    origin = "AI" if n <= 35 else "STUDENT"
+    req = {"method": method, "path": path, "headers": headers or {}, "query": []}
+    if body is not MISSING:
+        req["body"] = body
+    if raw is not None:
+        req["raw_body"] = raw
     if setup:
-        request["setup"] = setup
+        req["setup"] = setup
     expected = {"status": statuses, "content_type": "application/json"}
-    if schema is not None:
+    if schema is not MISSING:
         expected["json_schema"] = schema
     if assertions:
         expected["json_path_assertions"] = assertions
     if tests:
         expected["custom_tests"] = tests
-    return {
-        "id": f"{prefix}-{'AI' if origin == 'AI' else 'STU'}-{index:03d}",
-        "title": title,
-        "origin": origin,
+    result = {
+        "id": f"{pool}-{'AI' if origin == 'AI' else 'STU'}-{n:03d}", "title": title, "origin": origin,
         "missed_by_ai": missed if origin == "STUDENT" else "",
-        "audit": {
-            "verdict": "VALID",
-            "reason": "Preliminary evidence-based review against the EShop requirements, API specification, selected source, and prior HW02/HW04 final artifacts.",
-            "fix": "None",
-            "reviewer": "AI preliminary review - student confirmation required",
-        },
-        "coverage": coverage or ["domain"],
-        "equivalence_classes": ecs or [],
-        "security_requirements": secs or [],
-        "prerequisite": prerequisite,
-        "oracle": oracle,
-        "request": request,
-        "expected": expected,
-    }
+        "audit": {"verdict": "VALID", "reason": "Preliminary review against requirements, API specification, source, and security rules.",
+                  "fix": "None", "reviewer": "AI preliminary review - student confirmation required"},
+        "coverage": coverage or ["domain"], "equivalence_classes": ecs or [], "security_requirements": secs or [],
+        "prerequisite": "Clean seeded local SUT", "oracle": oracle, "request": req, "expected": expected}
+    if manual:
+        result["automation"] = "MANUAL"
+    return result
 
 
-def dedicated_reset_setup(tag, password="ResetUser1!"):
-    email = f"hw06.reset.{tag.lower()}@example.com"
-    return email, [
-        {"action": "register_user", "name": "HW06 Reset User", "email": email, "password": password},
-        {"action": "forgot_otp", "email": email, "save": f"otp_{tag.lower()}"},
-    ]
+def bearer(var):
+    return {"Authorization": f"Bearer {{{{{var}}}}}"}
 
 
-def isolated_order_setup(tag, *, status=None, total=200000, address="123 Le Loi, TP.HCM", save="order_id"):
-    email = f"hw06.order.{tag.lower()}@example.com"
-    password = "OrderUser1!"
-    actions = [
-        {"action": "register_user", "name": f"Order {tag}", "email": email, "password": password},
-        {"action": "login", "email": email, "password": password, "save": "case_user_token"},
-    ]
-    if status in {"confirmed", "shipping", "delivered"}:
-        actions.append({"action": "login", "role": "admin", "save": "admin_token"})
-    if status:
-        actions.append({"action": "create_order", "token_var": "case_user_token", "save": save,
-                        "status": status, "total_amount": total, "shipping_address": address})
-    return actions
+def new_user(tag, token="case_user_token"):
+    email = f"hw06.{tag}@example.com"
+    password = "User1234!"
+    return email, password, [
+        {"action": "register_user", "name": f"HW06 {tag}", "email": email, "password": password},
+        {"action": "login", "email": email, "password": password, "save": token}]
 
 
-def auth(value):
-    return {"Authorization": value}
+def lock_setup(tag, failures):
+    email = f"hw06.login.{tag}@example.com"
+    password = "Right123!"
+    actions = [{"action": "register_user", "name": f"Login {tag}", "email": email, "password": password}]
+    actions += [{"action": "login_attempt", "email": email, "password": "Wrong123!", "statuses": [401, 403]} for _ in range(failures)]
+    return email, password, actions
 
 
-def build_fr03():
-    cases = []
-    email_ec_valid = ["A-EC-EMAIL-REGISTERED"]
-    email_ec_invalid = ["A-EC-EMAIL-INVALID"]
-    # Forgot-password contract and email partitions.
-    cases.append(case("A", 1, "Registered email returns a six-digit OTP", "POST", "/api/forgot-password", [200],
-                      body={"email": "test@eshop.com"}, coverage=["domain", "schema", "security"],
-                      ecs=email_ec_valid + ["A-EC-SCHEMA", "A-EC-OTP-LIFECYCLE"], secs=["SEC-07"], schema=FORGOT_SCHEMA,
-                      assertions=[{"path": "resetToken", "operator": "matches", "value": r"^\d{6}$"}],
-                      oracle="FR-03 and SEC-07 require a random six-digit OTP"))
-    invalid_emails = [
-        (2, "Unregistered well-formed email", "notfound@example.com", [404]),
-        (3, "Missing email field", None, [400, 422]),
-        (4, "Null email", None, [400, 422]),
-        (5, "Empty email", "", [400, 422]),
-        (6, "Whitespace-only email", "   ", [400, 422]),
-        (7, "Email without at sign", "test-at-eshop.com", [400, 422]),
-        (8, "Email without domain", "test@", [400, 422]),
-        (9, "Email with embedded spaces", "test @eshop.com", [400, 422]),
-        (10, "SQL injection payload in email", "' OR 1=1 --", [400, 404]),
-        (11, "HTML payload in email", "<script>alert(1)</script>@x.com", [400, 404]),
-    ]
-    for index, title, value, statuses in invalid_emails:
-        body = {} if index == 3 else {"email": value}
-        cases.append(case("A", index, title, "POST", "/api/forgot-password", statuses, body=body,
-                          coverage=["domain", "security"] if index >= 10 else ["domain"], ecs=email_ec_invalid,
-                          secs=["SEC-05"] if index == 10 else (["SEC-04"] if index == 11 else []), schema=ERROR_SCHEMA,
-                          oracle="FR-03 requires a registered valid email; SEC-05 requires parameterized queries"))
-    cases.append(case("A", 12, "Forgot-password error does not expose SQL details", "POST", "/api/forgot-password", [400, 404],
-                      body={"email": "x' UNION SELECT password FROM users --"}, coverage=["security", "schema"],
-                      ecs=email_ec_invalid + ["A-EC-SCHEMA"], secs=["SEC-01", "SEC-05"], schema=ERROR_SCHEMA,
-                      tests=["pm.test('A-AI-012 does not leak password or SQL internals', () => { pm.expect(pm.response.text().toLowerCase()).to.not.include('select '); pm.expect(pm.response.text().toLowerCase()).to.not.include('password123'); });"]))
-    cases.append(case("A", 13, "Two OTP requests return six-digit values", "POST", "/api/forgot-password", [200],
-                      body={"email": "test@eshop.com"}, setup=[{"action": "forgot_otp", "email": "test@eshop.com", "save": "old_otp_13"}], coverage=["state", "security", "schema"],
-                      ecs=["A-EC-OTP-LIFECYCLE", "A-EC-SCHEMA"], secs=["SEC-07"], schema=FORGOT_SCHEMA,
-                      tests=["pm.test('A-AI-013 new OTP replaces previous value', () => pm.expect(pm.response.json().resetToken).to.not.eql(pm.collectionVariables.get('old_otp_13'))); "]))
-
-    # Reset-password token and password partitions. Each success-oriented case uses a dedicated account.
-    password_specs = [
-        (14, "Valid token and representative strong password", "Strong1!", [200], "A-EC-PASSWORD-STRONG"),
-        (15, "Wrong six-digit token", "Strong1!", [400], "A-EC-OTP-INVALID"),
-        (16, "Empty token", "Strong1!", [400, 422], "A-EC-OTP-INVALID"),
-        (17, "Five-digit token below boundary", "Strong1!", [400, 422], "A-EC-OTP-INVALID"),
-        (18, "Seven-digit token above boundary", "Strong1!", [400, 422], "A-EC-OTP-INVALID"),
-        (19, "Nonnumeric token", "Strong1!", [400, 422], "A-EC-OTP-INVALID"),
-        (20, "Password length seven below minimum", "Aa1!aaa", [400, 422], "A-EC-PASSWORD-WEAK"),
-        (21, "Password length eight at minimum", "Aa1!aaaa", [200], "A-EC-PASSWORD-STRONG"),
-        (22, "Password length nine above minimum", "Aa1!aaaaa", [200], "A-EC-PASSWORD-STRONG"),
-        (23, "Password missing uppercase", "strong1!", [400, 422], "A-EC-PASSWORD-WEAK"),
-        (24, "Password missing lowercase", "STRONG1!", [400, 422], "A-EC-PASSWORD-WEAK"),
-        (25, "Password missing digit", "Strong!!", [400, 422], "A-EC-PASSWORD-WEAK"),
-        (26, "Password missing allowed special", "Strong12", [400, 422], "A-EC-PASSWORD-WEAK"),
-        (27, "Unsupported special character only", "Strong1#", [400, 422], "A-EC-PASSWORD-WEAK"),
-        (28, "Empty new password", "", [400, 422], "A-EC-PASSWORD-WEAK"),
-        (29, "Null new password", None, [400, 422], "A-EC-PASSWORD-WEAK"),
-    ]
-    for index, title, password, statuses, password_ec in password_specs:
-        email, setup = dedicated_reset_setup(str(index))
-        token = "{{otp_" + str(index) + "}}"
-        if index == 15:
-            token = "000000"
-        elif index == 16:
-            token = ""
-        elif index == 17:
-            token = "12345"
-        elif index == 18:
-            token = "1234567"
-        elif index == 19:
-            token = "12AB56"
-        schema = MESSAGE_SCHEMA if 200 in statuses else ERROR_SCHEMA
-        cases.append(case("A", index, title, "POST", "/api/reset-password", statuses,
-                          body={"email": email, "resetToken": token, "newPassword": password}, setup=setup,
-                          coverage=["domain", "state", "schema"], ecs=[password_ec, "A-EC-OTP-VALID" if token.startswith("{{") else "A-EC-OTP-INVALID", "A-EC-SCHEMA"],
-                          secs=["SEC-07"], schema=schema, oracle="FR-01/FR-03 password rule and SEC-07 OTP lifecycle"))
-    missing_specs = [
-        (30, "Missing reset email", {"resetToken": "{{otp_30}}", "newPassword": "Strong1!"}),
-        (31, "Missing reset token", {"email": "hw06.reset.31@example.com", "newPassword": "Strong1!"}),
-        (32, "Missing new password", {"email": "hw06.reset.32@example.com", "resetToken": "{{otp_32}}"}),
-        (33, "Malformed JSON body", None),
-    ]
-    for index, title, body in missing_specs:
-        email, setup = dedicated_reset_setup(str(index))
-        kwargs = {"raw_body": "{\"email\":"} if index == 33 else {"body": body}
-        cases.append(case("A", index, title, "POST", "/api/reset-password", [400, 422], setup=setup,
-                          coverage=["domain", "schema"], ecs=["A-EC-OTP-INVALID", "A-EC-SCHEMA"], schema=ERROR_SCHEMA,
-                          oracle="FR-03 requires email, OTP, and newPassword", **kwargs))
-    email, setup = dedicated_reset_setup("34")
-    cases.append(case("A", 34, "OTP cannot be used for another email", "POST", "/api/reset-password", [400],
-                      body={"email": "admin@eshop.com", "resetToken": "{{otp_34}}", "newPassword": "Strong1!"}, setup=setup,
-                      coverage=["state", "security", "schema"], ecs=["A-EC-OTP-INVALID", "A-EC-OTP-LIFECYCLE"],
-                      secs=["SEC-07"], schema=ERROR_SCHEMA))
-    email, setup = dedicated_reset_setup("35")
-    cases.append(case("A", 35, "Successful reset response has exact schema", "POST", "/api/reset-password", [200],
-                      body={"email": email, "resetToken": "{{otp_35}}", "newPassword": "Exact1!x"}, setup=setup,
-                      coverage=["schema", "state"], ecs=["A-EC-SCHEMA", "A-EC-PASSWORD-STRONG", "A-EC-OTP-VALID"], schema=MESSAGE_SCHEMA))
-
-    # Student-origin adaptations from final HW02/HW04 edge cases.
-    cases.append(case("A", 36, "OTP lower boundary is not four digits", "POST", "/api/forgot-password", [200],
-                      body={"email": "test@eshop.com"}, coverage=["domain", "security", "schema"],
-                      ecs=["A-EC-OTP-LIFECYCLE", "A-EC-SCHEMA"], secs=["SEC-07"], schema=FORGOT_SCHEMA,
-                      missed="Adapted from HW02 BVA-FR03-001..003 and HW04 FR03-AUTO-007; generic generation often checks token presence but not exact six-digit length."))
-    email = "hw06.reset.37@example.com"
-    setup = [{"action": "register_user", "name": "OTP Rotation", "email": email, "password": "Rotate1!"},
-             {"action": "forgot_otp", "email": email, "save": "old_otp_37"},
-             {"action": "forgot_otp", "email": email, "save": "new_otp_37"}]
-    cases.append(case("A", 37, "Issuing a new OTP invalidates the previous OTP", "POST", "/api/reset-password", [400],
-                      body={"email": email, "resetToken": "{{old_otp_37}}", "newPassword": "Rotate2!"}, setup=setup,
-                      coverage=["state", "security"], ecs=["A-EC-OTP-LIFECYCLE", "A-EC-OTP-INVALID"], secs=["SEC-07"], schema=ERROR_SCHEMA,
-                      missed="Cross-request token rotation requires a stateful sequence and was absent from the first domain-only pass."))
-    email, setup = dedicated_reset_setup("38")
-    cases.append(case("A", 38, "OTP expiry metadata or enforcement is required", "POST", "/api/reset-password", [400],
-                      body={"email": email, "resetToken": "{{otp_38}}", "newPassword": "Expired1!"}, setup=setup,
-                      coverage=["state", "security"], ecs=["A-EC-OTP-LIFECYCLE"], secs=["SEC-07"], schema=ERROR_SCHEMA,
-                      oracle="SEC-07 requires OTP expiry; this executable proxy expects an immediately invalidated token only when the test fixture marks it expired",
-                      prerequisite="Requires expired-token fixture; current SUT has no expiry field, so student must confirm this known limitation",
-                      missed="Expiry is a time/state property that one-request prompts commonly omit."))
-    cases[-1]["automation"] = "MANUAL"
-    cases[-1]["audit"] = {
-        "verdict": "INCOMPLETE",
-        "reason": "SEC-07 requires expiry, but the current SUT has no expiry field or controllable clock; executing this request immediately would create a false failure.",
-        "fix": "Verify by authorized source/database inspection or add a controllable expired-token fixture before automation.",
-        "reviewer": "AI preliminary review - student confirmation required",
-    }
-    email, setup = dedicated_reset_setup("39")
-    cases.append(case("A", 39, "Whitespace cannot replace the required special character", "POST", "/api/reset-password", [400, 422],
-                      body={"email": email, "resetToken": "{{otp_39}}", "newPassword": "Strong 1"}, setup=setup,
-                      coverage=["domain", "security"], ecs=["A-EC-PASSWORD-WEAK", "A-EC-OTP-VALID"], secs=["SEC-07"], schema=ERROR_SCHEMA,
-                      missed="Adapted from HW02 DT-FR03-027/HW04 password data; the UI regex bug showed whitespace needed an explicit partition."))
-    email, setup = dedicated_reset_setup("40")
-    cases.append(case("A", 40, "Reset password must not be stored or returned as plaintext", "POST", "/api/reset-password", [200],
-                      body={"email": email, "resetToken": "{{otp_40}}", "newPassword": "NoPlain1!"}, setup=setup,
-                      coverage=["security", "state", "schema"], ecs=["A-EC-PASSWORD-STRONG", "A-EC-SCHEMA"], secs=["SEC-01", "SEC-07"], schema=MESSAGE_SCHEMA,
-                      tests=["pm.test('A-STU-040 response does not echo plaintext password', () => pm.expect(pm.response.text()).to.not.include('NoPlain1!'));"],
-                      missed="SEC-01 requires storage inspection outside the API response; the API-only pass initially checked only reset success."))
-    return cases
+def cart_check(case_id, javascript, label):
+    return ("pm.sendRequest({url:pm.variables.replaceIn('{{base_url}}/api/cart'),method:'GET',header:{"
+            "'X-Student-Id':pm.variables.replaceIn('{{student_id}}'),'Authorization':`Bearer ${pm.collectionVariables.get('case_user_token')}`}},"
+            f"(err,res)=>pm.test('{case_id} {label}',()=>{{pm.expect(err).to.equal(null);pm.expect(res.code).to.eql(200);"
+            f"const cart=res.json();{javascript}}}));")
 
 
-def build_fr11():
-    cases = []
-    # Empty history must run before order creation for the seeded user.
-    cases.append(case("B", 1, "Authenticated seeded user with no orders gets an empty array", "GET", "/api/orders/my-orders", [200],
-                      headers=auth("Bearer {{user_token}}"), setup=[{"action": "login", "role": "user", "save": "user_token"}],
-                      coverage=["domain", "state", "schema", "security"], ecs=["B-EC-AUTH-VALID", "B-EC-HISTORY-EMPTY", "B-EC-SCHEMA"],
-                      secs=["SEC-02"], schema=ORDER_LIST_SCHEMA, tests=["pm.test('B-AI-001 array is empty on clean seed', () => pm.expect(pm.response.json()).to.have.length(0));"]))
-    auth_cases = [
-        (2, "Missing Authorization header", {}, [401], "B-EC-AUTH-INVALID"),
-        (3, "Bearer keyword without token", auth("Bearer "), [401], "B-EC-AUTH-INVALID"),
-        (4, "Malformed JWT", auth("Bearer not-a-jwt"), [403], "B-EC-AUTH-INVALID"),
-        (5, "Wrong authorization scheme", auth("Basic dGVzdA=="), [401, 403], "B-EC-AUTH-INVALID"),
-        (6, "Valid admin token accesses only admin-owned history", auth("Bearer {{admin_token}}"), [200], "B-EC-AUTH-VALID"),
-    ]
-    for index, title, headers, statuses, ec_id in auth_cases:
-        setup = [{"action": "login", "role": "admin", "save": "admin_token"}] if index == 6 else None
-        cases.append(case("B", index, title, "GET", "/api/orders/my-orders", statuses, headers=headers, setup=setup,
-                          coverage=["security", "schema"], ecs=[ec_id, "B-EC-SCHEMA"], secs=["SEC-02"],
-                          schema=ORDER_LIST_SCHEMA if 200 in statuses else ERROR_SCHEMA))
-    # Isolated history shapes and ordering.
-    history_specs = [
-        (7, "One pending order appears in history", "pending", 200000, "123 Le Loi", None),
-        (8, "Confirmed order appears with confirmed status", "confirmed", 210000, "124 Le Loi", "confirmed"),
-        (9, "Shipping order appears with shipping status", "shipping", 220000, "125 Le Loi", "shipping"),
-        (10, "Delivered order appears with delivered status", "delivered", 230000, "126 Le Loi", "delivered"),
-        (11, "Canceled order appears with canceled status", "canceled", 240000, "127 Le Loi", "canceled"),
-        (12, "Order total remains an integer", "pending", 1, "Minimum total", None),
-        (13, "Vietnamese shipping address remains valid JSON", "pending", 250000, "12 Nguyễn Huệ, TP.HCM", None),
-        (14, "History excludes password fields", "pending", 260000, "No secrets", None),
-        (15, "History schema rejects extra secret properties", "pending", 270000, "Schema", None),
-        (16, "History is sorted by descending order id", "pending", 280000, "Sort", None),
-    ]
-    for index, title, status, total, address, expected_status in history_specs:
-        setup = isolated_order_setup(str(index), status=status, total=total, address=address)
-        tests = []
-        if expected_status:
-            tests.append(f"pm.test('{title}', () => pm.expect(pm.response.json()[0].status).to.eql('{expected_status}'));")
-        if index == 14:
-            tests.append("pm.test('B-AI-014 has no password property', () => pm.response.json().forEach(o => pm.expect(o).to.not.have.property('password')));")
-        if index == 16:
-            setup.append({"action": "create_order", "token_var": "case_user_token", "save": "order_id_second", "status": "pending", "total_amount": 280001, "shipping_address": "Sort 2"})
-            tests.append("pm.test('B-AI-016 ids descend', () => { const ids=pm.response.json().map(o=>o.id); pm.expect(ids).to.eql([...ids].sort((a,b)=>b-a)); });")
-        cases.append(case("B", index, title, "GET", "/api/orders/my-orders", [200], headers=auth("Bearer {{case_user_token}}"), setup=setup,
-                          coverage=["domain", "state", "schema"], ecs=["B-EC-AUTH-VALID", "B-EC-HISTORY-NONEMPTY", "B-EC-STATUS", "B-EC-SCHEMA"],
-                          secs=["SEC-01", "SEC-02"] if index in {14, 15} else ["SEC-02"], schema=ORDER_LIST_SCHEMA, tests=tests))
-    # Detail authorization and id partitions.
-    detail_specs = [
-        (17, "Owned order detail requires valid owner token", "{{order_id}}", auth("Bearer {{case_user_token}}"), [200]),
-        (18, "Order detail rejects missing token", "{{order_id}}", {}, [401]),
-        (19, "Order detail rejects a non-owner token", "{{order_id}}", auth("Bearer {{other_user_token}}"), [403, 404]),
-        (20, "Nonexistent order id", "999999", auth("Bearer {{case_user_token}}"), [404]),
-        (21, "Order id zero lower invalid boundary", "0", auth("Bearer {{case_user_token}}"), [404]),
-        (22, "Negative order id", "-1", auth("Bearer {{case_user_token}}"), [404]),
-        (23, "Nonnumeric order id", "abc", auth("Bearer {{case_user_token}}"), [400, 404]),
-        (24, "SQL payload in order id", "1%20OR%201=1", auth("Bearer {{case_user_token}}"), [400, 404]),
-    ]
-    for index, title, order_id, headers, statuses in detail_specs:
-        setup = isolated_order_setup(str(index), status="pending")
-        if index == 19:
-            other_email = "hw06.order.other19@example.com"
-            setup += [{"action": "register_user", "name": "Other User", "email": other_email, "password": "OtherUser1!"},
-                      {"action": "login", "email": other_email, "password": "OtherUser1!", "save": "other_user_token"}]
-        cases.append(case("B", index, title, "GET", f"/api/orders/{order_id}", statuses, headers=headers, setup=setup,
-                          coverage=["domain", "security", "schema"], ecs=["B-EC-ORDER-ID", "B-EC-OWNERSHIP", "B-EC-SCHEMA"],
-                          secs=["SEC-02", "SEC-05" if index == 24 else "SEC-02"], schema=ORDER_SCHEMA if 200 in statuses else ERROR_SCHEMA,
-                          oracle="FR-11 ownership plus SEC-02 authenticated access; API specification order detail"))
-    cancel_specs = [
-        (25, "Owner cancels pending order", "pending", auth("Bearer {{case_user_token}}"), [200]),
-        (26, "Owner cancels confirmed order", "confirmed", auth("Bearer {{case_user_token}}"), [200]),
-        (27, "Shipping order cannot be canceled", "shipping", auth("Bearer {{case_user_token}}"), [400]),
-        (28, "Delivered order cannot be canceled", "delivered", auth("Bearer {{case_user_token}}"), [400]),
-        (29, "Canceled order cannot be canceled again", "canceled", auth("Bearer {{case_user_token}}"), [400]),
-        (30, "Non-owner cannot cancel order", "pending", auth("Bearer {{other_user_token}}"), [404]),
-        (31, "Cancel rejects missing token", "pending", {}, [401]),
-        (32, "Cancel rejects malformed token", "pending", auth("Bearer bad-token"), [403]),
-        (33, "Cancel nonexistent order", None, auth("Bearer {{case_user_token}}"), [404]),
-        (34, "Cancel order id zero", None, auth("Bearer {{case_user_token}}"), [404]),
-        (35, "Cancel nonnumeric order id", None, auth("Bearer {{case_user_token}}"), [400, 404]),
-    ]
-    for index, title, status, headers, statuses in cancel_specs:
-        setup = isolated_order_setup(str(index), status=status) if status else isolated_order_setup(str(index))
-        path_id = "{{order_id}}" if status else ("0" if index == 34 else ("abc" if index == 35 else "999999"))
-        if index == 30:
-            other_email = "hw06.order.other30@example.com"
-            setup += [{"action": "register_user", "name": "Other Cancel", "email": other_email, "password": "OtherUser1!"},
-                      {"action": "login", "email": other_email, "password": "OtherUser1!", "save": "other_user_token"}]
-        cases.append(case("B", index, title, "PUT", f"/api/orders/{path_id}/cancel", statuses, headers=headers, setup=setup,
-                          coverage=["state", "security", "schema"], ecs=["B-EC-CANCEL-ALLOWED" if 200 in statuses else "B-EC-CANCEL-FORBIDDEN", "B-EC-SCHEMA"],
-                          secs=["SEC-02"], schema=MESSAGE_SCHEMA if 200 in statuses else ERROR_SCHEMA,
-                          oracle="FR-10/FR-11 allow cancellation only from pending or confirmed and only by owner"))
-    # Student-origin adaptations.
-    setup = isolated_order_setup("36", status="shipping")
-    cases.append(case("B", 36, "Rejected shipping cancellation leaves state unchanged", "PUT", "/api/orders/{{order_id}}/cancel", [400],
-                      headers=auth("Bearer {{case_user_token}}"), setup=setup, coverage=["state", "security"],
-                      ecs=["B-EC-CANCEL-FORBIDDEN", "B-EC-STATUS"], secs=["SEC-02"], schema=ERROR_SCHEMA,
-                      tests=["pm.sendRequest({url: pm.variables.replaceIn('{{base_url}}/api/orders/{{order_id}}'), method:'GET', header:{'X-Student-Id':pm.variables.replaceIn('{{student_id}}'),'Authorization':`Bearer ${pm.collectionVariables.get('case_user_token')}`}}, (err,res) => pm.test('B-STU-036 state remains shipping', () => { pm.expect(err).to.equal(null); pm.expect(res.json().status).to.eql('shipping'); }));"],
-                      missed="Adapted from HW02 BUG-FR11-008 and HW04 shipping-cancel automation; the first pass asserted rejection but not persistence after rejection."))
-    setup = isolated_order_setup("37", status="pending")
-    cases.append(case("B", 37, "Order detail is not publicly readable by ID", "GET", "/api/orders/{{order_id}}", [401], setup=setup,
-                      coverage=["security", "schema"], ecs=["B-EC-OWNERSHIP", "B-EC-AUTH-INVALID"], secs=["SEC-02"], schema=ERROR_SCHEMA,
-                      missed="API-level IDOR was outside the earlier UI-only FR-11 prompt and required inspecting the supporting detail endpoint."))
-    xss_address = "<img src=x onerror=alert(1)>"
-    setup = isolated_order_setup("38", status="pending", address=xss_address)
-    cases.append(case("B", 38, "HTML shipping address remains inert JSON data", "GET", "/api/orders/my-orders", [200],
-                      headers=auth("Bearer {{case_user_token}}"), setup=setup, coverage=["security", "schema"],
-                      ecs=["B-EC-HISTORY-NONEMPTY", "B-EC-SCHEMA"], secs=["SEC-04"], schema=ORDER_LIST_SCHEMA,
-                      tests=[f"pm.test('B-STU-038 payload is data, not HTML response', () => {{ pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'); pm.expect(pm.response.text()).to.include({json.dumps(xss_address)}); }});"],
-                      missed="Adapted from prior malformed-data UI cases; API generation often ignores the downstream rendering context required by SEC-04."))
-    setup = isolated_order_setup("39", status="pending", total=-1)
-    cases.append(case("B", 39, "History must not normalize an invalid negative total as valid", "GET", "/api/orders/my-orders", [200],
-                      headers=auth("Bearer {{case_user_token}}"), setup=setup, coverage=["domain", "schema"],
-                      ecs=["B-EC-HISTORY-NONEMPTY", "B-EC-SCHEMA"], schema=ORDER_LIST_SCHEMA,
-                      missed="Adapted from HW02/HW04 invalid-total display cases; malformed persisted data is a separate output-domain partition."))
-    setup = isolated_order_setup("40", status="pending")
-    cases.append(case("B", 40, "Second cancellation is rejected and remains canceled", "PUT", "/api/orders/{{order_id}}/cancel", [200],
-                      headers=auth("Bearer {{case_user_token}}"), setup=setup, coverage=["state", "security", "schema"],
-                      ecs=["B-EC-CANCEL-ALLOWED", "B-EC-STATUS"], secs=["SEC-02"], schema=MESSAGE_SCHEMA,
-                      tests=["pm.sendRequest({url: pm.variables.replaceIn('{{base_url}}/api/orders/{{order_id}}/cancel'), method:'PUT', header:{'X-Student-Id':pm.variables.replaceIn('{{student_id}}'),'Authorization':`Bearer ${pm.collectionVariables.get('case_user_token')}`}}, (err,res) => pm.test('B-STU-040 repeat cancel rejected', () => { pm.expect(err).to.equal(null); pm.expect(res.code).to.eql(400); }));"],
-                      missed="Repeat/idempotency behavior requires a second mutation after the nominal success and was absent from the first single-request set."))
-    return cases
+def fr02():
+    c = []
+    c.append(tc("A", 1, "Valid user login returns JWT without secrets", "POST", "/api/login", [200],
+                body={"email": "test@eshop.com", "password": "Test1234!"}, coverage=["domain", "schema", "security"],
+                ecs=["A-EC-VALID", "A-EC-SCHEMA"], secs=["SEC-01"], schema=LOGIN,
+                tests=["const b=pm.response.json();pm.collectionVariables.set('user_token',b.token);pm.environment.set('user_token',b.token);",
+                       "pm.test('A-AI-001 token shape',()=>pm.expect(pm.response.json().token.split('.')).to.have.length(3));",
+                       "pm.test('A-AI-001 secrets absent',()=>{const u=pm.response.json().user;['password','reset_token','login_attempts','locked_until'].forEach(k=>pm.expect(u).to.not.have.property(k));});"],
+                oracle="FR-02 success returns JWT; SEC-01 forbids password disclosure"))
+    c.append(tc("A", 2, "Valid admin login returns JWT", "POST", "/api/login", [200], body={"email": "admin@eshop.com", "password": "Admin123!"},
+                coverage=["domain", "schema"], ecs=["A-EC-VALID", "A-EC-SCHEMA"], schema=LOGIN,
+                tests=["const b=pm.response.json();pm.collectionVariables.set('admin_token',b.token);pm.environment.set('admin_token',b.token);"]))
+    invalid = [
+        (3, "Missing email", {"password": "x"}, "A-EC-EMAIL"), (4, "Null email", {"email": None, "password": "x"}, "A-EC-EMAIL"),
+        (5, "Empty email", {"email": "", "password": "x"}, "A-EC-EMAIL"), (6, "Whitespace email", {"email": "   ", "password": "x"}, "A-EC-EMAIL"),
+        (7, "Email lacks at sign", {"email": "a.example.com", "password": "x"}, "A-EC-EMAIL"), (8, "Email lacks local part", {"email": "@example.com", "password": "x"}, "A-EC-EMAIL"),
+        (9, "Email lacks domain", {"email": "a@", "password": "x"}, "A-EC-EMAIL"), (10, "Email contains spaces", {"email": "a b@example.com", "password": "x"}, "A-EC-EMAIL"),
+        (11, "Numeric email", {"email": 123, "password": "x"}, "A-EC-EMAIL"), (12, "Array email", {"email": ["a@example.com"], "password": "x"}, "A-EC-EMAIL"),
+        (13, "Missing password", {"email": "absent13@example.com"}, "A-EC-PASSWORD"), (14, "Null password", {"email": "absent14@example.com", "password": None}, "A-EC-PASSWORD"),
+        (15, "Empty password", {"email": "absent15@example.com", "password": ""}, "A-EC-PASSWORD"), (16, "Whitespace password", {"email": "absent16@example.com", "password": "   "}, "A-EC-PASSWORD"),
+        (17, "Numeric password", {"email": "absent17@example.com", "password": 123}, "A-EC-PASSWORD"), (18, "Object password", {"email": "absent18@example.com", "password": {"x": 1}}, "A-EC-PASSWORD")]
+    for n, title, body, e in invalid:
+        c.append(tc("A", n, title, "POST", "/api/login", [400, 422], body=body, coverage=["domain", "schema"], ecs=[e], schema=ERROR,
+                    oracle="FR-02 requires scalar, nonblank, well-formed email and password inputs"))
+    c += [
+        tc("A", 19, "Unknown email", "POST", "/api/login", [401], body={"email": "unknown19@example.com", "password": "Wrong123!"}, coverage=["domain", "schema", "security"], ecs=["A-EC-INVALID", "A-EC-ENUM"], schema=ERROR,
+           assertions=[{"path": "error", "operator": "equals", "value": "Invalid email or password"}], oracle="FR-02 must not reveal which credential failed"),
+        tc("A", 20, "Wrong password", "POST", "/api/login", [401], body={"email": "admin@eshop.com", "password": "Wrong123!"}, coverage=["domain", "schema", "security"], ecs=["A-EC-INVALID", "A-EC-ENUM"], schema=ERROR,
+           assertions=[{"path": "error", "operator": "equals", "value": "Invalid email or password"}], oracle="FR-02 must not reveal which credential failed"),
+        tc("A", 21, "Empty JSON object", "POST", "/api/login", [400, 422], body={}, coverage=["domain", "schema"], ecs=["A-EC-BODY"], schema=ERROR),
+        tc("A", 22, "Malformed JSON", "POST", "/api/login", [400], raw='{"email":"x",', coverage=["domain", "schema"], ecs=["A-EC-BODY", "A-EC-SCHEMA"], schema=ERROR),
+        tc("A", 23, "Role field cannot select admin", "POST", "/api/login", [200], body={"email": "test@eshop.com", "password": "Test1234!", "role": "admin"}, coverage=["security", "schema"], ecs=["A-EC-MASS"], secs=["SEC-03"], schema=LOGIN,
+           tests=["pm.test('A-AI-023 stored role wins',()=>pm.expect(pm.response.json().user.role).to.eql('user'));"], oracle="FR-12 role comes from the account, not request input"),
+        tc("A", 24, "SQL injection in email", "POST", "/api/login", [401], body={"email": "' OR 1=1 --", "password": "x"}, coverage=["security", "schema"], ecs=["A-EC-INJECTION"], secs=["SEC-05"], schema=ERROR),
+        tc("A", 25, "SQL injection in password", "POST", "/api/login", [401], body={"email": "admin@eshop.com", "password": "' OR '1'='1"}, coverage=["security", "schema"], ecs=["A-EC-INJECTION"], secs=["SEC-05"], schema=ERROR),
+        tc("A", 26, "Failure response is JSON", "POST", "/api/login", [401], body={"email": "unknown26@example.com", "password": "x"}, coverage=["schema"], ecs=["A-EC-SCHEMA"], schema=ERROR),
+        tc("A", 27, "Long email rejected without 5xx", "POST", "/api/login", [400, 401, 422], body={"email": "a" * 300 + "@example.com", "password": "x"}, coverage=["domain", "security", "schema"], ecs=["A-EC-EMAIL"], schema=ERROR)]
+    for n, failures, status in [(28, 1, [200]), (29, 2, [200]), (30, 3, [403]), (31, 4, [403])]:
+        email, password, setup = lock_setup(str(n), failures)
+        c.append(tc("A", n, f"Correct password after {failures} consecutive failure(s)", "POST", "/api/login", status,
+                    body={"email": email, "password": password}, setup=setup, coverage=["state", "schema", "security"],
+                    ecs=["A-EC-LOCK"], schema=LOGIN if 200 in status else ERROR,
+                    oracle="FR-02 locks at three consecutive failures for 30 seconds"))
+    email, password, setup = lock_setup("32", 1)
+    c.append(tc("A", 32, "Success resets failed-attempt counter", "POST", "/api/login", [200], body={"email": email, "password": password}, setup=setup,
+                coverage=["state", "schema"], ecs=["A-EC-LOCK"], schema=LOGIN, oracle="FR-02 defines consecutive failures"))
+    email, password, setup = lock_setup("33", 3)
+    c.append(tc("A", 33, "Locked response leaks no secrets", "POST", "/api/login", [403], body={"email": email, "password": password}, setup=setup,
+                coverage=["state", "security", "schema"], ecs=["A-EC-LOCK", "A-EC-ENUM"], secs=["SEC-01"], schema=ERROR,
+                tests=["pm.test('A-AI-033 no secrets',()=>{const t=pm.response.text().toLowerCase();pm.expect(t).to.not.include('password');pm.expect(t).to.not.include('select ');});"]))
+    c.append(tc("A", 34, "Email case variation has stable behavior", "POST", "/api/login", [200, 401], body={"email": "TEST@ESHOP.COM", "password": "Test1234!"}, coverage=["domain", "schema"], ecs=["A-EC-EMAIL"]))
+    c.append(tc("A", 35, "Lock expires at 30-second boundary", "POST", "/api/login", [200], body={"email": "manual@example.com", "password": "Right123!"}, coverage=["state", "security"], ecs=["A-EC-LOCK"], manual=True,
+                oracle="FR-02 requires a 30-second lock; execute with controllable clock or timed fixture"))
+    student = [
+        (36, "JWT role matches persisted role", ["security", "schema"], ["A-EC-MASS"], ["SEC-03"], "Token-claim consistency was absent from response-only generation."),
+        (37, "Success response omits plaintext password", ["security", "schema"], ["A-EC-SCHEMA"], ["SEC-01"], "SEC-01 response exposure was missed when focusing only on storage."),
+        (38, "Unknown extra nested object is ignored", ["security", "schema"], ["A-EC-MASS"], [], "Nested mass-assignment input was not in the basic field matrix."),
+        (39, "Unicode email fails generically", ["domain", "security", "schema"], ["A-EC-EMAIL", "A-EC-ENUM"], [], "Unicode normalization was omitted by ASCII examples."),
+        (40, "Oversized password fails without 5xx", ["domain", "security", "schema"], ["A-EC-PASSWORD"], [], "Abuse-size input was omitted by nominal partitions.")]
+    bodies = [
+        {"email": "test@eshop.com", "password": "Test1234!"}, {"email": "admin@eshop.com", "password": "Admin123!"},
+        {"email": "test@eshop.com", "password": "Test1234!", "profile": {"role": "admin"}}, {"email": "tést@example.com", "password": "x"},
+        {"email": "absent40@example.com", "password": "x" * 10000}]
+    statuses = [[200], [200], [200], [400, 401, 422], [400, 401, 413, 422]]
+    for (n, title, cov, ecs_, secs, missed), body, status in zip(student, bodies, statuses):
+        tests = ["pm.test('A-STU-037 password absent',()=>pm.expect(pm.response.json().user).to.not.have.property('password')); "] if n == 37 else None
+        c.append(tc("A", n, title, "POST", "/api/login", status, body=body, coverage=cov, ecs=ecs_, secs=secs,
+                    schema=LOGIN if 200 in status else ERROR, tests=tests, missed=missed))
+    return c
 
 
-def build_fr14():
-    cases = []
-    login_admin = [{"action": "login", "role": "admin", "save": "admin_token"}]
-    login_user = [{"action": "login", "role": "user", "save": "user_token"}]
-    cases.append(case("C", 1, "Public category list returns an exact array schema", "GET", "/api/categories", [200],
-                      coverage=["domain", "schema"], ecs=["C-EC-LIST", "C-EC-SCHEMA"], schema=CATEGORY_LIST_SCHEMA))
-    cases.append(case("C", 2, "Category list is valid without authentication", "GET", "/api/categories", [200],
-                      coverage=["security", "schema"], ecs=["C-EC-LIST", "C-EC-SCHEMA"], secs=["SEC-02"], schema=CATEGORY_LIST_SCHEMA,
-                      oracle="API specification exposes GET /api/categories for product browsing"))
-    cases.append(case("C", 3, "Category ids are positive integers", "GET", "/api/categories", [200], coverage=["domain", "schema"],
-                      ecs=["C-EC-LIST", "C-EC-SCHEMA"], schema=CATEGORY_LIST_SCHEMA))
-    cases.append(case("C", 4, "Category names are nonblank strings", "GET", "/api/categories", [200], coverage=["domain", "schema"],
-                      ecs=["C-EC-LIST", "C-EC-SCHEMA"], schema=CATEGORY_LIST_SCHEMA))
-    create_specs = [
-        (5, "Admin creates a valid category", "HW06 Valid Category", login_admin, auth("Bearer {{admin_token}}"), [200], "C-EC-NAME-VALID"),
-        (6, "Create rejects missing token", "No Token", None, {}, [401], "C-EC-AUTH-INVALID"),
-        (7, "Create rejects malformed token", "Bad Token", None, auth("Bearer malformed"), [403], "C-EC-AUTH-INVALID"),
-        (8, "Create rejects normal-user token", "Role Escalation", login_user, auth("Bearer {{user_token}}"), [403], "C-EC-AUTH-USER"),
-        (9, "Create rejects empty name", "", login_admin, auth("Bearer {{admin_token}}"), [400, 422], "C-EC-NAME-BLANK"),
-        (10, "Create rejects whitespace-only name", "   ", login_admin, auth("Bearer {{admin_token}}"), [400, 422], "C-EC-NAME-BLANK"),
-        (11, "Create rejects missing name", None, login_admin, auth("Bearer {{admin_token}}"), [400, 422], "C-EC-NAME-BLANK"),
-        (12, "Create rejects null name", None, login_admin, auth("Bearer {{admin_token}}"), [400, 422], "C-EC-NAME-BLANK"),
-        (13, "Create rejects numeric name", 12345, login_admin, auth("Bearer {{admin_token}}"), [400, 422], "C-EC-NAME-INVALID-TYPE"),
-        (14, "Create accepts Vietnamese name", "Thiết bị thông minh", login_admin, auth("Bearer {{admin_token}}"), [200], "C-EC-NAME-VALID"),
-        (15, "Create accepts 255-character name robustness boundary", "C" * 255, login_admin, auth("Bearer {{admin_token}}"), [200], "C-EC-NAME-VALID"),
-        (16, "Create safely handles SQL metacharacters in name", "x'); DROP TABLE categories; --", login_admin, auth("Bearer {{admin_token}}"), [200], "C-EC-NAME-VALID"),
-        (17, "Create handles duplicate name consistently", "Điện thoại", login_admin, auth("Bearer {{admin_token}}"), [200, 409], "C-EC-NAME-VALID"),
-        (18, "Create rejects malformed JSON", "RAW", login_admin, auth("Bearer {{admin_token}}"), [400], "C-EC-NAME-INVALID-TYPE"),
-    ]
-    for index, title, name, setup, headers, statuses, ec_id in create_specs:
-        if index == 18:
-            kwargs = {"raw_body": "{\"name\":"}
-        elif index == 11:
-            kwargs = {"body": {}}
-        else:
-            kwargs = {"body": {"name": name}}
-        schema = CATEGORY_CREATE_SCHEMA if 200 in statuses and len(statuses) == 1 else ERROR_SCHEMA
-        if statuses == [200, 409]:
-            schema = None
-        cases.append(case("C", index, title, "POST", "/api/categories", statuses, headers=headers, setup=setup,
-                          coverage=["domain", "security", "schema"], ecs=[ec_id, "C-EC-CREATE", "C-EC-SCHEMA"],
-                          secs=["SEC-03"] if index == 8 else (["SEC-05"] if index == 16 else ["SEC-02"] if index in {6, 7} else []),
-                          schema=schema, oracle="FR-12/FR-14 and SEC-02/SEC-03/SEC-05", **kwargs))
-    update_specs = [
-        (19, "Admin updates an existing category", "Updated Category", auth("Bearer {{admin_token}}"), [200], "{{category_id}}"),
-        (20, "Update rejects missing token", "No Token Update", {}, [401], "{{category_id}}"),
-        (21, "Update rejects normal-user token", "Role Update", auth("Bearer {{user_token}}"), [403], "{{category_id}}"),
-        (22, "Update nonexistent id", "Missing ID", auth("Bearer {{admin_token}}"), [404], "999999"),
-        (23, "Update id zero", "Zero ID", auth("Bearer {{admin_token}}"), [404], "0"),
-        (24, "Update negative id", "Negative ID", auth("Bearer {{admin_token}}"), [404], "-1"),
-        (25, "Update nonnumeric id", "Text ID", auth("Bearer {{admin_token}}"), [400, 404], "abc"),
-        (26, "Update rejects empty name", "", auth("Bearer {{admin_token}}"), [400, 422], "{{category_id}}"),
-        (27, "Update safely handles SQL payload in id", "Safe", auth("Bearer {{admin_token}}"), [400, 404], "1%20OR%201=1"),
-        (28, "Update safely stores SQL-like name", "x', name='pwned", auth("Bearer {{admin_token}}"), [200], "{{category_id}}"),
-    ]
-    for index, title, name, headers, statuses, category_id in update_specs:
-        setup = copy.deepcopy(login_admin)
-        if index == 21:
-            setup = copy.deepcopy(login_user)
-        if "{{category_id}}" in category_id:
-            if not any(a.get("save") == "admin_token" for a in setup):
-                setup = copy.deepcopy(login_admin) + setup
-            setup.append({"action": "create_category", "token_var": "admin_token", "name": f"HW06 Update {index}", "save": "category_id"})
-        cases.append(case("C", index, title, "PUT", f"/api/categories/{category_id}", statuses, body={"name": name}, headers=headers, setup=setup,
-                          coverage=["domain", "state", "security", "schema"], ecs=["C-EC-UPDATE", "C-EC-ID-VALID" if "{{" in category_id else "C-EC-ID-INVALID", "C-EC-SCHEMA"],
-                          secs=["SEC-03"] if index == 21 else (["SEC-05"] if index in {27, 28} else ["SEC-02"] if index == 20 else []),
-                          schema=MESSAGE_SCHEMA if 200 in statuses else ERROR_SCHEMA, oracle="FR-14 update semantics, FR-12 access control, SEC-05"))
-    delete_specs = [
-        (29, "Admin deletes an existing category", auth("Bearer {{admin_token}}"), [200], "{{category_id}}"),
-        (30, "Delete rejects missing token", {}, [401], "{{category_id}}"),
-        (31, "Delete rejects malformed token", auth("Bearer bad-token"), [403], "{{category_id}}"),
-        (32, "Delete rejects normal-user token", auth("Bearer {{user_token}}"), [403], "{{category_id}}"),
-        (33, "Delete nonexistent id", auth("Bearer {{admin_token}}"), [404], "999999"),
-        (34, "Delete id zero", auth("Bearer {{admin_token}}"), [404], "0"),
-        (35, "Delete nonnumeric id", auth("Bearer {{admin_token}}"), [400, 404], "abc"),
-    ]
-    for index, title, headers, statuses, category_id in delete_specs:
-        setup = copy.deepcopy(login_admin)
-        if index == 32:
-            setup += copy.deepcopy(login_user)
-        if "{{category_id}}" in category_id:
-            setup.append({"action": "create_category", "token_var": "admin_token", "name": f"HW06 Delete {index}", "save": "category_id"})
-        cases.append(case("C", index, title, "DELETE", f"/api/categories/{category_id}", statuses, headers=headers, setup=setup,
-                          coverage=["state", "security", "schema"], ecs=["C-EC-DELETE", "C-EC-ID-VALID" if "{{" in category_id else "C-EC-ID-INVALID", "C-EC-SCHEMA"],
-                          secs=["SEC-03"] if index == 32 else (["SEC-02"] if index in {30, 31} else []),
-                          schema=MESSAGE_SCHEMA if 200 in statuses else ERROR_SCHEMA, oracle="FR-12/FR-14 category deletion contract"))
-    # Student-origin adaptations from HW02/HW04.
-    cases.append(case("C", 36, "Spaces-only category name is rejected after trimming", "POST", "/api/categories", [400, 422],
-                      body={"name": "   "}, headers=auth("Bearer {{admin_token}}"), setup=copy.deepcopy(login_admin),
-                      coverage=["domain", "security", "schema"], ecs=["C-EC-NAME-BLANK", "C-EC-CREATE"], schema=ERROR_SCHEMA,
-                      missed="Adapted from HW02 BUG-FR14-002 and HW04 FR14-AUTO-008; blank-equivalent input was missed when only empty string was prompted."))
-    cases.append(case("C", 37, "Normal user cannot create a category", "POST", "/api/categories", [403],
-                      body={"name": "Forbidden User Category"}, headers=auth("Bearer {{user_token}}"), setup=copy.deepcopy(login_user),
-                      coverage=["security", "state", "schema"], ecs=["C-EC-AUTH-USER", "C-EC-CREATE"], secs=["SEC-03"], schema=ERROR_SCHEMA,
-                      missed="Adapted from HW02 BUG-FR14-004; the first feature-only prompt treated any valid JWT as sufficient and missed role escalation."))
-    html_name = "<script>alert('category')</script>"
-    cases.append(case("C", 38, "HTML category name is returned only as JSON data", "POST", "/api/categories", [200],
-                      body={"name": html_name}, headers=auth("Bearer {{admin_token}}"), setup=copy.deepcopy(login_admin),
-                      coverage=["security", "schema"], ecs=["C-EC-NAME-VALID", "C-EC-CREATE"], secs=["SEC-04"], schema=CATEGORY_CREATE_SCHEMA,
-                      missed="Adapted from prior safe-rendering cases; SEC-04 crosses the API/UI boundary and was absent from generic CRUD generation."))
-    setup = copy.deepcopy(login_admin) + [
-        {"action": "create_category", "token_var": "admin_token", "name": "HW06 Control Category", "save": "control_category_id"},
-        {"action": "create_category", "token_var": "admin_token", "name": "HW06 Target Category", "save": "category_id"},
-    ]
-    cases.append(case("C", 39, "Updating one category leaves unrelated categories unchanged", "PUT", "/api/categories/{{category_id}}", [200],
-                      body={"name": "HW06 Target Updated"}, headers=auth("Bearer {{admin_token}}"), setup=setup,
-                      coverage=["state", "schema"], ecs=["C-EC-UPDATE", "C-EC-ID-VALID"], schema=MESSAGE_SCHEMA,
-                      tests=["pm.sendRequest({url:pm.variables.replaceIn('{{base_url}}/api/categories'),method:'GET',header:{'X-Student-Id':pm.variables.replaceIn('{{student_id}}')}},(err,res)=>pm.test('C-STU-039 control category unchanged',()=>{pm.expect(err).to.equal(null);const rows=res.json();const id=Number(pm.collectionVariables.get('control_category_id'));pm.expect(rows.find(r=>r.id===id).name).to.eql('HW06 Control Category');}));"],
-                      missed="Adapted from the HW02 FR-14 output-side-effect rule; nominal update tests often assert only the target response."))
-    setup = copy.deepcopy(login_admin) + [{"action": "create_category", "token_var": "admin_token", "name": "HW06 Repeat Delete", "save": "category_id"}]
-    cases.append(case("C", 40, "Deleting the same category twice returns not found on repetition", "DELETE", "/api/categories/{{category_id}}", [200],
-                      headers=auth("Bearer {{admin_token}}"), setup=setup, coverage=["state", "schema"],
-                      ecs=["C-EC-DELETE", "C-EC-ID-VALID"], schema=MESSAGE_SCHEMA,
-                      tests=["pm.sendRequest({url:pm.variables.replaceIn('{{base_url}}/api/categories/{{category_id}}'),method:'DELETE',header:{'X-Student-Id':pm.variables.replaceIn('{{student_id}}'),'Authorization':`Bearer ${pm.collectionVariables.get('admin_token')}`}},(err,res)=>pm.test('C-STU-040 repeated delete is 404',()=>{pm.expect(err).to.equal(null);pm.expect(res.code).to.eql(404);}));"],
-                      missed="Idempotency/repetition requires a second mutation and was missing from the single-operation CRUD matrix."))
-    return cases
+def fr07():
+    c, base = [], {"id": 1, "name": "iPhone 15 Pro Max", "price": 30000000, "quantity": 1}
+    def add(n, title, body, status, *, headers=MISSING, setup=None, coverage=None, ecs=None, secs=None, schema=MISSING, tests=None, missed="", oracle="FR-07 and API specification"):
+        if headers is MISSING:
+            headers = bearer("case_user_token")
+        return tc("B", n, title, "POST", "/api/cart", status, body=body, headers=headers, setup=setup, coverage=coverage, ecs=ecs, secs=secs, schema=schema, tests=tests, missed=missed, oracle=oracle)
+    _, _, setup = new_user("cart01")
+    c.append(add(1, "Add existing product quantity one", base, [200], setup=setup, coverage=["domain", "state", "schema"], ecs=["B-EC-VALID", "B-EC-QTY", "B-EC-SCHEMA"], schema=CART_OK))
+    for n, title, headers, status in [(2, "Missing JWT", {}, [401]), (3, "Empty bearer", {"Authorization": "Bearer "}, [401]), (4, "Malformed JWT", bearer("bad"), [403]), (5, "Wrong scheme", {"Authorization": "Basic abc"}, [403]), (6, "Tampered JWT", {"Authorization": "Bearer {{user_token}}x"}, [403])]:
+        c.append(add(n, title, base, status, headers=headers, setup=[], coverage=["security", "schema"], ecs=["B-EC-AUTH"], secs=["SEC-02"], schema=ERROR, oracle="SEC-02 requires a valid JWT"))
+    bad = [
+        (7, "Missing id", {k:v for k,v in base.items() if k!="id"}, "B-EC-ID"), (8, "Null id", {**base,"id":None}, "B-EC-ID"),
+        (9, "Zero id", {**base,"id":0}, "B-EC-ID"), (10, "Negative id", {**base,"id":-1}, "B-EC-ID"),
+        (11, "Decimal id", {**base,"id":1.5}, "B-EC-ID"), (12, "String id", {**base,"id":"1"}, "B-EC-ID"),
+        (13, "Nonexistent id", {**base,"id":999999}, "B-EC-ID"), (14, "Missing quantity", {k:v for k,v in base.items() if k!="quantity"}, "B-EC-QTY-BAD"),
+        (15, "Null quantity", {**base,"quantity":None}, "B-EC-QTY-BAD"), (16, "Zero quantity", {**base,"quantity":0}, "B-EC-QTY-BAD"),
+        (17, "Negative quantity", {**base,"quantity":-1}, "B-EC-QTY-BAD"), (18, "Decimal quantity", {**base,"quantity":1.5}, "B-EC-QTY-BAD"),
+        (19, "String quantity", {**base,"quantity":"2"}, "B-EC-QTY-BAD"), (20, "Boolean quantity", {**base,"quantity":True}, "B-EC-QTY-BAD"),
+        (21, "Missing name", {k:v for k,v in base.items() if k!="name"}, "B-EC-ITEM-BAD"), (22, "Empty name", {**base,"name":""}, "B-EC-ITEM-BAD"),
+        (23, "Missing price", {k:v for k,v in base.items() if k!="price"}, "B-EC-ITEM-BAD"), (24, "Zero price", {**base,"price":0}, "B-EC-ITEM-BAD"),
+        (25, "Negative price", {**base,"price":-1}, "B-EC-ITEM-BAD")]
+    for n,title,body,e in bad:
+        _,_,setup = new_user(f"cart{n}")
+        c.append(add(n,title,body,[400,404,422],setup=setup,coverage=["domain","schema"],ecs=[e],schema=ERROR,oracle="FR-07 requires an existing product, canonical fields, and positive integer quantity"))
+    for n, qty in [(26,1),(27,2)]:
+        _,_,setup=new_user(f"cart{n}")
+        c.append(add(n,f"Valid quantity {qty}",{**base,"quantity":qty},[200],setup=setup,coverage=["domain","schema"],ecs=["B-EC-QTY"],schema=CART_OK))
+    _,_,setup=new_user("cart28"); setup.append({"action":"add_cart","token_var":"case_user_token","body":base})
+    c.append(add(28,"Same product merges and sums quantity",{**base,"quantity":2},[200],setup=setup,coverage=["state","schema"],ecs=["B-EC-MERGE"],schema=CART_OK,
+                 tests=[cart_check("B-AI-028","const m=cart.filter(x=>x.id===1);pm.expect(m).to.have.length(1);pm.expect(m[0].quantity).to.eql(3);","merge")],oracle="FR-07 same product increases quantity without a new row"))
+    _,_,setup=new_user("cart29"); setup.append({"action":"add_cart","token_var":"case_user_token","body":base})
+    c.append(add(29,"Different product creates second line",{"id":2,"name":"Samsung Galaxy S24 Ultra","price":28000000,"quantity":1},[200],setup=setup,coverage=["state","schema"],ecs=["B-EC-MULTI"],schema=CART_OK,
+                 tests=[cart_check("B-AI-029","pm.expect(cart.map(x=>x.id)).to.include.members([1,2]);","distinct items")]))
+    c.append(tc("B",30,"Malformed JSON","POST","/api/cart",[400],raw='{"id":1,',headers=bearer("user_token"),coverage=["domain","schema"],ecs=["B-EC-BODY","B-EC-SCHEMA"],schema=ERROR))
+    _,_,setup=new_user("cart31"); c.append(add(31,"Empty object",{},[400,422],setup=setup,coverage=["domain","schema"],ecs=["B-EC-BODY"],schema=ERROR))
+    _,_,setup=new_user("cart32"); c.append(add(32,"SQL text remains data",{**base,"name":"x' OR 1=1 --"},[200],setup=setup,coverage=["security","schema"],ecs=["B-EC-INJECTION"],secs=["SEC-05"],schema=CART_OK))
+    _,_,setup=new_user("cart33"); c.append(add(33,"HTML text remains inert",{**base,"name":"<script>alert(1)</script>"},[200],setup=setup,coverage=["security","schema"],ecs=["B-EC-XSS"],secs=["SEC-04"],schema=CART_OK))
+    _,_,setup=new_user("cart34"); c.append(add(34,"Forged price rejected",{**base,"price":1},[400,409,422],setup=setup,coverage=["security","state","schema"],ecs=["B-EC-TRUST"],schema=ERROR,oracle="Server-owned catalog price must not be forged"))
+    _,_,setup=new_user("cart35"); c.append(add(35,"Forged name rejected",{**base,"name":"Forged"},[400,409,422],setup=setup,coverage=["security","state","schema"],ecs=["B-EC-TRUST"],schema=ERROR,oracle="Server-owned product identity must stay canonical"))
+    student_specs=[
+        (36,"Repeated quantities sum arithmetically",{**base,"quantity":3},"B-EC-MERGE","Cross-request 2+3 sum was absent from the nominal merge case."),
+        (37,"Two authenticated users have isolated carts",{"id":2,"name":"Samsung Galaxy S24 Ultra","price":28000000,"quantity":1},"B-EC-ISOLATION","Multi-principal setup was omitted by single-user generation."),
+        (38,"Body user_id cannot redirect ownership",{**base,"user_id":1},"B-EC-MASS","Ownership mass assignment was not in the documented body."),
+        (39,"Overflow-like quantity rejected",{**base,"quantity":2147483648},"B-EC-QTY-BAD","Unsafe magnitude was missed by lower-bound analysis."),
+        (40,"Prototype-looking property ignored",{**base,"__proto__":{"admin":True}},"B-EC-MASS","JavaScript object-property abuse needs deliberate threat modeling.")]
+    for n,title,body,e,missed in student_specs:
+        _,_,setup=new_user(f"cart{n}")
+        status=[400,422] if n==39 else [200]
+        c.append(add(n,title,body,status,setup=setup,coverage=["security","state","schema"],ecs=[e],schema=ERROR if n==39 else CART_OK,missed=missed))
+    return c
 
 
-def api(api_id, pool, feature, method, path, contract, ecs, cases):
-    return {"api_id": api_id, "pool": pool, "feature": feature, "method": method, "path": path,
-            "contract": contract, "equivalence_classes": ecs, "cases": cases}
+def fr15():
+    c=[]; valid={"name":"HW06 Product","price":100000,"description":"Test","imageUrl":"https://example.com/p.png","category_id":1}
+    # Reuse tokens captured by A-AI-001/A-AI-002. JWTs remain valid even when
+    # later lockout probes change account login state.
+    admin=[]
+    def create(n,title,body,status,*,headers=MISSING,setup=MISSING,coverage=None,ecs=None,secs=None,schema=MISSING,tests=None,missed="",oracle="FR-15 and API specification"):
+        return tc("C",n,title,"POST","/api/products",status,body=body,headers=bearer("admin_token") if headers is MISSING else headers,
+                  setup=copy.deepcopy(admin if setup is MISSING else setup),coverage=coverage,ecs=ecs,secs=secs,schema=schema,tests=tests,missed=missed,oracle=oracle)
+    c.append(create(1,"Admin creates valid product",valid,[200],coverage=["domain","state","schema"],ecs=["C-EC-VALID","C-EC-SCHEMA"],schema=PRODUCT_OK))
+    for n,title,headers,status,setup in [(2,"Missing JWT",{},[401],[]),(3,"Malformed JWT",bearer("bad"),[403],[]),(4,"Wrong scheme",{"Authorization":"Basic abc"},[403],[]),(5,"Normal user JWT",bearer("user_token"),[403],[])]:
+        c.append(create(n,title,valid,status,headers=headers,setup=setup,coverage=["security","schema"],ecs=["C-EC-AUTH"],secs=["SEC-02","SEC-03"] if n==5 else ["SEC-02"],schema=ERROR,oracle="FR-12/SEC-02/SEC-03 require admin JWT"))
+    rows=[
+        (6,"Missing name",{k:v for k,v in valid.items() if k!="name"},[400,422],"C-EC-NAME-BAD"),(7,"Null name",{**valid,"name":None},[400,422],"C-EC-NAME-BAD"),
+        (8,"Empty name",{**valid,"name":""},[400,422],"C-EC-NAME-BAD"),(9,"Whitespace name",{**valid,"name":"   "},[400,422],"C-EC-NAME-BAD"),
+        (10,"Numeric name",{**valid,"name":123},[400,422],"C-EC-NAME-BAD"),(11,"Name length one",{**valid,"name":"A"},[200],"C-EC-NAME"),
+        (12,"Name length 254",{**valid,"name":"a"*254},[200],"C-EC-NAME"),(13,"Name length 255",{**valid,"name":"a"*255},[200],"C-EC-NAME"),
+        (14,"Name length 256",{**valid,"name":"a"*256},[400,422],"C-EC-NAME-BAD"),(15,"Missing price",{k:v for k,v in valid.items() if k!="price"},[400,422],"C-EC-PRICE-BAD"),
+        (16,"Null price",{**valid,"price":None},[400,422],"C-EC-PRICE-BAD"),(17,"Negative price",{**valid,"price":-1},[400,422],"C-EC-PRICE-BAD"),
+        (18,"Zero price",{**valid,"price":0},[400,422],"C-EC-PRICE-BAD"),(19,"Price one",{**valid,"price":1},[200],"C-EC-PRICE"),
+        (20,"Positive decimal price",{**valid,"price":0.01},[200],"C-EC-PRICE"),(21,"String price",{**valid,"price":"100"},[400,422],"C-EC-PRICE-BAD"),
+        (22,"Boolean price",{**valid,"price":True},[400,422],"C-EC-PRICE-BAD"),(23,"Array price",{**valid,"price":[1]},[400,422],"C-EC-PRICE-BAD"),
+        (24,"Missing category",{k:v for k,v in valid.items() if k!="category_id"},[400,422],"C-EC-CATEGORY-BAD"),(25,"Null category",{**valid,"category_id":None},[400,422],"C-EC-CATEGORY-BAD"),
+        (26,"Category zero",{**valid,"category_id":0},[400,422],"C-EC-CATEGORY-BAD"),(27,"Negative category",{**valid,"category_id":-1},[400,422],"C-EC-CATEGORY-BAD"),
+        (28,"Nonexistent category",{**valid,"category_id":999999},[400,404,422],"C-EC-CATEGORY-BAD"),(29,"String category",{**valid,"category_id":"1"},[400,422],"C-EC-CATEGORY-BAD"),
+        (30,"Existing category three",{**valid,"category_id":3},[200],"C-EC-CATEGORY")]
+    for n,title,body,status,e in rows:
+        c.append(create(n,title,body,status,coverage=["domain","schema"],ecs=[e],schema=PRODUCT_OK if 200 in status else ERROR,
+                        oracle="FR-15: name required <=255; price numeric >0; category must exist"))
+    c += [
+        create(31,"Optional description and image omitted",{"name":"Minimal","price":1,"category_id":1},[200],coverage=["domain","schema"],ecs=["C-EC-OPTIONAL"],schema=PRODUCT_OK),
+        tc("C",32,"Malformed JSON","POST","/api/products",[400],raw='{"name":"x",',headers=bearer("admin_token"),setup=admin,coverage=["domain","schema"],ecs=["C-EC-BODY","C-EC-SCHEMA"],schema=ERROR),
+        create(33,"SQL text remains data",{**valid,"name":"x'); DROP TABLE products; --"},[200],coverage=["security","schema"],ecs=["C-EC-INJECTION"],secs=["SEC-05"],schema=PRODUCT_OK),
+        create(34,"HTML text remains inert",{**valid,"name":"<script>alert(1)</script>"},[200],coverage=["security","schema"],ecs=["C-EC-XSS"],secs=["SEC-04"],schema=PRODUCT_OK),
+        create(35,"Role field cannot affect authorization",{**valid,"role":"admin"},[200],coverage=["security","schema"],ecs=["C-EC-MASS"],secs=["SEC-03"],schema=PRODUCT_OK)]
+    persistence=("pm.sendRequest({url:pm.variables.replaceIn('{{base_url}}/api/products/'+pm.response.json().id),method:'GET',header:{'X-Student-Id':pm.variables.replaceIn('{{student_id}}')}},"
+                 "(err,res)=>pm.test('C-STU-036 persisted fields',()=>{pm.expect(err).to.equal(null);const p=res.json();pm.expect(p.name).to.eql('Persistent Product');pm.expect(Number(p.price)).to.eql(123456);pm.expect(p.category_id).to.eql(2);}));")
+    c += [
+        create(36,"Created product persists exact stable fields",{**valid,"name":"Persistent Product","price":123456,"category_id":2},[200],coverage=["state","schema"],ecs=["C-EC-PERSIST"],schema=PRODUCT_OK,tests=[persistence],missed="Initial create cases lacked read-after-write verification."),
+        create(37,"User JWT plus forged role still forbidden",{**valid,"role":"admin"},[403],headers=bearer("user_token"),setup=[],coverage=["security","state","schema"],ecs=["C-EC-AUTH","C-EC-MASS"],secs=["SEC-03"],schema=ERROR,missed="Combined JWT/body role escalation was absent from independent partitions."),
+        create(38,"Stale category reference rejected",{**valid,"category_id":999998},[400,404,422],coverage=["state","domain","schema"],ecs=["C-EC-CATEGORY-BAD"],schema=ERROR,missed="Stale cross-entity references need state-aware generation."),
+        create(39,"Unsafe-integer price rejected",{**valid,"price":9007199254740992},[400,422],coverage=["domain","security","schema"],ecs=["C-EC-PRICE-BAD"],schema=ERROR,missed="Positive-price partition omitted numeric precision overflow."),
+        create(40,"Server-controlled id and owner fields ignored",{**valid,"id":999999,"user_id":1,"created_at":"2000-01-01"},[200],coverage=["security","state","schema"],ecs=["C-EC-MASS"],schema=PRODUCT_OK,tests=["pm.test('C-STU-040 id assigned by server',()=>pm.expect(pm.response.json().id).to.not.eql(999999));"],missed="Mass assignment needs explicit server-controlled field probes.")]
+    return c
+
+
+def api(api_id, pool, feature, path, contract, ecs, cases):
+    return {"api_id":api_id,"pool":pool,"feature":feature,"method":"POST","path":path,"contract":contract,"equivalence_classes":ecs,"cases":cases}
 
 
 def main():
-    fr03_ecs = [
-        ec("A-EC-EMAIL-REGISTERED", "email", "registered valid email", "VALID", "FR-03 registered account"),
-        ec("A-EC-EMAIL-INVALID", "email", "missing/malformed/unregistered", "INVALID", "No OTP for invalid input"),
-        ec("A-EC-OTP-VALID", "resetToken", "correct six digits for same email", "VALID", "FR-03/SEC-07"),
-        ec("A-EC-OTP-INVALID", "resetToken", "wrong shape/value/email", "INVALID", "FR-03/SEC-07"),
-        ec("A-EC-PASSWORD-STRONG", "newPassword", "8+ with upper/lower/digit/allowed special", "VALID", "FR-01/FR-03"),
-        ec("A-EC-PASSWORD-WEAK", "newPassword", "missing strength rule", "INVALID", "FR-01/FR-03"),
-        ec("A-EC-OTP-LIFECYCLE", "OTP state", "issued/rotated/used/expired", "VALID", "SEC-07 lifecycle"),
-        ec("A-EC-SCHEMA", "response", "exact success/error JSON", "VALID", "HW06 schema requirement"),
-    ]
-    fr11_ecs = [
-        ec("B-EC-AUTH-VALID", "JWT", "valid actor token", "VALID", "SEC-02"),
-        ec("B-EC-AUTH-INVALID", "JWT", "missing/malformed/wrong scheme", "INVALID", "SEC-02"),
-        ec("B-EC-HISTORY-EMPTY", "orders", "zero owned orders", "VALID", "FR-11 empty history"),
-        ec("B-EC-HISTORY-NONEMPTY", "orders", "one or more owned orders", "VALID", "FR-11 history"),
-        ec("B-EC-ORDER-ID", "order id", "valid and invalid identifiers", "VALID", "Detail/cancel routes"),
-        ec("B-EC-STATUS", "status", "five specified states", "VALID", "FR-10"),
-        ec("B-EC-OWNERSHIP", "owner", "owner/non-owner/public", "VALID", "FR-11/SEC-02"),
-        ec("B-EC-CANCEL-ALLOWED", "cancel state", "pending or confirmed", "VALID", "FR-10"),
-        ec("B-EC-CANCEL-FORBIDDEN", "cancel state", "shipping/delivered/canceled", "INVALID", "FR-10"),
-        ec("B-EC-SCHEMA", "response", "exact order/error JSON", "VALID", "HW06 schema requirement"),
-    ]
-    fr14_ecs = [
-        ec("C-EC-LIST", "category list", "zero or more category records", "VALID", "FR-14 view"),
-        ec("C-EC-AUTH-INVALID", "JWT", "missing/malformed", "INVALID", "SEC-02"),
-        ec("C-EC-AUTH-USER", "role", "authenticated non-admin", "INVALID", "SEC-03"),
-        ec("C-EC-NAME-VALID", "name", "nonblank string", "VALID", "FR-14"),
-        ec("C-EC-NAME-BLANK", "name", "missing/null/empty/whitespace", "INVALID", "FR-14 required"),
-        ec("C-EC-NAME-INVALID-TYPE", "name", "wrong type or malformed body", "INVALID", "FR-14"),
-        ec("C-EC-ID-VALID", "category id", "existing positive integer", "VALID", "FR-14 mutation"),
-        ec("C-EC-ID-INVALID", "category id", "missing/zero/negative/nonnumeric", "INVALID", "FR-14 mutation"),
-        ec("C-EC-CREATE", "create", "accepted/rejected mutation", "VALID", "FR-14"),
-        ec("C-EC-UPDATE", "update", "target-only state change", "VALID", "FR-14 CRUD"),
-        ec("C-EC-DELETE", "delete", "existing/nonexisting/repeated", "VALID", "FR-14"),
-        ec("C-EC-SCHEMA", "response", "exact category/error JSON", "VALID", "HW06 schema requirement"),
-    ]
-    data = {
-        "meta": {
-            "assignment": "HW06-AI",
-            "student_id": "23127272",
-            "base_url": "http://localhost:3000",
-            "sut_repository": "https://github.com/ttbhanh/eshop-sut",
-            "sut_commit": "85af3ba875c88283615e22cb108f13e2fccaf0e9",
-            "generated_at": "2026-08-18",
-            "selection_basis": "HW02 and HW04 final selections: FR-03, FR-11, FR-14",
-            "review_status": "AI preliminary review complete; student confirmation/signature still required",
-            "security_dispositions": {
-                "SEC-06": {
-                    "status": "DEFERRED_NOT_APPLICABLE",
-                    "reason": "The selected FR-03, FR-11, and FR-14 APIs do not update profiles; SEC-06 was already exercised in HW02/HW04 and is listed as an explicit out-of-scope security baseline rather than falsely attributed to these endpoints."
-                }
-            },
-        },
-        "apis": [
-            api("FR-03", "A", "Forgot password and password reset", "POST",
-                "/api/forgot-password + /api/reset-password", "Two-step OTP reset with strong password and SEC-07 lifecycle", fr03_ecs, build_fr03()),
-            api("FR-11", "B", "Order history and cancellation", "GET",
-                "/api/orders/my-orders + supporting detail/cancel routes", "Owned order history plus FR-10 cancellation rules", fr11_ecs, build_fr11()),
-            api("FR-14", "C", "Category management", "GET",
-                "/api/categories and /api/categories/:id", "Category view/create/update/delete with admin authorization", fr14_ecs, build_fr14()),
-        ],
-    }
-    ai_reviewed = copy.deepcopy(data)
-    for selected_api in ai_reviewed["apis"]:
-        selected_api["cases"] = [generated_case for generated_case in selected_api["cases"] if generated_case["origin"] == "AI"]
-    original = copy.deepcopy(ai_reviewed)
-    for selected_api in original["apis"]:
-        for selected_case in selected_api["cases"]:
-            selected_case["audit"] = {
-                "verdict": "INCOMPLETE",
-                "reason": "Raw AI generation requires review against requirements, source, and prior student artifacts.",
-                "fix": "Review expected status/schema, prerequisites, security mapping, and duplicate coverage before execution.",
-                "reviewer": "Unreviewed AI output",
-            }
-    ORIGINAL.write_text(json.dumps(original, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    AI_REVIEWED.write_text(json.dumps(ai_reviewed, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    OUT.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"original": str(ORIGINAL), "ai_reviewed": str(AI_REVIEWED), "reviewed_and_extended": str(OUT),
-                      "counts": {a["api_id"]: len(a["cases"]) for a in data["apis"]}}, indent=2))
+    a_ec=[ec("A-EC-VALID","credentials","registered/correct","VALID","FR-02"),ec("A-EC-INVALID","credentials","unknown/wrong","INVALID","FR-02"),ec("A-EC-EMAIL","email","valid/invalid formats and types","INVALID","FR-02"),ec("A-EC-PASSWORD","password","missing/blank/wrong type/oversized","INVALID","FR-02"),ec("A-EC-BODY","body","empty/malformed","INVALID","API contract"),ec("A-EC-LOCK","state","0..3 failures/reset/expiry","VALID","FR-02"),ec("A-EC-ENUM","error","generic non-disclosing","VALID","FR-02"),ec("A-EC-INJECTION","input","SQL metacharacters","INVALID","SEC-05"),ec("A-EC-MASS","extra fields","role/nested claims","INVALID","SEC-03"),ec("A-EC-SCHEMA","response","JWT/error JSON and secret absence","VALID","HW06")]
+    b_ec=[ec("B-EC-VALID","item","canonical existing product","VALID","FR-07"),ec("B-EC-AUTH","JWT","missing/malformed","INVALID","SEC-02"),ec("B-EC-ID","id","missing/nonpositive/noninteger/nonexistent","INVALID","FR-07"),ec("B-EC-QTY","quantity","positive integer","VALID","FR-07"),ec("B-EC-QTY-BAD","quantity","missing/nonpositive/noninteger/overflow","INVALID","FR-07"),ec("B-EC-ITEM-BAD","name/price","missing/forged/invalid","INVALID","FR-07"),ec("B-EC-MERGE","state","same item merges","VALID","FR-07"),ec("B-EC-MULTI","state","different items separate","VALID","FR-07"),ec("B-EC-ISOLATION","owner","per-user carts","VALID","SEC-02"),ec("B-EC-TRUST","catalog fields","server owned","INVALID","Integrity"),ec("B-EC-BODY","body","empty/malformed","INVALID","API contract"),ec("B-EC-INJECTION","name","SQL text","VALID","SEC-05"),ec("B-EC-XSS","name","HTML text","VALID","SEC-04"),ec("B-EC-MASS","extra fields","ownership/prototype","INVALID","Trust boundary"),ec("B-EC-SCHEMA","response","exact JSON","VALID","HW06")]
+    c_ec=[ec("C-EC-VALID","product","valid fields","VALID","FR-15"),ec("C-EC-AUTH","JWT/role","missing/invalid/non-admin","INVALID","SEC-02/03"),ec("C-EC-NAME","name","1..255 chars","VALID","FR-15"),ec("C-EC-NAME-BAD","name","missing/blank/type/>255","INVALID","FR-15"),ec("C-EC-PRICE","price","number >0","VALID","FR-15"),ec("C-EC-PRICE-BAD","price","missing/nonpositive/type/unsafe","INVALID","FR-15"),ec("C-EC-CATEGORY","category","existing","VALID","FR-15"),ec("C-EC-CATEGORY-BAD","category","missing/nonexisting/type","INVALID","FR-15"),ec("C-EC-OPTIONAL","description/image","omitted/valid","VALID","FR-15"),ec("C-EC-BODY","body","malformed","INVALID","API contract"),ec("C-EC-INJECTION","name","SQL text","VALID","SEC-05"),ec("C-EC-XSS","name","HTML text","VALID","SEC-04"),ec("C-EC-MASS","extra fields","role/id/owner","INVALID","Trust boundary"),ec("C-EC-PERSIST","state","read-after-write","VALID","FR-15"),ec("C-EC-SCHEMA","response","exact JSON","VALID","HW06")]
+    data={"meta":{"assignment":"HW06-AI","student_id":"23127272","base_url":"http://localhost:3000","sut_repository":"https://github.com/ttbhanh/eshop-sut","sut_commit":"85af3ba875c88283615e22cb108f13e2fccaf0e9","generated_at":"2026-08-18","selection_basis":"Revised group allocation: member 1 APIs FR-02, FR-07, FR-15","review_status":"AI preliminary review complete; student verdict and extension ownership confirmation required","security_dispositions":{"SEC-06":{"status":"DEFERRED_NOT_APPLICABLE","reason":"Selected operations do not update profiles."},"SEC-07":{"status":"DEFERRED_NOT_APPLICABLE","reason":"Selected operations do not issue or consume OTPs."}}},"apis":[api("FR-02","A","Login and account lockout","/api/login","JWT login plus three-failure/30-second lockout",a_ec,fr02()),api("FR-07","B","Add product to cart","/api/cart","Authenticated validated cart mutation with merge and isolation",b_ec,fr07()),api("FR-15","C","Create product","/api/products","Admin-only validated product creation and persistence",c_ec,fr15())]}
+    reviewed=copy.deepcopy(data)
+    for a in reviewed["apis"]: a["cases"]=[x for x in a["cases"] if x["origin"]=="AI"]
+    original=copy.deepcopy(reviewed)
+    for a in original["apis"]:
+        for x in a["cases"]: x["audit"]={"verdict":"INCOMPLETE","reason":"Raw AI output requires human review.","fix":"Review oracle, coverage, setup, schema, and safety.","reviewer":"Unreviewed AI output"}
+    ORIGINAL.write_text(json.dumps(original,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    REVIEWED.write_text(json.dumps(reviewed,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    OUT.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    print(json.dumps({"counts":{a["api_id"]:len(a["cases"]) for a in data["apis"]}},indent=2))
 
 
-if __name__ == "__main__":
-    main()
+if __name__=="__main__": main()

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup Newman CI Evidence"
+  short_description: "Build honest passing and failing Newman CI runs"
+  default_prompt: "Use $setup-newman-ci-evidence to configure and validate GitHub Actions evidence runs for my Newman API suite."

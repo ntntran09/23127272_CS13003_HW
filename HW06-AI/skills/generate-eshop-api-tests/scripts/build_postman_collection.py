@@ -17,101 +17,6 @@ def script_event(listen: str, lines: list[str]) -> dict[str, Any]:
     return {"listen": listen, "script": {"type": "text/javascript", "exec": lines}}
 
 
-def setup_script(case: dict[str, Any]) -> list[str]:
-    actions = case.get("request", {}).get("setup", [])
-    if not actions:
-        return []
-    lines = [
-        "(async function () {",
-        "const baseUrl = pm.variables.replaceIn('{{base_url}}');",
-        "const studentId = pm.variables.replaceIn('{{student_id}}');",
-        "async function send(method, path, body, token) {",
-        "  const headers = { 'X-Student-Id': studentId };",
-        "  if (body !== undefined) headers['Content-Type'] = 'application/json';",
-        "  if (token) headers.Authorization = `Bearer ${token}`;",
-        "  const response = await new Promise((resolve, reject) => {",
-        "    pm.sendRequest({ url: baseUrl + path, method, header: headers, body: body === undefined ? undefined : { mode: 'raw', raw: JSON.stringify(body) } }, (error, result) => {",
-        "      if (error) reject(error); else resolve(result);",
-        "    });",
-        "  });",
-        "  if (response.code >= 500) throw new Error(`Setup ${method} ${path} failed with ${response.code}: ${response.text()}`);",
-        "  return response;",
-        "}",
-        "async function login(email, password, saveAs) {",
-        "  const response = await send('POST', '/api/login', { email, password });",
-        "  if (response.code !== 200 || !response.json().token) throw new Error(`Setup login failed for ${email}: ${response.code}`);",
-        "  pm.collectionVariables.set(saveAs, response.json().token);",
-        "  return response.json().token;",
-        "}",
-    ]
-    for action in actions:
-        kind = action["action"]
-        if kind == "login":
-            role = action.get("role", "user")
-            email = action.get("email", "admin@eshop.com" if role == "admin" else "test@eshop.com")
-            password = action.get("password", "Admin123!" if role == "admin" else "Test1234!")
-            save = action.get("save", f"{role}_token")
-            lines.append(f"await login({json.dumps(email)}, {json.dumps(password)}, {json.dumps(save)});")
-        elif kind == "forgot_otp":
-            email = action.get("email", "test@eshop.com")
-            save = action.get("save", "reset_token")
-            lines += [
-                f"const forgotResponse = await send('POST', '/api/forgot-password', {{ email: {json.dumps(email)} }});",
-                "if (forgotResponse.code !== 200 || !forgotResponse.json().resetToken) throw new Error(`Setup forgot-password failed: ${forgotResponse.code}`);",
-                f"pm.collectionVariables.set({json.dumps(save)}, forgotResponse.json().resetToken);",
-            ]
-        elif kind == "register_user":
-            name = action.get("name", "HW06 Secondary User")
-            email = action["email"]
-            password = action.get("password", "Second123!")
-            lines.append(f"await send('POST', '/api/register', {{ name: {json.dumps(name)}, email: {json.dumps(email)}, password: {json.dumps(password)} }});")
-        elif kind == "create_order":
-            token_var = action.get("token_var", "user_token")
-            save = action.get("save", "order_id")
-            total = action.get("total_amount", 200000)
-            address = action.get("shipping_address", "123 Le Loi, TP.HCM")
-            status = action.get("status", "pending")
-            suffix = re_safe_name(save)
-            lines += [
-                f"const orderToken_{suffix} = pm.collectionVariables.get({json.dumps(token_var)});",
-                f"const checkout_{suffix} = await send('POST', '/api/checkout', {{ total_amount: {json.dumps(total)}, shipping_address: {json.dumps(address)} }}, orderToken_{suffix});",
-                f"if (checkout_{suffix}.code !== 200 || !checkout_{suffix}.json().orderId) throw new Error(`Setup checkout failed: ${{checkout_{suffix}.code}}`);",
-                f"const orderId_{suffix} = checkout_{suffix}.json().orderId;",
-                f"pm.collectionVariables.set({json.dumps(save)}, orderId_{suffix});",
-            ]
-            if status in {"confirmed", "shipping", "delivered"}:
-                admin_var = action.get("admin_token_var", "admin_token")
-                transitions = ["confirmed"]
-                if status in {"shipping", "delivered"}:
-                    transitions.append("shipping")
-                if status == "delivered":
-                    transitions.append("delivered")
-                for step in transitions:
-                    lines.append(f"await send('PUT', `/api/admin/orders/${{orderId_{suffix}}}/status`, {{ status: {json.dumps(step)} }}, pm.collectionVariables.get({json.dumps(admin_var)}));")
-            elif status == "canceled":
-                lines.append(f"await send('PUT', `/api/orders/${{orderId_{suffix}}}/cancel`, undefined, orderToken_{suffix});")
-        elif kind == "create_category":
-            token_var = action.get("token_var", "admin_token")
-            name = action.get("name", "HW06 Setup Category")
-            save = action.get("save", "category_id")
-            suffix = re_safe_name(save)
-            lines += [
-                f"const categoryResponse_{suffix} = await send('POST', '/api/categories', {{ name: {json.dumps(name, ensure_ascii=False)} }}, pm.collectionVariables.get({json.dumps(token_var)}));",
-                f"if (categoryResponse_{suffix}.code !== 200 || !categoryResponse_{suffix}.json().id) throw new Error(`Setup category failed: ${{categoryResponse_{suffix}.code}}`);",
-                f"pm.collectionVariables.set({json.dumps(save)}, categoryResponse_{suffix}.json().id);",
-            ]
-        else:
-            raise ValueError(f"{case['id']}: unsupported setup action {kind}")
-    lines += [
-        "})().catch((error) => { console.error('Setup failed:', error.message); pm.execution.skipRequest(); });",
-    ]
-    return lines
-
-
-def re_safe_name(value: str) -> str:
-    return "".join(ch if ch.isalnum() else "_" for ch in value)
-
-
 def build_url(path: str, query: list[dict[str, Any]]) -> dict[str, Any]:
     raw = "{{base_url}}" + path
     enabled = [(str(q["key"]), str(q.get("value", ""))) for q in query if not q.get("disabled")]
@@ -162,16 +67,14 @@ def setup_items(case: dict[str, Any]) -> list[dict[str, Any]]:
                     f"pm.collectionVariables.set({json.dumps(save)}, setupBody.token); pm.environment.set({json.dumps(save)}, setupBody.token);",
                 ],
             ))
-        elif kind == "forgot_otp":
-            email = action.get("email", "test@eshop.com")
-            save = action.get("save", "reset_token")
+        elif kind == "login_attempt":
+            email = action["email"]
+            password = action.get("password", "Wrong123!")
+            statuses = action.get("statuses", [401, 403])
             items.append(request_item(
-                f"{prefix} Issue OTP", "POST", "/api/forgot-password", {"email": email},
+                f"{prefix} Failed login {email}", "POST", "/api/login", {"email": email, "password": password},
                 tests=[
-                    f"pm.test({json.dumps(prefix + ' OTP request succeeds')}, () => pm.response.to.have.status(200));",
-                    "const setupBody = pm.response.json();",
-                    "pm.expect(setupBody.resetToken, 'setup reset token').to.be.a('string').and.not.empty;",
-                    f"pm.collectionVariables.set({json.dumps(save)}, setupBody.resetToken); pm.environment.set({json.dumps(save)}, setupBody.resetToken);",
+                    f"pm.test({json.dumps(prefix + ' failed login returns an allowed status')}, () => pm.expect({json.dumps(statuses)}).to.include(pm.response.code));",
                 ],
             ))
         elif kind == "register_user":
@@ -181,53 +84,13 @@ def setup_items(case: dict[str, Any]) -> list[dict[str, Any]]:
                 f"{prefix} Register {email}", "POST", "/api/register", body,
                 tests=[f"pm.test({json.dumps(prefix + ' registration succeeds')}, () => pm.response.to.have.status(200));"],
             ))
-        elif kind == "create_order":
+        elif kind == "add_cart":
             token_var = action.get("token_var", "user_token")
-            save = action.get("save", "order_id")
-            body = {"total_amount": action.get("total_amount", 200000), "shipping_address": action.get("shipping_address", "123 Le Loi, TP.HCM")}
+            body = action["body"]
             items.append(request_item(
-                f"{prefix} Create order", "POST", "/api/checkout", body,
+                f"{prefix} Add cart item", "POST", "/api/cart", body,
                 {"Authorization": f"Bearer {{{{{token_var}}}}}"},
-                [
-                    f"pm.test({json.dumps(prefix + ' checkout succeeds')}, () => pm.response.to.have.status(200));",
-                    "const setupBody = pm.response.json();",
-                    "pm.expect(setupBody.orderId, 'setup order id').to.exist;",
-                    f"pm.collectionVariables.set({json.dumps(save)}, setupBody.orderId); pm.environment.set({json.dumps(save)}, setupBody.orderId);",
-                ],
-            ))
-            status = action.get("status", "pending")
-            if status in {"confirmed", "shipping", "delivered"}:
-                transitions = ["confirmed"]
-                if status in {"shipping", "delivered"}:
-                    transitions.append("shipping")
-                if status == "delivered":
-                    transitions.append("delivered")
-                admin_var = action.get("admin_token_var", "admin_token")
-                for transition_index, transition in enumerate(transitions, start=1):
-                    items.append(request_item(
-                        f"{prefix}.{transition_index} Set order {transition}", "PUT", f"/api/admin/orders/{{{{{save}}}}}/status", {"status": transition},
-                        {"Authorization": f"Bearer {{{{{admin_var}}}}}"},
-                        [f"pm.test({json.dumps(prefix + ' status transition succeeds')}, () => pm.response.to.have.status(200));"],
-                    ))
-            elif status == "canceled":
-                items.append(request_item(
-                    f"{prefix}.1 Cancel order", "PUT", f"/api/orders/{{{{{save}}}}}/cancel", None,
-                    {"Authorization": f"Bearer {{{{{token_var}}}}}"},
-                    [f"pm.test({json.dumps(prefix + ' cancellation succeeds')}, () => pm.response.to.have.status(200));"],
-                ))
-        elif kind == "create_category":
-            token_var = action.get("token_var", "admin_token")
-            save = action.get("save", "category_id")
-            name = action.get("name", "HW06 Setup Category")
-            items.append(request_item(
-                f"{prefix} Create category", "POST", "/api/categories", {"name": name},
-                {"Authorization": f"Bearer {{{{{token_var}}}}}"},
-                [
-                    f"pm.test({json.dumps(prefix + ' category creation succeeds')}, () => pm.response.to.have.status(200));",
-                    "const setupBody = pm.response.json();",
-                    "pm.expect(setupBody.id, 'setup category id').to.exist;",
-                    f"pm.collectionVariables.set({json.dumps(save)}, setupBody.id); pm.environment.set({json.dumps(save)}, setupBody.id);",
-                ],
+                [f"pm.test({json.dumps(prefix + ' cart setup succeeds')}, () => pm.response.to.have.status(200));"],
             ))
         else:
             raise ValueError(f"{case['id']}: unsupported setup action {kind}")

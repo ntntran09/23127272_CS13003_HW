@@ -1,0 +1,53 @@
+{
+  "info": {
+    "name": "23127272 HW06 Controlled CI Failure",
+    "description": "One opt-in failing API assertion used only for the deliberate-failure evidence run. It does not modify the reviewed contract suite.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const studentId = pm.variables.replaceIn('{{student_id}}');",
+          "pm.request.headers.upsert({ key: 'X-Student-Id', value: studentId });",
+          "console.log('X-Student-Id:', studentId);"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "CI-FAIL-001 - Controlled deliberate failure",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/products",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "products"
+          ]
+        },
+        "description": "Evidence-only request. The intentionally wrong 418 oracle must never be copied into the reviewed suite."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('DELIBERATE FAILURE - controlled CI evidence', function () {",
+              "  pm.expect(pm.response.code).to.eql(418);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
