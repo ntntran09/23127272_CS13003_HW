@@ -1,27 +1,31 @@
-# Prompt 04
+# Prompt 04 — Remove the mis-assigned earlier selection
 
 | Field | Value |
 | --- | --- |
 | Tool | Codex |
-| Time | 2026-08-18T04:53:17.289Z |
-| Source group | audit-formatting follow-up |
-| Source | ../AI docs/evidence/setup-session/codex-chat-logs/codex-chat-log.md#interaction-5 |
+| Date | 2026-08-23 |
+| Stage | Cleanup of mis-assigned selection |
+| Source | ../AI docs/evidence/current-selection-session/codex-interaction-log.md#interaction-4 |
 
 ## Prompt
 
 ```text
-AI audit và appendix a như hw 5
+Because of a human error in the group's API split, I reworked this assignment
+several times. Keep only the current version (member 1's FR-02 / FR-07 / FR-15)
+and remove the artifacts, evidence, PDFs, and audit that belong solely to the
+earlier, mis-assigned FR-03 / FR-11 / FR-14 selection. Be careful not to delete
+anything the current version still depends on.
 ```
 
-## AI Output
+## AI output (summary)
 
-~~~~text
-Đã chuyển AI Audit HW06 sang đúng format 6 phần như HW05 và thêm Appendix A gồm 4 prompt/output đã lọc sạch bootstrap, plugin, tool log và hidden reasoning. README, Main Report và hai PDF đã được cập nhật; PDF được render và kiểm tra lại. Các mục cần sinh viên tự ký hoặc cung cấp bằng chứng vẫn giữ nguyên trạng thái STUDENT ACTION.
+Distinguished current evidence from stale evidence, then removed the artifacts,
+evidence folders, PDFs, prior AI audit, commit log, PDF-build script, and builder
+branches that belonged only to the earlier FR-03/FR-11/FR-14 selection. Confirmed
+that no residual `FR-03/FR-11/FR-14` references remain outside the assignment
+brief and the reference inventory, and that the catalog, unit tests (3/3), and
+Postman build-check still pass. Deleted files remain recoverable from Git history.
 
-- Appendix A: [README.md](/D:/CODE/23127272_CS13003_HW/HW06-AI/appendix_a/README.md)
-- AI Audit Markdown: [AI-Audit-Report.md](</D:/CODE/23127272_CS13003_HW/HW06-AI/AI docs/AI-Audit-Report.md>)
-- AI Audit PDF: :codex-file-citation{path="D:/CODE/23127272_CS13003_HW/HW06-AI/output/pdf/23127272_HW06_AI_Audit.pdf" purpose="output"}
-- Main Report PDF: :codex-file-citation{path="D:/CODE/23127272_CS13003_HW/HW06-AI/output/pdf/23127272_HW06_Main_Report.pdf" purpose="output"}
-
-Kiểm tra đạt: Appendix A có 4 interaction; AI Audit có đủ 6 phần; PDF lần lượt 3 và 8 trang, không bị cắt bảng hoặc chồng chữ.
-~~~~
+Evidence: working-tree state; the `README.md` note recording the removal and the
+instruction to recreate the audit, Appendix A, PDFs, and commit log from the
+current selection.

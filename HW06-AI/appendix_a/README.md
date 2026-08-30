@@ -1,12 +1,26 @@
-# Appendix A - AI Prompts and Outputs
+# Appendix A — AI Prompts and Outputs
 
-This appendix collects each recorded user prompt together with the final AI output delivered for that interaction. Session bootstrap turns, recommended-plugin lists, environment context, auto-injected instruction bodies, progress updates, tool logs, and hidden reasoning are excluded. Reusable skill source files are submitted separately in `../skills/`. The AI Audit Report consolidates these interactions into substantive task-level artifacts instead of expanding every follow-up into a separate audit-table row.
+This appendix records the **substantive** AI interactions used to produce the
+current HW06 submission (member 1's allocation: FR-02 login, FR-07 add-to-cart,
+FR-15 create-product). Generic or purely procedural turns (status checks,
+one-word confirmations, clarifying questions, and interactions belonging to
+other assignments) are intentionally excluded so the record stays focused on the
+API-testing pipeline.
 
-| No. | Time | Tool | Source group | Prompt + output file |
+The prompts are lightly edited from the original mixed-Vietnamese wording for
+clarity and professional presentation; their intent is preserved. Long AI
+outputs are summarised here and cross-referenced to the committed artifacts,
+which are the authoritative record. The full extracted transcript is stored under
+`../AI docs/evidence/current-selection-session/`.
+
+| No. | Date | Tool | Stage | File |
 | ---: | --- | --- | --- | --- |
-| 1 | 2026-08-18T03:55:56.480Z | Codex | setup-session | [prompt_01.md](prompt_01.md) |
-| 2 | 2026-08-18T03:56:28.957Z | Codex | setup-session | [prompt_02.md](prompt_02.md) |
-| 3 | 2026-08-18T04:19:27.346Z | Codex | setup-session | [prompt_03.md](prompt_03.md) |
-| 4 | 2026-08-18T04:53:17.289Z | Codex | audit-formatting follow-up | [prompt_04.md](prompt_04.md) |
+| 1 | 2026-08-18 | Codex | Scaffold / reusable skill | [prompt_01.md](prompt_01.md) |
+| 2 | 2026-08-18 | Codex | Selection + generate/audit/extend | [prompt_02.md](prompt_02.md) |
+| 3 | 2026-08-18 | Codex | Execute (deterministic run) | [prompt_03.md](prompt_03.md) |
+| 4 | 2026-08-23 | Codex | Cleanup of mis-assigned selection | [prompt_04.md](prompt_04.md) |
+| 5 | 2026-08-29 | Codex | CI/CD pipeline + reusable skill | [prompt_05.md](prompt_05.md) |
 
-Each linked file contains both the prompt and its delivered AI output. The readable transcript, extracted interaction JSON, and raw JSONL backup are stored under `../AI docs/evidence/setup-session/codex-chat-logs/`. Prompt 1 was amended before completion by Prompt 2, so its output is the last user-visible response delivered before the amendment rather than a final homework handoff.
+Each linked file contains the prompt and a faithful summary of the delivered AI
+output. The AI Audit Report (`../AI docs/AI-Audit-Report.md`) consolidates these
+interactions into task-level verdicts.

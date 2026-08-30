@@ -1,54 +1,34 @@
-# Prompt 03
+# Prompt 03 — Execute the suite deterministically and verify results
 
 | Field | Value |
 | --- | --- |
 | Tool | Codex |
-| Time | 2026-08-18T04:19:27.346Z |
-| Source group | setup-session |
-| Source | ../AI docs/evidence/setup-session/codex-chat-logs/codex-chat-log.md#interaction-4 |
+| Date | 2026-08-18 |
+| Stage | Execute (deterministic run) |
+| Source | ../AI docs/evidence/current-selection-session/codex-interaction-log.md#interaction-3 |
 
 ## Prompt
 
 ```text
-Còn api thì lấy theo nhx lựa chọn của Hw02 và Hw04
+Automate and execute the selected cases with Postman/Newman against the pinned SUT
+commit, and report only verified results. Every request must carry the
+X-Student-Id header. If the run is not clean, do not report the failures as SUT
+bugs until the harness itself is proven correct.
 ```
 
-## AI Output
+## AI output (summary)
 
-~~~~text
-Đã hoàn thiện phần HW06 có thể thực hiện cục bộ, chọn API theo HW02/HW04:
+The first attempt was rejected as invalid: the build command ran from the wrong
+working directory and used a stale collection, and the SUT process already
+listening on port 3000 could not be reset because of Windows file locks. That
+evidence was discarded rather than reported. A clean SUT instance was started from
+the same pinned source commit on `127.0.0.1:3001`, and the full reviewed suite was
+re-run deterministically with the `X-Student-Id: 23127272` pre-request header.
 
-- Pool A: FR-03.
-- Pool B: FR-11.
-- Pool C: FR-14.
-- 120 test case: 105 AI + 15 student-origin.
-- Newman: 119 chạy, 71 pass, 48 fail, 1 manual.
-- 601 assertions; 0 lỗi setup/script.
-- Phát hiện 10 nhóm bug.
-- Skill hợp lệ; unit test 3/3.
-- Git sạch, HEAD `9649034`.
+Verified result: 120 designed, 119 executed, 46 passed, 73 failed, 1 manual; 212
+requests and 457 assertions; **zero** request, pre-request, or test-script
+failures. Failures are retained as contract-deviation evidence, and nine
+reproducible bug groups were triaged.
 
-Tài liệu chính:
-
-- [README](/D:/CODE/23127272_CS13003_HW/HW06-AI/README.md)
-- [Test catalog](/D:/CODE/23127272_CS13003_HW/HW06-AI/test-design/test-cases.md)
-- [Postman collection](/D:/CODE/23127272_CS13003_HW/HW06-AI/postman/23127272_HW06.postman_collection.json)
-- [Newman HTML](/D:/CODE/23127272_CS13003_HW/HW06-AI/reports/newman-report.html)
-- [Bug reports](/D:/CODE/23127272_CS13003_HW/HW06-AI/bug-reports.md)
-- [Submission checklist](/D:/CODE/23127272_CS13003_HW/HW06-AI/submission-checklist.md)
-- Main report: :codex-file-citation{path="D:/CODE/23127272_CS13003_HW/HW06-AI/output/pdf/23127272_HW06_Main_Report.pdf" purpose="output"}
-- AI Audit: :codex-file-citation{path="D:/CODE/23127272_CS13003_HW/HW06-AI/output/pdf/23127272_HW06_AI_Audit.pdf" purpose="output"}
-
-Còn các mục bắt buộc sinh viên tự hoàn thành:
-
-- Xác nhận lựa chọn không trùng nhóm.
-- Review/ký audit.
-- Tự vẽ diagram.
-- Chụp screenshot thật.
-- Đăng GitHub Issues.
-- Chạy và lưu hai CI run.
-- Thực hiện OTP-expiry manual case.
-- Xuất XLSX: runtime hiện thiếu dependency loader bắt buộc của Spreadsheet skill; đã cung cấp [CSV đầy đủ](/D:/CODE/23127272_CS13003_HW/HW06-AI/reports/test-case-results.csv).
-
-Chưa tạo ZIP cuối vì các bằng chứng trên còn thiếu; tạo ZIP lúc này sẽ thành bộ nộp chưa hợp lệ.
-~~~~
+Evidence: `automation/run-sut-3001.js`, `reports/newman-cli.txt`,
+`reports/newman-report.json`, `reports/newman-report.html`, `reports/test-summary.json`.

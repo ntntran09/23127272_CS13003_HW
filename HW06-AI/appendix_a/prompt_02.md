@@ -1,41 +1,35 @@
-# Prompt 02
+# Prompt 02 — Select member 1's APIs and regenerate the catalog
 
 | Field | Value |
 | --- | --- |
 | Tool | Codex |
-| Time | 2026-08-18T03:56:28.957Z |
-| Source group | setup-session |
-| Source | ../AI docs/evidence/setup-session/codex-chat-logs/codex-chat-log.md#interaction-3 |
+| Date | 2026-08-18 |
+| Stage | Selection + generate / audit / extend |
+| Source | ../AI docs/evidence/current-selection-session/codex-interaction-log.md#interaction-2 |
 
 ## Prompt
 
 ```text
-khoang chọn trc api nhe
+New task split: I am taking member 1's API allocation. Switch the whole HW06 set
+to those three APIs and regenerate the catalog, Postman collection, reports, and
+bug drafts accordingly. Keep the oracle aligned to the README/specification — do
+not weaken expected results to match buggy behaviour in the code.
 ```
 
-## AI Output
+## AI output (summary)
 
-~~~~text
-Đã dừng đúng tại cổng chọn API — chưa chọn Pool A/B/C.
+Switched the selection to member 1's row and regenerated every dependent artifact:
 
-Đã hoàn thành:
+- Pool A: FR-02 — `POST /api/login`
+- Pool B: FR-07 — `POST /api/cart`
+- Pool C: FR-15 — `POST /api/products`
 
-- Skill sinh/kiểm tra API tests: [SKILL.md](D:/CODE/23127272_CS13003_HW/HW06-AI/skills/generate-eshop-api-tests/SKILL.md)
-- Catalog validator và Postman builder: 3/3 unit tests pass
-- Khung báo cáo, audit log, pseudocode, Postman environment và CI workflow
-- Form chọn API: [api-selection.md](D:/CODE/23127272_CS13003_HW/HW06-AI/api-selection.md)
-- Tổng quan: [README.md](D:/CODE/23127272_CS13003_HW/HW06-AI/README.md)
-- Commit: `c860a0e`
+Produced 120 designed cases (40 per API): 105 AI-generated cases plus 15
+student-origin extensions, with 119 automated and 1 manual 30-second
+lockout-expiry case. The generator validator passed and unit tests were 3/3. AI
+verdicts were marked as preliminary, pending student confirmation, and the 15
+extension candidates were flagged for the student to adopt or edit.
 
-Kiểm tra đạt:
-
-- Skill validation: pass
-- Catalog partial validation: pass
-- Newman: `6.2.2`
-- JSON/YAML parsing: pass
-- Git worktree: clean
-
-Lưu ý: npm báo các lỗ hổng transitive trong Newman/HTML reporter; chưa chạy `audit fix --force` vì nó đề xuất hạ Newman xuống bản cũ.
-
-Khi sẵn sàng, gửi đúng 3 lựa chọn Pool A, B, C. Tôi sẽ tiếp tục tạo ≥40 case/API, Postman collection, chạy Newman và hoàn thiện PDF/XLSX/ZIP.
-~~~~
+Evidence: `test-design/test-cases.json`, `test-design/test-cases.md`,
+`postman/23127272_HW06.postman_collection.json`, `main-report.md`,
+`bug-reports.md`, `README.md`.

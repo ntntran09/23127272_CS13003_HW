@@ -1,22 +1,28 @@
-# Prompt 01
+# Prompt 01 — Scaffold the reusable generator skill
 
 | Field | Value |
 | --- | --- |
 | Tool | Codex |
-| Time | 2026-08-18T03:55:56.480Z |
-| Source group | setup-session |
-| Source | ../AI docs/evidence/setup-session/codex-chat-logs/codex-chat-log.md#interaction-2 |
+| Date | 2026-08-18 |
+| Stage | Scaffold / reusable skill |
+| Source | ../AI docs/evidence/current-selection-session/codex-interaction-log.md#interaction-1 |
 
 ## Prompt
 
 ```text
-Read D:\CODE\23127272_CS13003_HW\HW06-AI\2026.HW06.API Testing_En.md and set up skill and complete the hw06
+Read the HW06 assignment specification (2026.HW06.API Testing_En.md) and build a
+reusable Agent Skill that drives the API-testing pipeline step by step. Set up the
+supporting scaffolding, then begin the work — but pause for my API selection
+rather than choosing the three APIs yourself.
 ```
 
-## AI Output
+## AI output (summary)
 
-~~~~text
-The assignment is a full submission package, not only test cases. I’m now checking existing HW06 artifacts, the SUT, student metadata, and required output formats before changing anything. The audit, spreadsheet, and PDF skills also apply because those artifacts are mandatory.
-~~~~
+Created the reusable `generate-eshop-api-tests` skill (skill instructions, catalog
+validator, Postman builder, unit tests, catalog template) together with the
+report, catalog, and Postman-environment scaffolds and the CI workflow stub. The
+run stopped at the API-selection gate and requested the three Pool A/B/C choices
+instead of inventing them, preserving the student's responsibility for group
+uniqueness.
 
-This request was amended by Prompt 02 before a final homework handoff was delivered.
+Evidence: `skills/generate-eshop-api-tests/`, `api-selection.md`, commit `c860a0e`.
