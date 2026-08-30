@@ -2299,7 +2299,10 @@
             ],
             "content_type": "application/json"
           },
-          "automation": "MANUAL"
+          "automation": "MANUAL",
+          "manual_result": "FAILED",
+          "manual_actual_status": 403,
+          "manual_note": "Manually executed with a 30-second wait; the account was still locked (HTTP 403). The SUT locks for 180s, not the 30s the spec requires."
         },
         {
           "id": "A-STU-036",

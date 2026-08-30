@@ -23,7 +23,7 @@ The selection follows the student's revised group allocation on 18/08/2026: memb
 
 ## Test summary
 
-Local Newman run: 18/08/2026, `http://127.0.0.1:3001`, pinned SUT commit above.
+Local Newman run: 30/08/2026, `http://127.0.0.1:3001`, pinned SUT commit above.
 
 | Metric | Pool A | Pool B | Pool C | Total |
 | --- | ---: | ---: | ---: | ---: |
@@ -31,13 +31,13 @@ Local Newman run: 18/08/2026, `http://127.0.0.1:3001`, pinned SUT commit above.
 | AI-generated cases | 35 | 35 | 35 | 105 |
 | Student-origin extensions | 5 | 5 | 5 | 15 |
 | Designed | 40 | 40 | 40 | 120 |
-| Executed | 39 | 40 | 40 | 119 |
+| Executed | 40 | 40 | 40 | 120 |
 | Passed | 19 | 14 | 14 | 47 |
-| Failed | 20 | 26 | 26 | 72 |
-| Not run | 1 | 0 | 0 | 1 |
+| Failed | 21 | 26 | 26 | 73 |
+| Not run | 0 | 0 | 0 | 0 |
 | Confirmed bug groups | 4 | 4 | 3 | 9 unique total* |
 
-\* `BUG-03` is cross-cutting and counted once in the total. The unexecuted case is the exact 30-second lockout-expiry boundary, which requires a controllable clock or timed fixture.
+\* `BUG-03` is cross-cutting and counted once in the total. The 30-second lockout-expiry case (A-AI-035) was executed manually with a timed wait; it failed because the SUT stays locked ~180s instead of 30s (BUG-04).
 
 Newman executed 222 requests (214 collection items plus eight in-script state-verification callbacks) and 466 assertions. There were 124 failed assertions but zero request, pre-request, or test-script failures. Failures are retained as contract-deviation evidence.
 

@@ -42,7 +42,7 @@ Contract: JWT login plus three-failure/30-second lockout
 | A-AI-032 | AI | Success resets failed-attempt counter | state, schema | 200 | 200 | PASSED |  |
 | A-AI-033 | AI | Locked response leaks no secrets | state, security, schema | 403 | 403 | PASSED |  |
 | A-AI-034 | AI | Email case variation has stable behavior | domain, schema | 200/401 | 401 | PASSED |  |
-| A-AI-035 | AI | Lock expires at 30-second boundary | state, security | 200 | - | NOT RUN |  |
+| A-AI-035 | AI | Lock expires at 30-second boundary | state, security | 200 | 403 | FAILED | Manually executed with a 30-second wait; the account was still locked (HTTP 403). The SUT locks for 180s, not the 30s the spec requires. |
 | A-STU-036 | STUDENT | JWT role claim matches the persisted user role | security, schema | 200 | 200 | PASSED |  |
 | A-STU-037 | STUDENT | Login does not leak whether an email exists (uniform failure) | security | 401 | 401 | PASSED |  |
 | A-STU-038 | STUDENT | Unknown extra nested object is ignored | security, schema | 200 | 200 | PASSED |  |

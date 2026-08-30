@@ -7,7 +7,7 @@ These are locally reproduced issue drafts. Each must receive a student-captured 
 | BUG-01 | FR-02 | Critical | Login success exposes the plaintext password and internal account fields | A-AI-001 | https://github.com/ntntran09/eshop-sut/issues/57 | `reports/screenshots/bug-console/BUG-01_A-AI-001_console.png` |
 | BUG-02 | FR-02 | High | Login does not validate missing, malformed, or wrong-type fields | A-AI-003, A-AI-004, A-AI-005, A-AI-006, A-AI-007, A-AI-008, A-AI-009, A-AI-010, A-AI-011, A-AI-012, A-AI-013, A-AI-014, A-AI-015, A-AI-016, A-AI-017, A-AI-018, A-AI-021 | https://github.com/ntntran09/eshop-sut/issues/58 | `reports/screenshots/bug-console/BUG-02_A-AI-003_console.png` |
 | BUG-03 | Cross-cutting | Medium | Malformed JSON returns HTML instead of the API JSON error schema | A-AI-022, B-AI-030, C-AI-032 | https://github.com/ntntran09/eshop-sut/issues/59 | `reports/screenshots/bug-console/BUG-03_A-AI-022_console.png` |
-| BUG-04 | FR-02 | High | Failed-login counter advances too quickly and locks after two failures | A-AI-029 | https://github.com/ntntran09/eshop-sut/issues/60 | `reports/screenshots/bug-console/BUG-04_A-AI-029_console.png` |
+| BUG-04 | FR-02 | High | Failed-login lockout is wrong: locks after two failures and stays locked ~180s instead of 30s | A-AI-029, A-AI-035 | https://github.com/ntntran09/eshop-sut/issues/60 | `reports/screenshots/bug-console/BUG-04_A-AI-029_console.png` |
 | BUG-05 | FR-07 | High | Cart accepts invalid IDs, quantities, names, and prices | B-AI-007, B-AI-008, B-AI-009, B-AI-010, B-AI-011, B-AI-012, B-AI-013, B-AI-014, B-AI-015, B-AI-016, B-AI-017, B-AI-018, B-AI-019, B-AI-020, B-AI-021, B-AI-022, B-AI-023, B-AI-024, B-AI-025, B-AI-031, B-STU-039 | https://github.com/ntntran09/eshop-sut/issues/61 | `reports/screenshots/bug-console/BUG-05_B-AI-007_console.png` |
 | BUG-06 | FR-07 | High | Adding the same product creates a duplicate row instead of merging quantity | B-AI-028, B-STU-036 | https://github.com/ntntran09/eshop-sut/issues/62 | `reports/screenshots/bug-console/BUG-06_B-AI-028_console.png` |
 | BUG-07 | FR-07 | Critical | Cart trusts client-supplied product name and price | B-AI-034, B-AI-035 | https://github.com/ntntran09/eshop-sut/issues/63 | `reports/screenshots/bug-console/BUG-07_B-AI-034_console.png` |
@@ -71,11 +71,11 @@ GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/58
 
 GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/59
 
-## BUG-04 - Failed-login counter advances too quickly and locks after two failures
+## BUG-04 - Failed-login lockout is wrong: locks after two failures and stays locked ~180s instead of 30s
 
 - Severity: **High**
 - Feature: `FR-02`
-- Reproduced by: `A-AI-029`
+- Reproduced by: `A-AI-029, A-AI-035`
 - Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 30/08/2026
 - Expected: The request follows the reviewed EShop contract and security/state rules.
 - Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report.

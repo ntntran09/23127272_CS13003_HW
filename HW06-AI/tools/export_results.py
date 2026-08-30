@@ -18,7 +18,7 @@ BUGS = [
     ("BUG-01", "FR-02", "Login success exposes the plaintext password and internal account fields", ["A-AI-001"], "Critical"),
     ("BUG-02", "FR-02", "Login does not validate missing, malformed, or wrong-type fields", ["A-AI-003", "A-AI-004", "A-AI-005", "A-AI-006", "A-AI-007", "A-AI-008", "A-AI-009", "A-AI-010", "A-AI-011", "A-AI-012", "A-AI-013", "A-AI-014", "A-AI-015", "A-AI-016", "A-AI-017", "A-AI-018", "A-AI-021"], "High"),
     ("BUG-03", "Cross-cutting", "Malformed JSON returns HTML instead of the API JSON error schema", ["A-AI-022", "B-AI-030", "C-AI-032"], "Medium"),
-    ("BUG-04", "FR-02", "Failed-login counter advances too quickly and locks after two failures", ["A-AI-029"], "High"),
+    ("BUG-04", "FR-02", "Failed-login lockout is wrong: locks after two failures and stays locked ~180s instead of 30s", ["A-AI-029", "A-AI-035"], "High"),
     ("BUG-05", "FR-07", "Cart accepts invalid IDs, quantities, names, and prices", ["B-AI-007", "B-AI-008", "B-AI-009", "B-AI-010", "B-AI-011", "B-AI-012", "B-AI-013", "B-AI-014", "B-AI-015", "B-AI-016", "B-AI-017", "B-AI-018", "B-AI-019", "B-AI-020", "B-AI-021", "B-AI-022", "B-AI-023", "B-AI-024", "B-AI-025", "B-AI-031", "B-STU-039"], "High"),
     ("BUG-06", "FR-07", "Adding the same product creates a duplicate row instead of merging quantity", ["B-AI-028", "B-STU-036"], "High"),
     ("BUG-07", "FR-07", "Cart trusts client-supplied product name and price", ["B-AI-034", "B-AI-035"], "Critical"),
@@ -97,11 +97,21 @@ def main() -> None:
     for api in catalog["apis"]:
         for case in api["cases"]:
             manual = case.get("automation") == "MANUAL"
-            status = "NOT RUN" if manual else ("FAILED" if case["id"] in failure_by_id else "PASSED")
+            manual_result = case.get("manual_result")
+            if manual and manual_result:
+                status = manual_result
+            elif manual:
+                status = "NOT RUN"
+            else:
+                status = "FAILED" if case["id"] in failure_by_id else "PASSED"
             execution = executions.get(case["id"])
             actual_status = ""
             actual_response = ""
             failure_reason = ""
+            if manual and manual_result:
+                actual_status = str(case.get("manual_actual_status", ""))
+                if status == "FAILED":
+                    failure_reason = case.get("manual_note", "manual run failed")[:300]
             if execution is not None:
                 actual_status = str(execution.get("response", {}).get("code", ""))
                 actual_response = response_text(execution["response"]).replace("\n", " ").strip()[:200]

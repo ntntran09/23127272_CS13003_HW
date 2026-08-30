@@ -40,16 +40,16 @@ Boundaries and states:
 - Before three failures, a correct password must still work.
 - At three failures, the account is locked for 30 seconds.
 - A successful login resets the consecutive-failure counter.
-- The exact expiry boundary remains manual because reliable automation requires a controllable clock or timed fixture.
+- The exact expiry boundary (A-AI-035) was executed manually with a timed wait; after 30 seconds the account was still locked (403), so it failed and evidences the wrong lock duration (BUG-04).
 
 Observed findings:
 
 - `BUG-01`: success returns plaintext password and internal account fields.
 - `BUG-02`: malformed/missing/wrong-type fields are not validated.
-- `BUG-04`: the failed-attempt counter advances too quickly; two failures already lock the account.
+- `BUG-04`: the failed-attempt counter advances too quickly (two failures lock the account) and the lock lasts ~180 seconds instead of 30.
 - Cross-cutting `BUG-03`: malformed JSON returns HTML instead of JSON.
 
-Result: 40 designed, 39 executed, 19 passed, 20 failed, 1 not run.
+Result: 40 designed, 40 executed (the 30-second lockout-expiry case A-AI-035 was run manually with a timed wait), 19 passed, 21 failed, 0 not run.
 
 ## 4. Pool B - FR-07 add to cart
 
@@ -101,16 +101,16 @@ Not claimed without student evidence: shared workspace, monitor, mock server, Po
 | Designed | 40 | 40 | 40 | 120 |
 | AI-generated | 35 | 35 | 35 | 105 |
 | Proposed student extensions | 5 | 5 | 5 | 15 |
-| Executed | 39 | 40 | 40 | 119 |
+| Executed | 40 | 40 | 40 | 120 |
 | Passed | 19 | 14 | 14 | 47 |
-| Failed | 20 | 26 | 26 | 72 |
-| Not run | 1 | 0 | 0 | 1 |
+| Failed | 21 | 26 | 26 | 73 |
+| Not run | 0 | 0 | 0 | 0 |
 
 The clean Newman run executed 222 HTTP requests and 466 assertions. It recorded 124 failed assertions and zero request, pre-request, or test-script failures. Exit code 1 is expected because contract violations are retained. Evidence is in `reports/newman-cli.txt`, `newman-report.json`, and `newman-report.html`.
 
 ## 9. Bug reporting
 
-Nine reproducible bug groups are drafted in `bug-reports.md`. GitHub Issue URLs and screenshots remain student actions. No publication or screenshot is claimed.
+Nine reproducible bug groups are documented in `bug-reports.md` and published as GitHub Issues #57-#65 on `ntntran09/eshop-sut`, each with a screenshot under `reports/screenshots/`.
 
 ## 10. CI/CD
 
