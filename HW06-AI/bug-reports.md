@@ -4,193 +4,174 @@ These are locally reproduced issue drafts. Each must receive a student-captured 
 
 | ID | Feature | Severity | Title | Test IDs | GitHub Issue | Screenshot |
 | --- | --- | --- | --- | --- | --- | --- |
-| BUG-01 | FR-03 | High | Forgot-password returns a four-digit OTP instead of six digits | A-AI-001, A-AI-013, A-STU-036 | STUDENT ACTION | STUDENT ACTION |
-| BUG-02 | FR-03 | Critical | Password reset accepts missing or weak passwords | A-AI-020, A-AI-023, A-AI-024, A-AI-025, A-AI-026, A-AI-027, A-AI-028, A-AI-029, A-AI-032, A-STU-039 | STUDENT ACTION | STUDENT ACTION |
-| BUG-03 | FR-03 | Medium | Forgot-password does not validate malformed email input | A-AI-003, A-AI-004, A-AI-005, A-AI-006, A-AI-007, A-AI-008, A-AI-009 | STUDENT ACTION | STUDENT ACTION |
-| BUG-04 | Cross-cutting | Medium | Malformed JSON returns an HTML error page instead of the API error schema | A-AI-033, C-AI-018 | STUDENT ACTION | STUDENT ACTION |
-| BUG-05 | FR-11 | Critical | Order detail is publicly readable and exposes another user's order (IDOR) | B-AI-018, B-AI-019, B-STU-037 | STUDENT ACTION | STUDENT ACTION |
-| BUG-06 | FR-11 | High | A shipping order can be canceled and its persisted state becomes canceled | B-AI-027, B-STU-036 | STUDENT ACTION | STUDENT ACTION |
-| BUG-07 | FR-11/supporting checkout | High | Negative order totals enter history as valid-looking orders | B-STU-039 | STUDENT ACTION | STUDENT ACTION |
-| BUG-08 | FR-14 | Critical | Normal users can create, update, and delete categories | C-AI-008, C-AI-021, C-AI-032, C-STU-037 | STUDENT ACTION | STUDENT ACTION |
-| BUG-09 | FR-14 | High | Category create/update accepts missing, empty, whitespace, null, or numeric names | C-AI-009, C-AI-010, C-AI-011, C-AI-012, C-AI-013, C-AI-026, C-STU-036 | STUDENT ACTION | STUDENT ACTION |
-| BUG-10 | FR-14 | High | Category update/delete reports success for nonexistent or invalid identifiers | C-AI-022, C-AI-023, C-AI-024, C-AI-025, C-AI-027, C-AI-033, C-AI-034, C-AI-035, C-STU-040 | STUDENT ACTION | STUDENT ACTION |
+| BUG-01 | FR-02 | Critical | Login success exposes the plaintext password and internal account fields | A-AI-001 | https://github.com/ntntran09/eshop-sut/issues/57 | STUDENT ACTION |
+| BUG-02 | FR-02 | High | Login does not validate missing, malformed, or wrong-type fields | A-AI-003, A-AI-004, A-AI-005, A-AI-006, A-AI-007, A-AI-008, A-AI-009, A-AI-010, A-AI-011, A-AI-012, A-AI-013, A-AI-014, A-AI-015, A-AI-016, A-AI-017, A-AI-018, A-AI-021 | https://github.com/ntntran09/eshop-sut/issues/58 | STUDENT ACTION |
+| BUG-03 | Cross-cutting | Medium | Malformed JSON returns HTML instead of the API JSON error schema | A-AI-022, B-AI-030, C-AI-032 | https://github.com/ntntran09/eshop-sut/issues/59 | STUDENT ACTION |
+| BUG-04 | FR-02 | High | Failed-login counter advances too quickly and locks after two failures | A-AI-029 | https://github.com/ntntran09/eshop-sut/issues/60 | STUDENT ACTION |
+| BUG-05 | FR-07 | High | Cart accepts invalid IDs, quantities, names, and prices | B-AI-007, B-AI-008, B-AI-009, B-AI-010, B-AI-011, B-AI-012, B-AI-013, B-AI-014, B-AI-015, B-AI-016, B-AI-017, B-AI-018, B-AI-019, B-AI-020, B-AI-021, B-AI-022, B-AI-023, B-AI-024, B-AI-025, B-AI-031, B-STU-039 | https://github.com/ntntran09/eshop-sut/issues/61 | STUDENT ACTION |
+| BUG-06 | FR-07 | High | Adding the same product creates a duplicate row instead of merging quantity | B-AI-028, B-STU-036 | https://github.com/ntntran09/eshop-sut/issues/62 | STUDENT ACTION |
+| BUG-07 | FR-07 | Critical | Cart trusts client-supplied product name and price | B-AI-034, B-AI-035 | https://github.com/ntntran09/eshop-sut/issues/63 | STUDENT ACTION |
+| BUG-08 | FR-15 | Critical | Product creation is accessible without an admin JWT | C-AI-002, C-AI-003, C-AI-004, C-AI-005, C-STU-037 | https://github.com/ntntran09/eshop-sut/issues/64 | STUDENT ACTION |
+| BUG-09 | FR-15 | High | Product creation omits required name, price, and category validation | C-AI-006, C-AI-007, C-AI-008, C-AI-009, C-AI-010, C-AI-014, C-AI-015, C-AI-016, C-AI-017, C-AI-018, C-AI-021, C-AI-022, C-AI-023, C-AI-024, C-AI-025, C-AI-026, C-AI-027, C-AI-028, C-AI-029, C-STU-039 | https://github.com/ntntran09/eshop-sut/issues/65 | STUDENT ACTION |
 
-## BUG-01 - Forgot-password returns a four-digit OTP instead of six digits
-
-- Severity: **High**
-- Feature: `FR-03`
-- Reproduced by: `A-AI-001, A-AI-013, A-STU-036`
-- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 18/08/2026
-- Expected: The request follows the reviewed EShop contract and security/state rules.
-- Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report.
-- Representative evidence (`A-AI-001`): `POST http://127.0.0.1:3001/api/forgot-password` -> HTTP `200`
-
-```json
-{"message":"Mã đặt lại mật khẩu đã được tạo","resetToken":"8699"}
-```
-
-Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
-
-GitHub Issue URL: **STUDENT ACTION - publish after reviewing this draft.**
-
-## BUG-02 - Password reset accepts missing or weak passwords
+## BUG-01 - Login success exposes the plaintext password and internal account fields
 
 - Severity: **Critical**
-- Feature: `FR-03`
-- Reproduced by: `A-AI-020, A-AI-023, A-AI-024, A-AI-025, A-AI-026, A-AI-027, A-AI-028, A-AI-029, A-AI-032, A-STU-039`
-- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 18/08/2026
+- Feature: `FR-02`
+- Reproduced by: `A-AI-001`
+- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 30/08/2026
 - Expected: The request follows the reviewed EShop contract and security/state rules.
 - Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report.
-- Representative evidence (`A-AI-020`): `POST http://127.0.0.1:3001/api/reset-password` -> HTTP `200`
+- Representative evidence (`A-AI-001`): `POST http://127.0.0.1:3001/api/login` -> HTTP `200`
 
 ```json
-{"message":"Password reset successfully"}
+{"message":"Login successful","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3ODgwNjMzMTB9.oMiPw1XvcqZMkrEoAX5XbkVMD-w71QFWMP4U5UGJXGs","user":{"id":2,"name":"Test User","email":"test@eshop.com","password":"Test1234!","role":"user","login_attempts":0,"locked_until":null,"reset_token":null,"shipping_address":null,"phone":null}}
 ```
 
 Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
 
-GitHub Issue URL: **STUDENT ACTION - publish after reviewing this draft.**
+GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/57
 
-## BUG-03 - Forgot-password does not validate malformed email input
+## BUG-02 - Login does not validate missing, malformed, or wrong-type fields
 
-- Severity: **Medium**
-- Feature: `FR-03`
-- Reproduced by: `A-AI-003, A-AI-004, A-AI-005, A-AI-006, A-AI-007, A-AI-008, A-AI-009`
-- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 18/08/2026
+- Severity: **High**
+- Feature: `FR-02`
+- Reproduced by: `A-AI-003, A-AI-004, A-AI-005, A-AI-006, A-AI-007, A-AI-008, A-AI-009, A-AI-010, A-AI-011, A-AI-012, A-AI-013, A-AI-014, A-AI-015, A-AI-016, A-AI-017, A-AI-018, A-AI-021`
+- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 30/08/2026
 - Expected: The request follows the reviewed EShop contract and security/state rules.
 - Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report.
-- Representative evidence (`A-AI-003`): `POST http://127.0.0.1:3001/api/forgot-password` -> HTTP `404`
+- Representative evidence (`A-AI-003`): `POST http://127.0.0.1:3001/api/login` -> HTTP `401`
 
 ```json
-{"error":"User not found"}
+{"error":"Invalid email or password"}
 ```
 
 Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
 
-GitHub Issue URL: **STUDENT ACTION - publish after reviewing this draft.**
+GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/58
 
-## BUG-04 - Malformed JSON returns an HTML error page instead of the API error schema
+## BUG-03 - Malformed JSON returns HTML instead of the API JSON error schema
 
 - Severity: **Medium**
 - Feature: `Cross-cutting`
-- Reproduced by: `A-AI-033, C-AI-018`
-- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 18/08/2026
+- Reproduced by: `A-AI-022, B-AI-030, C-AI-032`
+- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 30/08/2026
 - Expected: The request follows the reviewed EShop contract and security/state rules.
 - Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report.
-- Representative evidence (`A-AI-033`): `POST http://127.0.0.1:3001/api/reset-password` -> HTTP `400`
+- Representative evidence (`A-AI-022`): `POST http://127.0.0.1:3001/api/login` -> HTTP `400`
 
 ```json
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <title>Error</title> </head> <body> <pre>SyntaxError: Unexpected end of JSON input<br> &nbsp; &nbsp;at JSON.parse (&lt;anonymous&gt;)<br> &nbsp; &nbsp;at parse (D:\CODE\eshop-sut-hw06\backend\node_modules\body-parser\lib\types\json.js:72:19)<br> &nbsp; &nbsp;at D:\CODE\eshop-sut-hw06\backend\node_modules\body-parser\lib\read.js:162:18<br> &nbsp; &nbsp;at AsyncResource.runInAsyncScope (node:async_hooks:214:14)<br> &nbsp; &nbsp;at invo
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <title>Error</title> </head> <body> <pre>SyntaxError: Expected double-quoted property name in JSON at position 13 (line 1 column 14)<br> &nbsp; &nbsp;at JSON.parse (&lt;anonymous&gt;)<br> &nbsp; &nbsp;at parse (D:\CODE\eshop-sut\backend\node_modules\body-parser\lib\types\json.js:72:19)<br> &nbsp; &nbsp;at D:\CODE\eshop-sut\backend\node_modules\body-parser\lib\read.js:162:18<br> &nbsp; &nbsp;at AsyncResource.runInAsyncScope (node:asyn
 ```
 
 Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
 
-GitHub Issue URL: **STUDENT ACTION - publish after reviewing this draft.**
+GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/59
 
-## BUG-05 - Order detail is publicly readable and exposes another user's order (IDOR)
+## BUG-04 - Failed-login counter advances too quickly and locks after two failures
+
+- Severity: **High**
+- Feature: `FR-02`
+- Reproduced by: `A-AI-029`
+- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 30/08/2026
+- Expected: The request follows the reviewed EShop contract and security/state rules.
+- Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report.
+- Representative evidence (`A-AI-029`): `POST http://127.0.0.1:3001/api/login` -> HTTP `403`
+
+```json
+{"error":"Tài khoản đã bị khóa. Vui lòng thử lại sau."}
+```
+
+Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
+
+GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/60
+
+## BUG-05 - Cart accepts invalid IDs, quantities, names, and prices
+
+- Severity: **High**
+- Feature: `FR-07`
+- Reproduced by: `B-AI-007, B-AI-008, B-AI-009, B-AI-010, B-AI-011, B-AI-012, B-AI-013, B-AI-014, B-AI-015, B-AI-016, B-AI-017, B-AI-018, B-AI-019, B-AI-020, B-AI-021, B-AI-022, B-AI-023, B-AI-024, B-AI-025, B-AI-031, B-STU-039`
+- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 30/08/2026
+- Expected: The request follows the reviewed EShop contract and security/state rules.
+- Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report.
+- Representative evidence (`B-AI-007`): `POST http://127.0.0.1:3001/api/cart` -> HTTP `200`
+
+```json
+{"message":"Added to cart"}
+```
+
+Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
+
+GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/61
+
+## BUG-06 - Adding the same product creates a duplicate row instead of merging quantity
+
+- Severity: **High**
+- Feature: `FR-07`
+- Reproduced by: `B-AI-028, B-STU-036`
+- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 30/08/2026
+- Expected: The request follows the reviewed EShop contract and security/state rules.
+- Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report.
+- Representative evidence (`B-AI-028`): `GET http://127.0.0.1:3001/api/cart` -> HTTP `200`
+
+```json
+[{"id":1,"name":"iPhone 15 Pro Max","price":30000000,"quantity":1},{"id":1,"name":"iPhone 15 Pro Max","price":30000000,"quantity":2}]
+```
+
+Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
+
+GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/62
+
+## BUG-07 - Cart trusts client-supplied product name and price
 
 - Severity: **Critical**
-- Feature: `FR-11`
-- Reproduced by: `B-AI-018, B-AI-019, B-STU-037`
-- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 18/08/2026
+- Feature: `FR-07`
+- Reproduced by: `B-AI-034, B-AI-035`
+- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 30/08/2026
 - Expected: The request follows the reviewed EShop contract and security/state rules.
 - Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report.
-- Representative evidence (`B-AI-018`): `GET http://127.0.0.1:3001/api/orders/13` -> HTTP `200`
+- Representative evidence (`B-AI-034`): `POST http://127.0.0.1:3001/api/cart` -> HTTP `200`
 
 ```json
-{"id":13,"user_id":39,"total_amount":200000,"status":"pending","shipping_address":"123 Le Loi, TP.HCM","created_at":"2026-08-18 04:40:37"}
+{"message":"Added to cart"}
 ```
 
 Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
 
-GitHub Issue URL: **STUDENT ACTION - publish after reviewing this draft.**
+GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/63
 
-## BUG-06 - A shipping order can be canceled and its persisted state becomes canceled
-
-- Severity: **High**
-- Feature: `FR-11`
-- Reproduced by: `B-AI-027, B-STU-036`
-- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 18/08/2026
-- Expected: The request follows the reviewed EShop contract and security/state rules.
-- Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report.
-- Representative evidence (`B-AI-027`): `PUT http://127.0.0.1:3001/api/orders/22/cancel` -> HTTP `200`
-
-```json
-{"message":"Order canceled successfully"}
-```
-
-Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
-
-GitHub Issue URL: **STUDENT ACTION - publish after reviewing this draft.**
-
-## BUG-07 - Negative order totals enter history as valid-looking orders
-
-- Severity: **High**
-- Feature: `FR-11/supporting checkout`
-- Reproduced by: `B-STU-039`
-- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 18/08/2026
-- Expected: The request follows the reviewed EShop contract and security/state rules.
-- Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report.
-- Representative evidence (`B-STU-039`): `GET http://127.0.0.1:3001/api/orders/my-orders` -> HTTP `200`
-
-```json
-[{"id":31,"user_id":62,"total_amount":-1,"status":"pending","shipping_address":"123 Le Loi, TP.HCM","created_at":"2026-08-18 04:40:47"}]
-```
-
-Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
-
-GitHub Issue URL: **STUDENT ACTION - publish after reviewing this draft.**
-
-## BUG-08 - Normal users can create, update, and delete categories
+## BUG-08 - Product creation is accessible without an admin JWT
 
 - Severity: **Critical**
-- Feature: `FR-14`
-- Reproduced by: `C-AI-008, C-AI-021, C-AI-032, C-STU-037`
-- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 18/08/2026
+- Feature: `FR-15`
+- Reproduced by: `C-AI-002, C-AI-003, C-AI-004, C-AI-005, C-STU-037`
+- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 30/08/2026
 - Expected: The request follows the reviewed EShop contract and security/state rules.
 - Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report.
-- Representative evidence (`C-AI-008`): `POST http://127.0.0.1:3001/api/categories` -> HTTP `200`
+- Representative evidence (`C-AI-002`): `POST http://127.0.0.1:3001/api/products` -> HTTP `200`
 
 ```json
-{"message":"Category created","id":5}
+{"message":"Product created","id":7}
 ```
 
 Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
 
-GitHub Issue URL: **STUDENT ACTION - publish after reviewing this draft.**
+GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/64
 
-## BUG-09 - Category create/update accepts missing, empty, whitespace, null, or numeric names
+## BUG-09 - Product creation omits required name, price, and category validation
 
 - Severity: **High**
-- Feature: `FR-14`
-- Reproduced by: `C-AI-009, C-AI-010, C-AI-011, C-AI-012, C-AI-013, C-AI-026, C-STU-036`
-- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 18/08/2026
+- Feature: `FR-15`
+- Reproduced by: `C-AI-006, C-AI-007, C-AI-008, C-AI-009, C-AI-010, C-AI-014, C-AI-015, C-AI-016, C-AI-017, C-AI-018, C-AI-021, C-AI-022, C-AI-023, C-AI-024, C-AI-025, C-AI-026, C-AI-027, C-AI-028, C-AI-029, C-STU-039`
+- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 30/08/2026
 - Expected: The request follows the reviewed EShop contract and security/state rules.
 - Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report.
-- Representative evidence (`C-AI-009`): `POST http://127.0.0.1:3001/api/categories` -> HTTP `200`
+- Representative evidence (`C-AI-006`): `POST http://127.0.0.1:3001/api/products` -> HTTP `200`
 
 ```json
-{"message":"Category created","id":6}
+{"message":"Product created","id":11}
 ```
 
 Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
 
-GitHub Issue URL: **STUDENT ACTION - publish after reviewing this draft.**
-
-## BUG-10 - Category update/delete reports success for nonexistent or invalid identifiers
-
-- Severity: **High**
-- Feature: `FR-14`
-- Reproduced by: `C-AI-022, C-AI-023, C-AI-024, C-AI-025, C-AI-027, C-AI-033, C-AI-034, C-AI-035, C-STU-040`
-- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 18/08/2026
-- Expected: The request follows the reviewed EShop contract and security/state rules.
-- Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report.
-- Representative evidence (`C-AI-022`): `PUT http://127.0.0.1:3001/api/categories/999999` -> HTTP `200`
-
-```json
-{"message":"Category updated"}
-```
-
-Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**
-
-GitHub Issue URL: **STUDENT ACTION - publish after reviewing this draft.**
+GitHub Issue URL: https://github.com/ntntran09/eshop-sut/issues/65

@@ -27,6 +27,19 @@ BUGS = [
 ]
 
 
+ISSUE_URLS = {
+    "BUG-01": "https://github.com/ntntran09/eshop-sut/issues/57",
+    "BUG-02": "https://github.com/ntntran09/eshop-sut/issues/58",
+    "BUG-03": "https://github.com/ntntran09/eshop-sut/issues/59",
+    "BUG-04": "https://github.com/ntntran09/eshop-sut/issues/60",
+    "BUG-05": "https://github.com/ntntran09/eshop-sut/issues/61",
+    "BUG-06": "https://github.com/ntntran09/eshop-sut/issues/62",
+    "BUG-07": "https://github.com/ntntran09/eshop-sut/issues/63",
+    "BUG-08": "https://github.com/ntntran09/eshop-sut/issues/64",
+    "BUG-09": "https://github.com/ntntran09/eshop-sut/issues/65",
+}
+
+
 def response_text(response: dict) -> str:
     stream = response.get("stream")
     if isinstance(stream, dict) and isinstance(stream.get("data"), list):
@@ -155,7 +168,8 @@ def main() -> None:
 
     bug_md =["# HW06 Bug Reports", "", "These are locally reproduced issue drafts. Each must receive a student-captured screenshot and a public GitHub Issue URL before submission.", "", "| ID | Feature | Severity | Title | Test IDs | GitHub Issue | Screenshot |", "| --- | --- | --- | --- | --- | --- | --- |"]
     for bug_id, feature, title, ids, severity in BUGS:
-        bug_md.append(f"| {bug_id} | {feature} | {severity} | {title} | {', '.join(ids)} | STUDENT ACTION | STUDENT ACTION |")
+        issue = ISSUE_URLS.get(bug_id, "STUDENT ACTION")
+        bug_md.append(f"| {bug_id} | {feature} | {severity} | {title} | {', '.join(ids)} | {issue} | STUDENT ACTION |")
     for bug_id, feature, title, ids, severity in BUGS:
         representative = next((case_id for case_id in ids if case_id in execution_by_name), None)
         bug_md += ["", f"## {bug_id} - {title}", "", f"- Severity: **{severity}**", f"- Feature: `{feature}`", f"- Reproduced by: `{', '.join(ids)}`", "- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 30/08/2026", "- Expected: The request follows the reviewed EShop contract and security/state rules.", "- Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report."]
@@ -163,7 +177,8 @@ def main() -> None:
             execution = execution_by_name[representative]
             body = response_text(execution["response"]).replace("\n", " ")[:500]
             bug_md += [f"- Representative evidence (`{representative}`): `{execution['request']['method']} {request_url(execution['request'])}` -> HTTP `{execution['response']['code']}`", "", "```json", body, "```"]
-        bug_md += ["", "Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**", "", "GitHub Issue URL: **STUDENT ACTION - publish after reviewing this draft.**"]
+        issue_url = ISSUE_URLS.get(bug_id, "**STUDENT ACTION - publish after reviewing this draft.**")
+        bug_md += ["", "Screenshot: **STUDENT ACTION - capture the real Postman/Newman/GitHub Issue screen.**", "", f"GitHub Issue URL: {issue_url}"]
     (ROOT / "bug-reports.md").write_text("\n".join(bug_md) + "\n", encoding="utf-8")
 
     print(json.dumps(summary, ensure_ascii=False, indent=2))
