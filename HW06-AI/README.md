@@ -47,7 +47,8 @@ Newman executed 222 requests (214 collection items plus eight in-script state-ve
 | --- | --- |
 | Main report | `main-report.md` |
 | Reviewed test catalog | `test-design/test-cases.json` and `test-design/test-cases.md` |
-| Test-case table | `reports/test-case-results.csv` (XLSX export remains blocked because the required artifact-tool runtime is unavailable) |
+| Test-case table | `reports/test-case-results.csv` and `reports/23127272_HW06_test_cases.xlsx` (Test Cases + Summary sheets) |
+| Report PDFs | `output/pdf/23127272_HW06_Main_Report.pdf`, `output/pdf/23127272_HW06_AI_Audit.pdf` |
 | Postman/Newman | `postman/` and `reports/newman-report.html` |
 | Bug drafts | `bug-reports.md` |
 | Reusable generator skill | `skills/generate-eshop-api-tests/` |

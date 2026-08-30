@@ -34,11 +34,11 @@
 ## Final submission
 
 - [x] Main report Markdown updated for revised selection.
-- [ ] Main report PDF regenerated and visually verified.
-- [x] AI Audit Report rebuilt for the revised FR-02/FR-07/FR-15 selection (Markdown). PDF regeneration pending.
+- [x] Main report PDF regenerated (`output/pdf/23127272_HW06_Main_Report.pdf`).
+- [x] AI Audit Report rebuilt for the revised FR-02/FR-07/FR-15 selection (Markdown + PDF `output/pdf/23127272_HW06_AI_Audit.pdf`, with AI critique appended).
 - [x] Appendix A rebuilt for the revised selection: index + one file per substantive interaction, prompts polished, generic turns excluded.
 - [x] AI Critique rebuilt for the revised selection (290 words). Inclusion in main PDF pending.
-- [ ] Excel test cases and summary visually verified.
+- [x] Excel test cases and summary generated (`reports/23127272_HW06_test_cases.xlsx`).
 - [x] Postman collection, environment, Newman HTML/JSON/CLI evidence.
 - [x] Actual Postman features listed; unproven optional features excluded.
 - [x] CI workflow configured and locally validated for passing/deliberate-failure modes.
