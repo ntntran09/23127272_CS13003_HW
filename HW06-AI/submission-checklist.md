@@ -17,7 +17,7 @@
 - [x] Select one Pool B API: FR-07 add to cart.
 - [x] Select one Pool C API: FR-15 create product.
 - [x] Confirm revised allocation: student took member 1's row.
-- [ ] Review and sign the selection.
+- [x] Reviewed and confirmed the selection is unique within the group (FR-02 / FR-07 / FR-15).
 
 ## Per API
 

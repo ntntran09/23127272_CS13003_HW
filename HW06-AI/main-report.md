@@ -11,7 +11,7 @@
 
 ## 1. Revised scope
 
-The student changed the group allocation on 18/08/2026 and selected member 1's row.
+The student changed the group allocation on 18/08/2026 and selected member 1's row. The selection is confirmed unique within the group: no other member chose the same three APIs (FR-02 / FR-07 / FR-15).
 
 | Pool | Feature | Primary endpoint |
 | --- | --- | --- |

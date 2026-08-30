@@ -19,7 +19,7 @@
 | B | FR-07 Add to shopping cart | `POST /api/cart` (supporting `GET /api/cart` for state checks) |
 | C | FR-15 Create product | `POST /api/products` |
 
-The selection follows the student's revised group allocation on 18/08/2026: member 1's three APIs.
+The selection follows the student's revised group allocation on 18/08/2026: member 1's three APIs. Confirmed unique within the group — no other member selected the same three APIs (FR-02 / FR-07 / FR-15).
 
 ## Test summary
 
