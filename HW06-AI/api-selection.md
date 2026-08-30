@@ -32,12 +32,10 @@
 
 | Pool | Selected FR | Selected method/path(s) | Why this API | Group uniqueness confirmed? |
 | --- | --- | --- | --- | --- |
-| A | FR-03 | `POST /api/forgot-password`; `POST /api/reset-password` | Reuses the password-reset feature selected and tested in HW02/HW04; supports domain, OTP lifecycle, security, and schema coverage. | Student confirmation required |
-| B | FR-11 | `GET /api/orders/my-orders`; supporting `GET /api/orders/:id`; `PUT /api/orders/:id/cancel` | Reuses the order-history/cancellation behavior selected in HW02/HW04; supports ownership, state, and IDOR coverage. | Student confirmation required |
-| C | FR-14 | `GET/POST /api/categories`; `PUT/DELETE /api/categories/:id` | Reuses category CRUD selected in HW02/HW04; supports validation, role authorization, CRUD state, and schema coverage. | Student confirmation required |
+| A | FR-02 | `POST /api/login` | Covers credential domains, response secrecy/schema, JWT claims, failed-attempt state, and the 3-attempt/30-second lockout boundary. | Yes - revised allocation supplied by student on 18/08/2026 |
+| B | FR-07 | `POST /api/cart` | Covers JWT enforcement, item/quantity domains, same-product merge behavior, user isolation, and catalog-field trust boundaries. Supporting `GET /api/cart` is used only for state verification. | Yes - revised allocation supplied by student on 18/08/2026 |
+| C | FR-15 | `POST /api/products` | Covers admin authorization, name/price/category boundaries, mass assignment, schema, and read-after-write persistence. | Yes - revised allocation supplied by student on 18/08/2026 |
 
-**Selection basis:** the student instructed that HW06 use the choices from HW02/HW04. The prior final artifacts identify FR-03, FR-11, and FR-14.
+**Selection basis:** the student explicitly changed the group allocation and took member 1's API row: FR-02, FR-07, and FR-15.
 
-**Student confirmation still required:** verify that no group member uses the same three-feature combination.
-
-Signature/date: TBD
+Signature/date: student confirmation recorded in the Codex session on 18/08/2026; handwritten/submission signature remains student action if required.
