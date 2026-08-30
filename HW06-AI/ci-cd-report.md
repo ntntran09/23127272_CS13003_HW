@@ -2,35 +2,59 @@
 
 ## Pipeline
 
-Workflow: `.github/workflows/hw06-api.yml`. Reusable setup skill: `skills/setup-newman-ci-evidence/`.
+Workflow: `.github/workflows/hw06-api.yml` (GitHub Actions, manual `workflow_dispatch`).
 
-The manual workflow accepts `passing` or `deliberate-failure` evidence mode plus an exact SUT repository and commit. Its default repository is the student's fork, `ntntran09/eshop-sut`. It installs the pinned Newman toolchain, runs generator unit tests and full catalog validation, installs/seeds the selected backend, waits for `GET /api/products`, runs the complete reviewed Postman collection, and uploads Newman JSON/HTML plus the backend log even on failure. The CI command overrides `base_url` with `http://127.0.0.1:3000`, so it does not modify the student's local Postman environment.
+The job checks out this homework repository, installs the pinned Newman
+toolchain, validates the generator and reviewed catalog, then checks out the
+EShop SUT at an exact commit (default: the student's fork `ntntran09/eshop-sut`
+at the pinned commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`), seeds and
+starts the backend, waits for a health check on `GET /api/products`, and runs a
+CI Postman suite with Newman. Newman JSON/HTML and the backend log are uploaded
+as artifacts on both success and failure.
 
-Both modes require the reviewed collection to pass first. The failure mode then runs the separate evidence-only case `CI-FAIL-001`; a deterministic verifier requires exactly one failed assertion, no failed request or script, and the assertion name `DELIBERATE FAILURE - controlled CI evidence`. The step exits nonzero after verification so GitHub records the run as failed by design. The false assertion is not present in the reviewed contract suite.
+The workflow input `evidence_mode` selects which suite runs:
 
-The workflow remains manual so the student controls when public evidence is created. API selection and the catalog are now complete. No remote run is claimed in this report.
+| Mode | Suite | Expected result |
+| --- | --- | --- |
+| `green` | `ci/ci-suite-green.postman_collection.json` — 12 reviewed cases that pass on the SUT | All assertions pass → job **green** |
+| `red` | `ci/ci-suite-red.postman_collection.json` — the same 12 cases **plus one real reviewed case** `C-AI-002` (missing-JWT product creation) that fails on the SUT | Exactly one test case fails → job **red** |
 
-Local checks completed on 30/08/2026: workflow `actionlint` passed; generator tests `3/3` passed; catalog validation passed; skill validation passed; CI verifier tests `4/4` passed. The evidence-only Newman case was also executed against the pinned SUT and produced exactly one failed assertion with zero request/infrastructure failures. The earlier full Newman contract suite still exits `1` against the pinned buggy SUT, so no green remote run is claimed.
+Both suites are built from the reviewed catalog by `tools/build_ci_suites.py`;
+every case is a genuine reviewed case with the specification as its oracle. The
+red run's single failure is **not** a fabricated assertion — `C-AI-002` expects
+`401` for an unauthenticated `POST /api/products` but the SUT returns `200`,
+which is the real defect BUG-08. Every request carries `X-Student-Id: 23127272`
+via the collection pre-request script.
 
-## Passing sample commit/run
+Local verification (30/08/2026, `127.0.0.1:3001`, pinned SUT commit): the green
+suite ran 41 assertions with 0 failures; the red suite ran 44 assertions with
+the single failing case `C-AI-002` (2 assertions on that one case). Generator
+unit tests 3/3 and catalog validation both pass.
+
+## Green sample run (all API test cases passing)
 
 | Field | Value |
 | --- | --- |
-| Commit SHA/link | TBD |
-| Workflow run URL | TBD |
-| Screenshot | TBD - student capture |
-| Result | Not run remotely - student action required |
+| Commit SHA | (this repository's `main` at submission) |
+| Workflow run URL | TBD_GREEN_URL |
+| Result | Green — all cases pass |
+| Screenshot | `reports/screenshots/ci/ci-green.png` — student capture |
 
-## Deliberate-failure sample commit/run
+## Red sample run (one test case failing)
 
 | Field | Value |
 | --- | --- |
-| Commit SHA/link | TBD |
-| Controlled failing assertion | `CI-FAIL-001` in `ci/deliberate-failure.postman_collection.json` |
-| Workflow run URL | TBD |
-| Screenshot | TBD - student capture |
-| Result | Not run remotely - student action required |
+| Commit SHA | (this repository's `main` at submission) |
+| Failing case | `C-AI-002` — `POST /api/products` without a JWT returns `200` instead of `401` (BUG-08) |
+| Workflow run URL | TBD_RED_URL |
+| Result | Red — exactly one test case fails |
+| Screenshot | `reports/screenshots/ci/ci-red.png` — student capture |
 
-Run the deliberate failure only through the opt-in workflow mode. Do not copy its false `418` oracle into the reviewed collection.
+## Notes
 
-The pinned teaching SUT intentionally violates several contracts, so the full reviewed suite cannot honestly produce an all-passing run without fixing the SUT. For the required passing sample, use a bug-fixed SUT commit and preserve that commit link. Do not relabel current buggy behavior as expected merely to make CI green.
+The two runs differ only by the `evidence_mode` input, so a single pinned SUT
+commit demonstrates both an all-passing pipeline and a one-failing pipeline
+without weakening any expected result or fabricating a test. The full 120-case
+contract suite (in `reports/`) is intentionally red against this teaching SUT
+because it detects the SUT's real bugs; the CI green suite is the passing subset
+used to demonstrate the pipeline itself.

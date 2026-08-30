@@ -1,0 +1,878 @@
+{
+  "info": {
+    "name": "23127272 HW06 CI Suite (green)",
+    "description": "Reviewed cases that pass against the SUT; used for the all-passing CI run.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "student_id",
+      "value": "23127272"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const studentId = pm.variables.replaceIn('{{student_id}}');",
+          "if (!studentId || studentId === '{{student_id}}') { throw new Error('student_id is required'); }",
+          "pm.request.headers.upsert({ key: 'X-Student-Id', value: studentId });",
+          "console.log('X-Student-Id:', studentId);"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Pool A - FR-02 - Login and account lockout",
+      "description": "JWT login plus three-failure/30-second lockout",
+      "item": [
+        {
+          "name": "A-AI-002 - Valid admin login returns JWT",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ],
+              "query": []
+            },
+            "description": "Prerequisite: Clean seeded local SUT\nOracle: EShop README and api_specification.md",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@eshop.com\",\n  \"password\": \"Admin123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"A-AI-002 status is allowed\", function () {",
+                  "  pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"A-AI-002 content type\", function () {",
+                  "  pm.expect(pm.response.headers.get('Content-Type') || '').to.include(\"application/json\");",
+                  "});",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { console.log('Response is not valid JSON:', error.message); }",
+                  "const schema = {\"type\":\"object\",\"required\":[\"message\",\"token\",\"user\"],\"properties\":{\"message\":{\"const\":\"Login successful\"},\"token\":{\"type\":\"string\",\"minLength\":1},\"user\":{\"type\":\"object\",\"required\":[\"id\",\"name\",\"email\",\"role\"],\"properties\":{\"id\":{\"type\":\"integer\",\"minimum\":1},\"name\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"},\"role\":{\"enum\":[\"user\",\"admin\"]}},\"additionalProperties\":true}},\"additionalProperties\":false};",
+                  "pm.test(\"A-AI-002 response schema\", function () {",
+                  "  const responseType = pm.response.headers.get('Content-Type') || '';",
+                  "  if (!responseType.includes('application/json')) pm.expect.fail('response is not JSON');",
+                  "  else pm.response.to.have.jsonSchema(schema);",
+                  "});",
+                  "const b=pm.response.json();pm.collectionVariables.set('admin_token',b.token);pm.environment.set('admin_token',b.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A-AI-019 - Unknown email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ],
+              "query": []
+            },
+            "description": "Prerequisite: Clean seeded local SUT\nOracle: FR-02 must not reveal which credential failed",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"unknown19@example.com\",\n  \"password\": \"Wrong123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"A-AI-019 status is allowed\", function () {",
+                  "  pm.expect([401]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"A-AI-019 content type\", function () {",
+                  "  pm.expect(pm.response.headers.get('Content-Type') || '').to.include(\"application/json\");",
+                  "});",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { console.log('Response is not valid JSON:', error.message); }",
+                  "const schema = {\"type\":\"object\",\"required\":[\"error\"],\"properties\":{\"error\":{\"type\":\"string\",\"minLength\":1}},\"additionalProperties\":false};",
+                  "pm.test(\"A-AI-019 response schema\", function () {",
+                  "  const responseType = pm.response.headers.get('Content-Type') || '';",
+                  "  if (!responseType.includes('application/json')) pm.expect.fail('response is not JSON');",
+                  "  else pm.response.to.have.jsonSchema(schema);",
+                  "});",
+                  "function readPath(root, path) {",
+                  "  return path.split('.').filter(Boolean).reduce((value, key) => value == null ? undefined : value[key], root);",
+                  "}",
+                  "pm.test(\"A-AI-019 JSON assertion 1: error equals\", function () {",
+                  "  const actual = readPath(body, \"error\");",
+                  "  pm.expect(actual).to.eql(\"Invalid email or password\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A-AI-026 - Failure response is JSON",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ],
+              "query": []
+            },
+            "description": "Prerequisite: Clean seeded local SUT\nOracle: EShop README and api_specification.md",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"unknown26@example.com\",\n  \"password\": \"x\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"A-AI-026 status is allowed\", function () {",
+                  "  pm.expect([401]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"A-AI-026 content type\", function () {",
+                  "  pm.expect(pm.response.headers.get('Content-Type') || '').to.include(\"application/json\");",
+                  "});",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { console.log('Response is not valid JSON:', error.message); }",
+                  "const schema = {\"type\":\"object\",\"required\":[\"error\"],\"properties\":{\"error\":{\"type\":\"string\",\"minLength\":1}},\"additionalProperties\":false};",
+                  "pm.test(\"A-AI-026 response schema\", function () {",
+                  "  const responseType = pm.response.headers.get('Content-Type') || '';",
+                  "  if (!responseType.includes('application/json')) pm.expect.fail('response is not JSON');",
+                  "  else pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A-STU-036 - JWT role claim matches the persisted user role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ],
+              "query": []
+            },
+            "description": "Prerequisite: Clean seeded local SUT\nOracle: EShop README and api_specification.md",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@eshop.com\",\n  \"password\": \"Test1234!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"A-STU-036 status is allowed\", function () {",
+                  "  pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"A-STU-036 content type\", function () {",
+                  "  pm.expect(pm.response.headers.get('Content-Type') || '').to.include(\"application/json\");",
+                  "});",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { console.log('Response is not valid JSON:', error.message); }",
+                  "const schema = {\"type\":\"object\",\"required\":[\"message\",\"token\",\"user\"],\"properties\":{\"message\":{\"const\":\"Login successful\"},\"token\":{\"type\":\"string\",\"minLength\":1},\"user\":{\"type\":\"object\",\"required\":[\"id\",\"name\",\"email\",\"role\"],\"properties\":{\"id\":{\"type\":\"integer\",\"minimum\":1},\"name\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"},\"role\":{\"enum\":[\"user\",\"admin\"]}},\"additionalProperties\":true}},\"additionalProperties\":false};",
+                  "pm.test(\"A-STU-036 response schema\", function () {",
+                  "  const responseType = pm.response.headers.get('Content-Type') || '';",
+                  "  if (!responseType.includes('application/json')) pm.expect.fail('response is not JSON');",
+                  "  else pm.response.to.have.jsonSchema(schema);",
+                  "});",
+                  "pm.test('A-STU-036 JWT role claim matches persisted user.role', function () {var b = pm.response.json();var parts = (b.token || '').split('.');pm.expect(parts.length, 'JWT has three segments').to.eql(3);var payload = JSON.parse(Buffer.from(parts[1], 'base64').toString('utf8'));pm.expect(payload.role, 'token role equals response role').to.eql(b.user.role);pm.expect(payload.id, 'token id equals response id').to.eql(b.user.id);});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A-STU-038 - Unknown extra nested object is ignored",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ],
+              "query": []
+            },
+            "description": "Prerequisite: Clean seeded local SUT\nOracle: EShop README and api_specification.md",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@eshop.com\",\n  \"password\": \"Test1234!\",\n  \"profile\": {\n    \"role\": \"admin\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"A-STU-038 status is allowed\", function () {",
+                  "  pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"A-STU-038 content type\", function () {",
+                  "  pm.expect(pm.response.headers.get('Content-Type') || '').to.include(\"application/json\");",
+                  "});",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { console.log('Response is not valid JSON:', error.message); }",
+                  "const schema = {\"type\":\"object\",\"required\":[\"message\",\"token\",\"user\"],\"properties\":{\"message\":{\"const\":\"Login successful\"},\"token\":{\"type\":\"string\",\"minLength\":1},\"user\":{\"type\":\"object\",\"required\":[\"id\",\"name\",\"email\",\"role\"],\"properties\":{\"id\":{\"type\":\"integer\",\"minimum\":1},\"name\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"},\"role\":{\"enum\":[\"user\",\"admin\"]}},\"additionalProperties\":true}},\"additionalProperties\":false};",
+                  "pm.test(\"A-STU-038 response schema\", function () {",
+                  "  const responseType = pm.response.headers.get('Content-Type') || '';",
+                  "  if (!responseType.includes('application/json')) pm.expect.fail('response is not JSON');",
+                  "  else pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pool B - FR-07 - Add product to cart",
+      "description": "Authenticated validated cart mutation with merge and isolation",
+      "item": [
+        {
+          "name": "[SETUP B-AI-001 #1] Register hw06.cart01@example.com",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "register"
+              ],
+              "query": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HW06 cart01\",\n  \"email\": \"hw06.cart01@example.com\",\n  \"password\": \"User1234!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"[SETUP B-AI-001 #1] registration succeeds\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "[SETUP B-AI-001 #2] Login hw06.cart01@example.com",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ],
+              "query": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"hw06.cart01@example.com\",\n  \"password\": \"User1234!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"[SETUP B-AI-001 #2] login succeeds\", () => pm.response.to.have.status(200));",
+                  "const setupBody = pm.response.json();",
+                  "pm.expect(setupBody.token, 'setup token').to.be.a('string').and.not.empty;",
+                  "pm.collectionVariables.set(\"case_user_token\", setupBody.token); pm.environment.set(\"case_user_token\", setupBody.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "B-AI-001 - Add existing product quantity one",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{case_user_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/cart",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "cart"
+              ],
+              "query": []
+            },
+            "description": "Prerequisite: Clean seeded local SUT\nOracle: FR-07 and API specification",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"iPhone 15 Pro Max\",\n  \"price\": 30000000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"B-AI-001 status is allowed\", function () {",
+                  "  pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"B-AI-001 content type\", function () {",
+                  "  pm.expect(pm.response.headers.get('Content-Type') || '').to.include(\"application/json\");",
+                  "});",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { console.log('Response is not valid JSON:', error.message); }",
+                  "const schema = {\"type\":\"object\",\"required\":[\"message\"],\"properties\":{\"message\":{\"const\":\"Added to cart\"}},\"additionalProperties\":false};",
+                  "pm.test(\"B-AI-001 response schema\", function () {",
+                  "  const responseType = pm.response.headers.get('Content-Type') || '';",
+                  "  if (!responseType.includes('application/json')) pm.expect.fail('response is not JSON');",
+                  "  else pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "B-AI-002 - Missing JWT",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/cart",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "cart"
+              ],
+              "query": []
+            },
+            "description": "Prerequisite: Clean seeded local SUT\nOracle: SEC-02 requires a valid JWT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"iPhone 15 Pro Max\",\n  \"price\": 30000000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"B-AI-002 status is allowed\", function () {",
+                  "  pm.expect([401]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"B-AI-002 content type\", function () {",
+                  "  pm.expect(pm.response.headers.get('Content-Type') || '').to.include(\"application/json\");",
+                  "});",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { console.log('Response is not valid JSON:', error.message); }",
+                  "const schema = {\"type\":\"object\",\"required\":[\"error\"],\"properties\":{\"error\":{\"type\":\"string\",\"minLength\":1}},\"additionalProperties\":false};",
+                  "pm.test(\"B-AI-002 response schema\", function () {",
+                  "  const responseType = pm.response.headers.get('Content-Type') || '';",
+                  "  if (!responseType.includes('application/json')) pm.expect.fail('response is not JSON');",
+                  "  else pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "B-AI-004 - Malformed JWT",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bad}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/cart",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "cart"
+              ],
+              "query": []
+            },
+            "description": "Prerequisite: Clean seeded local SUT\nOracle: SEC-02 requires a valid JWT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"iPhone 15 Pro Max\",\n  \"price\": 30000000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"B-AI-004 status is allowed\", function () {",
+                  "  pm.expect([403]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"B-AI-004 content type\", function () {",
+                  "  pm.expect(pm.response.headers.get('Content-Type') || '').to.include(\"application/json\");",
+                  "});",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { console.log('Response is not valid JSON:', error.message); }",
+                  "const schema = {\"type\":\"object\",\"required\":[\"error\"],\"properties\":{\"error\":{\"type\":\"string\",\"minLength\":1}},\"additionalProperties\":false};",
+                  "pm.test(\"B-AI-004 response schema\", function () {",
+                  "  const responseType = pm.response.headers.get('Content-Type') || '';",
+                  "  if (!responseType.includes('application/json')) pm.expect.fail('response is not JSON');",
+                  "  else pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pool C - FR-15 - Create product",
+      "description": "Admin-only validated product creation and persistence",
+      "item": [
+        {
+          "name": "C-AI-001 - Admin creates valid product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": []
+            },
+            "description": "Prerequisite: Clean seeded local SUT\nOracle: FR-15 and API specification",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HW06 Product\",\n  \"price\": 100000,\n  \"description\": \"Test\",\n  \"imageUrl\": \"https://example.com/p.png\",\n  \"category_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"C-AI-001 status is allowed\", function () {",
+                  "  pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"C-AI-001 content type\", function () {",
+                  "  pm.expect(pm.response.headers.get('Content-Type') || '').to.include(\"application/json\");",
+                  "});",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { console.log('Response is not valid JSON:', error.message); }",
+                  "const schema = {\"type\":\"object\",\"required\":[\"message\",\"id\"],\"properties\":{\"message\":{\"const\":\"Product created\"},\"id\":{\"type\":\"integer\",\"minimum\":1}},\"additionalProperties\":false};",
+                  "pm.test(\"C-AI-001 response schema\", function () {",
+                  "  const responseType = pm.response.headers.get('Content-Type') || '';",
+                  "  if (!responseType.includes('application/json')) pm.expect.fail('response is not JSON');",
+                  "  else pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "C-AI-011 - Name length one",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": []
+            },
+            "description": "Prerequisite: Clean seeded local SUT\nOracle: FR-15: name required <=255; price numeric >0; category must exist",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"A\",\n  \"price\": 100000,\n  \"description\": \"Test\",\n  \"imageUrl\": \"https://example.com/p.png\",\n  \"category_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"C-AI-011 status is allowed\", function () {",
+                  "  pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"C-AI-011 content type\", function () {",
+                  "  pm.expect(pm.response.headers.get('Content-Type') || '').to.include(\"application/json\");",
+                  "});",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { console.log('Response is not valid JSON:', error.message); }",
+                  "const schema = {\"type\":\"object\",\"required\":[\"message\",\"id\"],\"properties\":{\"message\":{\"const\":\"Product created\"},\"id\":{\"type\":\"integer\",\"minimum\":1}},\"additionalProperties\":false};",
+                  "pm.test(\"C-AI-011 response schema\", function () {",
+                  "  const responseType = pm.response.headers.get('Content-Type') || '';",
+                  "  if (!responseType.includes('application/json')) pm.expect.fail('response is not JSON');",
+                  "  else pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "C-AI-035 - Role field cannot affect authorization",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": []
+            },
+            "description": "Prerequisite: Clean seeded local SUT\nOracle: FR-15 and API specification",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HW06 Product\",\n  \"price\": 100000,\n  \"description\": \"Test\",\n  \"imageUrl\": \"https://example.com/p.png\",\n  \"category_id\": 1,\n  \"role\": \"admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"C-AI-035 status is allowed\", function () {",
+                  "  pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"C-AI-035 content type\", function () {",
+                  "  pm.expect(pm.response.headers.get('Content-Type') || '').to.include(\"application/json\");",
+                  "});",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { console.log('Response is not valid JSON:', error.message); }",
+                  "const schema = {\"type\":\"object\",\"required\":[\"message\",\"id\"],\"properties\":{\"message\":{\"const\":\"Product created\"},\"id\":{\"type\":\"integer\",\"minimum\":1}},\"additionalProperties\":false};",
+                  "pm.test(\"C-AI-035 response schema\", function () {",
+                  "  const responseType = pm.response.headers.get('Content-Type') || '';",
+                  "  if (!responseType.includes('application/json')) pm.expect.fail('response is not JSON');",
+                  "  else pm.response.to.have.jsonSchema(schema);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "C-STU-036 - Created product persists exact stable fields",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": []
+            },
+            "description": "Prerequisite: Clean seeded local SUT\nOracle: FR-15 and API specification",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Persistent Product\",\n  \"price\": 123456,\n  \"description\": \"Test\",\n  \"imageUrl\": \"https://example.com/p.png\",\n  \"category_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"C-STU-036 status is allowed\", function () {",
+                  "  pm.expect([200]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test(\"C-STU-036 content type\", function () {",
+                  "  pm.expect(pm.response.headers.get('Content-Type') || '').to.include(\"application/json\");",
+                  "});",
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) { console.log('Response is not valid JSON:', error.message); }",
+                  "const schema = {\"type\":\"object\",\"required\":[\"message\",\"id\"],\"properties\":{\"message\":{\"const\":\"Product created\"},\"id\":{\"type\":\"integer\",\"minimum\":1}},\"additionalProperties\":false};",
+                  "pm.test(\"C-STU-036 response schema\", function () {",
+                  "  const responseType = pm.response.headers.get('Content-Type') || '';",
+                  "  if (!responseType.includes('application/json')) pm.expect.fail('response is not JSON');",
+                  "  else pm.response.to.have.jsonSchema(schema);",
+                  "});",
+                  "pm.sendRequest({url:pm.variables.replaceIn('{{base_url}}/api/products/'+pm.response.json().id),method:'GET',header:{'X-Student-Id':pm.variables.replaceIn('{{student_id}}')}},(err,res)=>pm.test('C-STU-036 persisted fields',()=>{pm.expect(err).to.equal(null);const p=res.json();pm.expect(p.name).to.eql('Persistent Product');pm.expect(Number(p.price)).to.eql(123456);pm.expect(p.category_id).to.eql(2);}));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

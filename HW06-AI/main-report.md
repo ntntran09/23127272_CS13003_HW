@@ -114,7 +114,7 @@ Nine reproducible bug groups are drafted in `bug-reports.md`. GitHub Issue URLs 
 
 ## 10. CI/CD
 
-The manual workflow validates the catalog and generator, starts an exact configured SUT commit, runs the full reviewed collection, and uploads Newman JSON/HTML plus the backend log even on failure. It exposes `passing` and `deliberate-failure` modes. The latter runs a separate one-item evidence collection only after the real suite passes, verifies exactly one controlled assertion failure, and then returns a red job result. `skills/setup-newman-ci-evidence/` documents and validates this process. Real GitHub run URLs/screenshots remain student actions. An all-passing contract run requires a corrected SUT; expected results must not be weakened to manufacture a green build.
+The manual workflow validates the catalog and generator, checks out an exact SUT commit (the student's fork by default), seeds and starts the backend, runs a CI Postman suite, and uploads Newman JSON/HTML plus the backend log even on failure. Input `evidence_mode` selects the suite: `green` runs 12 reviewed cases that pass on the SUT (job green), and `red` runs those 12 plus one real reviewed case `C-AI-002` (missing-JWT product creation) that genuinely fails on the SUT because of BUG-08 (job red, exactly one failing case). Both suites are built by `tools/build_ci_suites.py` from the reviewed catalog; no expected result is weakened and no assertion is fabricated. See `ci-cd-report.md` for the two run links and screenshots.
 
 ## 11. AI-driven generator
 

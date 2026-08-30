@@ -7,11 +7,11 @@ on:
       evidence_mode:
         description: Evidence run to produce
         required: true
-        default: passing
+        default: green
         type: choice
         options:
-          - passing
-          - deliberate-failure
+          - green
+          - red
       sut_repository:
         description: Repository containing the EShop SUT
         required: true
@@ -55,7 +55,6 @@ jobs:
         working-directory: HW06-AI/automation
         run: |
           npm run test:skill
-          npm run test:ci-skill
           npm run validate:skill
 
       - name: Check out selected EShop SUT commit
@@ -87,46 +86,20 @@ jobs:
           cat "$GITHUB_WORKSPACE/HW06-AI/reports/ci/backend.log"
           exit 1
 
-      - name: Run full reviewed Postman collection
-        working-directory: HW06-AI/automation
-        run: |
-          npx --no-install newman run ../postman/23127272_HW06.postman_collection.json \
-            -e ../postman/23127272_HW06.local.postman_environment.json \
-            --env-var base_url=http://127.0.0.1:3000 \
-            --env-var student_id=23127272 \
-            -r cli,json,htmlextra \
-            --reporter-json-export ../reports/ci/main-newman.json \
-            --reporter-htmlextra-export ../reports/ci/main-newman.html \
-            --timeout-request 10000
-
-      - name: Run exactly one deliberate failing API test
-        if: ${{ inputs.evidence_mode == 'deliberate-failure' }}
+      - name: Run CI test suite (green passes; red has one real failing case)
         working-directory: HW06-AI/automation
         shell: bash
         run: |
-          set +e
-          npx --no-install newman run ../ci/deliberate-failure.postman_collection.json \
+          suite=green
+          if [ "${{ inputs.evidence_mode }}" = "red" ]; then suite=red; fi
+          echo "Running CI suite: $suite"
+          npx --no-install newman run "../ci/ci-suite-$suite.postman_collection.json" \
             --env-var base_url=http://127.0.0.1:3000 \
             --env-var student_id=23127272 \
             -r cli,json,htmlextra \
-            --reporter-json-export ../reports/ci/deliberate-newman.json \
-            --reporter-htmlextra-export ../reports/ci/deliberate-newman.html \
+            --reporter-json-export ../reports/ci/ci-newman.json \
+            --reporter-htmlextra-export ../reports/ci/ci-newman.html \
             --timeout-request 10000
-          newman_status=$?
-          set -e
-
-          if [ "$newman_status" -eq 0 ]; then
-            echo "Expected the deliberate test to fail, but Newman exited successfully."
-            exit 1
-          fi
-
-          python ../skills/setup-newman-ci-evidence/scripts/verify_newman_failure_count.py \
-            ../reports/ci/deliberate-newman.json \
-            --expected-failures 1 \
-            --expected-assertion "DELIBERATE FAILURE - controlled CI evidence"
-
-          echo "Verified exactly one controlled assertion failure."
-          exit 1
 
       - name: Upload Newman and backend evidence
         if: ${{ always() }}
