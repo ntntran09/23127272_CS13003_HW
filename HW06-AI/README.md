@@ -71,12 +71,12 @@ npm run test:api
 
 | No. | Criterion | Maximum | Self-assessed |
 | ---: | --- | ---: | ---: |
-| 1 | Pool A full pipeline | 30 | 27 |
-| 2 | Pool B full pipeline | 30 | 27 |
-| 3 | Pool C full pipeline | 30 | 27 |
-| 4 | Agent Skill | 10 | 9 |
-| | Total | 100 | **090** |
+| 1 | Pool A (FR-02) full pipeline | 30 | 28 |
+| 2 | Pool B (FR-07) full pipeline | 30 | 28 |
+| 3 | Pool C (FR-15) full pipeline | 30 | 28 |
+| 4 | Agent Skill (AI-driven generator) | 10 | 9 |
+| | Total | 100 | **093** |
 
-Provisional grade: `090`. Student should adjust after supplying screenshots, public issue links, two CI run links, group-uniqueness confirmation, and the self-drawn diagram.
+Self-assessed grade: `093`. Each API completes the full pipeline — generate (35 AI cases), audit (verdicts confirmed), extend (5 student cases, six refined during review), execute (real Newman run with actual-status evidence), and bugs (published as GitHub Issues #57-#65 with screenshots). The Agent Skill ships the generator, validator, unit tests, pseudocode, and a self-drawn diagram. Deductions: the 30-second lockout-expiry case is left manual, and the generator demo video is optional and not yet recorded (add it to raise the skill score).
 
-The AI Audit Report, Appendix A, and AI Critique have been rebuilt from the current FR-02/FR-07/FR-15 session (`AI docs/` and `appendix_a/`), based on the recovered Codex transcript under `AI docs/evidence/current-selection-session/`. The self-drawn generator diagram is done (`test-generator/23127272_HW06_test_generator_diagram.png` + `.excalidraw`). Still to recreate before packaging: the PDFs, the Excel test cases/summary, and the Git commit log (the FR-02/FR-07/FR-15 rework is currently uncommitted in the working tree and must be committed as per-step commits).
+Deliverables status: AI Audit Report, Appendix A, and AI Critique rebuilt for FR-02/FR-07/FR-15 (`AI docs/`, `appendix_a/`); self-drawn diagram, Excel workbook, and both report PDFs generated; nine bugs filed as GitHub Issues with screenshots; CI green (success) and red (one-failing) runs recorded in `ci-cd-report.md`; Git commit log in `git-commit-log.txt`. Remaining before zipping: optional demo video, then create `23127272_HW06_AI_API_093.zip`.
