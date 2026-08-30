@@ -35,8 +35,8 @@ unit tests 3/3 and catalog validation both pass.
 
 | Field | Value |
 | --- | --- |
-| Commit SHA | (this repository's `main` at submission) |
-| Workflow run URL | TBD_GREEN_URL |
+| Commit SHA | `b330453` |
+| Workflow run URL | https://github.com/ntntran09/23127272_CS13003_HW/actions/runs/33294118082 |
 | Result | Green — all cases pass |
 | Screenshot | `reports/screenshots/ci/ci-green.png` — student capture |
 
@@ -44,9 +44,9 @@ unit tests 3/3 and catalog validation both pass.
 
 | Field | Value |
 | --- | --- |
-| Commit SHA | (this repository's `main` at submission) |
+| Commit SHA | `b330453` |
 | Failing case | `C-AI-002` — `POST /api/products` without a JWT returns `200` instead of `401` (BUG-08) |
-| Workflow run URL | TBD_RED_URL |
+| Workflow run URL | https://github.com/ntntran09/23127272_CS13003_HW/actions/runs/33294123072 |
 | Result | Red — exactly one test case fails |
 | Screenshot | `reports/screenshots/ci/ci-red.png` — student capture |
 
