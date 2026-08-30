@@ -1,3 +1,6 @@
+acb7a0d | 2026-08-30 11:47 | heyyouknowme | hw06: build Excel workbook and Main-Report / AI-Audit PDFs
+48c5072 | 2026-08-30 11:44 | heyyouknowme | hw06: add bug/console and GitHub-issue screenshots, link them in reports
+b48bfab | 2026-08-30 11:23 | heyyouknowme | hw06: add required Git commit log
 d4b97dc | 2026-08-30 11:23 | heyyouknowme | hw06: link the nine bug reports to their GitHub issues on the SUT fork
 0277805 | 2026-08-30 11:21 | heyyouknowme | hw06: add self-drawn generator diagram, CI evidence skill, and cleanup
 b16fbf4 | 2026-08-30 11:20 | heyyouknowme | hw06: execute suite on clean SUT and report actual-status evidence
