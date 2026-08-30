@@ -44,7 +44,7 @@
 - [x] CI workflow configured and locally validated for passing/deliberate-failure modes.
 - [x] CI run links and screenshots captured: green (success) run 33294118082 and red (one failing case) run 33294123072 on `ntntran09/23127272_CS13003_HW`; screenshots in `reports/screenshots/ci/`.
 - [x] Student self-drawn diagram PNG and editable source (`test-generator/23127272_HW06_test_generator_diagram.png` + `.excalidraw`).
-- [ ] Demo video link if submitted.
+- [x] Demo video: <https://youtu.be/EbAGZ3QOC1U>.
 - [x] Git commit log text file (`git-commit-log.txt`).
 - [x] README counts and provisional self-assessment reconciled.
 - [ ] Final ZIP name follows `23127272_HW06_AI_API_<grade>.zip`.

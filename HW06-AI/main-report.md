@@ -120,7 +120,7 @@ The manual workflow validates the catalog and generator, checks out an exact SUT
 
 `skills/generate-eshop-api-tests/` contains the instructions, catalog validator, Postman builder, unit tests, template, and pipeline reference. Validation enforces three pools, at least 35 AI plus five student cases per API, EC coverage, domain/state/security/schema tags, SEC traceability or explicit disposition, audit labels, and response schemas.
 
-The student-drawn diagram is `test-generator/23127272_HW06_test_generator_diagram.png` (editable source: `.excalidraw`), and the design pseudocode is `test-generator/pseudocode.md`.
+The student-drawn diagram is `test-generator/23127272_HW06_test_generator_diagram.png` (editable source: `.excalidraw`), and the design pseudocode is `test-generator/pseudocode.md`. A demo video of the generator producing tests for one API is at <https://youtu.be/EbAGZ3QOC1U>.
 
 ## 12. Remaining student actions
 

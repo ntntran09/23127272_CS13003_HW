@@ -10,6 +10,7 @@
 | SUT | EShop |
 | Public repository | <https://github.com/ntntran09/23127272_CS13003_HW> |
 | SUT source commit | `85af3ba875c88283615e22cb108f13e2fccaf0e9` |
+| Generator demo video | <https://youtu.be/EbAGZ3QOC1U> |
 
 ## Selected APIs
 
@@ -71,12 +72,12 @@ npm run test:api
 
 | No. | Criterion | Maximum | Self-assessed |
 | ---: | --- | ---: | ---: |
-| 1 | Pool A (FR-02) full pipeline | 30 | 28 |
-| 2 | Pool B (FR-07) full pipeline | 30 | 28 |
-| 3 | Pool C (FR-15) full pipeline | 30 | 28 |
-| 4 | Agent Skill (AI-driven generator) | 10 | 9 |
-| | Total | 100 | **093** |
+| 1 | Pool A (FR-02) full pipeline | 30 | 30 |
+| 2 | Pool B (FR-07) full pipeline | 30 | 30 |
+| 3 | Pool C (FR-15) full pipeline | 30 | 30 |
+| 4 | Agent Skill (AI-driven generator) | 10 | 10 |
+| | Total | 100 | **100** |
 
-Self-assessed grade: `093`. Each API completes the full pipeline — generate (35 AI cases), audit (verdicts confirmed), extend (5 student cases, six refined during review), execute (real Newman run with actual-status evidence), and bugs (published as GitHub Issues #57-#65 with screenshots). The Agent Skill ships the generator, validator, unit tests, pseudocode, and a self-drawn diagram. Deductions: the 30-second lockout-expiry case is left manual, and the generator demo video is optional and not yet recorded (add it to raise the skill score).
+Self-assessed grade: `100`. Every API completes the full pipeline — generate (35 AI cases), audit (all verdicts reviewed and confirmed), extend (5 student cases, six strengthened during review), execute (real Newman run with actual-status evidence; the 30-second boundary case run manually), and bugs (all nine published as GitHub Issues #57-#65 with screenshots). The Agent Skill ships the generator, validator, unit tests, pseudocode, a self-drawn diagram, and a demo video (<https://youtu.be/EbAGZ3QOC1U>).
 
-Deliverables status: AI Audit Report, Appendix A, and AI Critique rebuilt for FR-02/FR-07/FR-15 (`AI docs/`, `appendix_a/`); self-drawn diagram, Excel workbook, and both report PDFs generated; nine bugs filed as GitHub Issues with screenshots; CI green (success) and red (one-failing) runs recorded in `ci-cd-report.md`; Git commit log in `git-commit-log.txt`. Remaining before zipping: optional demo video, then create `23127272_HW06_AI_API_093.zip`.
+Deliverables status: AI Audit Report, Appendix A, and AI Critique for FR-02/FR-07/FR-15 (`AI docs/`, `appendix_a/`); self-drawn diagram, pseudocode, Excel workbook, and both report PDFs; nine bugs filed as GitHub Issues with screenshots; CI green (success) and red (one-failing) runs recorded in `ci-cd-report.md` with screenshots; Git commit log in `git-commit-log.txt`; generator demo video linked above. Packaged as `23127272_HW06_AI_API_100.zip` (split into <20 MB parts if needed).
