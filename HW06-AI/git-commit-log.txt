@@ -1,3 +1,5 @@
+e7f0b19 | 2026-08-30 12:39 | heyyouknowme | hw06: record A-AI-035 lockout-expiry as a manual FAILED run (BUG-04)
+053bf71 | 2026-08-30 12:23 | heyyouknowme | hw06: refresh Git commit log for submission
 7e648fe | 2026-08-30 12:23 | heyyouknowme | hw06: add demo-video script, CI screenshots, self-assessment 093, refreshed PDF
 745e341 | 2026-08-30 12:14 | heyyouknowme | hw06: record CI green (success) and red (one-failing) run links
 b330453 | 2026-08-30 12:10 | heyyouknowme | hw06: CI runs a green passing suite and a red one-failing suite
