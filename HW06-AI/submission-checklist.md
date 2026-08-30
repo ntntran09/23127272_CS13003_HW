@@ -45,6 +45,6 @@
 - [ ] Passing and deliberate-failure GitHub run links/screenshots captured.
 - [x] Student self-drawn diagram PNG and editable source (`test-generator/23127272_HW06_test_generator_diagram.png` + `.excalidraw`).
 - [ ] Demo video link if submitted.
-- [ ] Git commit log text file.
+- [x] Git commit log text file (`git-commit-log.txt`).
 - [x] README counts and provisional self-assessment reconciled.
 - [ ] Final ZIP name follows `23127272_HW06_AI_API_<grade>.zip`.
