@@ -7,6 +7,7 @@
     "validate:skill": "python ../skills/generate-eshop-api-tests/scripts/validate_catalog.py ../test-design/test-cases.json",
     "validate:partial": "python ../skills/generate-eshop-api-tests/scripts/validate_catalog.py ../test-design/test-cases.json --allow-partial",
     "test:skill": "python ../skills/generate-eshop-api-tests/scripts/test_skill_scripts.py -v",
+    "test:ci-skill": "python ../skills/setup-newman-ci-evidence/scripts/test_verify_newman_failure_count.py",
     "test:api": "newman run ../postman/23127272_HW06.postman_collection.json -e ../postman/23127272_HW06.local.postman_environment.json -r cli,json,htmlextra --reporter-json-export ../reports/newman-report.json --reporter-htmlextra-export ../reports/newman-report.html --timeout-request 10000"
   },
   "devDependencies": {

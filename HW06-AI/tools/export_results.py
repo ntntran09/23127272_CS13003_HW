@@ -15,16 +15,15 @@ NEWMAN = ROOT / "reports" / "newman-report.json"
 
 
 BUGS = [
-    ("BUG-01", "FR-03", "Forgot-password returns a four-digit OTP instead of six digits", ["A-AI-001", "A-AI-013", "A-STU-036"], "High"),
-    ("BUG-02", "FR-03", "Password reset accepts missing or weak passwords", ["A-AI-020", "A-AI-023", "A-AI-024", "A-AI-025", "A-AI-026", "A-AI-027", "A-AI-028", "A-AI-029", "A-AI-032", "A-STU-039"], "Critical"),
-    ("BUG-03", "FR-03", "Forgot-password does not validate malformed email input", ["A-AI-003", "A-AI-004", "A-AI-005", "A-AI-006", "A-AI-007", "A-AI-008", "A-AI-009"], "Medium"),
-    ("BUG-04", "Cross-cutting", "Malformed JSON returns an HTML error page instead of the API error schema", ["A-AI-033", "C-AI-018"], "Medium"),
-    ("BUG-05", "FR-11", "Order detail is publicly readable and exposes another user's order (IDOR)", ["B-AI-018", "B-AI-019", "B-STU-037"], "Critical"),
-    ("BUG-06", "FR-11", "A shipping order can be canceled and its persisted state becomes canceled", ["B-AI-027", "B-STU-036"], "High"),
-    ("BUG-07", "FR-11/supporting checkout", "Negative order totals enter history as valid-looking orders", ["B-STU-039"], "High"),
-    ("BUG-08", "FR-14", "Normal users can create, update, and delete categories", ["C-AI-008", "C-AI-021", "C-AI-032", "C-STU-037"], "Critical"),
-    ("BUG-09", "FR-14", "Category create/update accepts missing, empty, whitespace, null, or numeric names", ["C-AI-009", "C-AI-010", "C-AI-011", "C-AI-012", "C-AI-013", "C-AI-026", "C-STU-036"], "High"),
-    ("BUG-10", "FR-14", "Category update/delete reports success for nonexistent or invalid identifiers", ["C-AI-022", "C-AI-023", "C-AI-024", "C-AI-025", "C-AI-027", "C-AI-033", "C-AI-034", "C-AI-035", "C-STU-040"], "High"),
+    ("BUG-01", "FR-02", "Login success exposes the plaintext password and internal account fields", ["A-AI-001"], "Critical"),
+    ("BUG-02", "FR-02", "Login does not validate missing, malformed, or wrong-type fields", ["A-AI-003", "A-AI-004", "A-AI-005", "A-AI-006", "A-AI-007", "A-AI-008", "A-AI-009", "A-AI-010", "A-AI-011", "A-AI-012", "A-AI-013", "A-AI-014", "A-AI-015", "A-AI-016", "A-AI-017", "A-AI-018", "A-AI-021"], "High"),
+    ("BUG-03", "Cross-cutting", "Malformed JSON returns HTML instead of the API JSON error schema", ["A-AI-022", "B-AI-030", "C-AI-032"], "Medium"),
+    ("BUG-04", "FR-02", "Failed-login counter advances too quickly and locks after two failures", ["A-AI-029"], "High"),
+    ("BUG-05", "FR-07", "Cart accepts invalid IDs, quantities, names, and prices", ["B-AI-007", "B-AI-008", "B-AI-009", "B-AI-010", "B-AI-011", "B-AI-012", "B-AI-013", "B-AI-014", "B-AI-015", "B-AI-016", "B-AI-017", "B-AI-018", "B-AI-019", "B-AI-020", "B-AI-021", "B-AI-022", "B-AI-023", "B-AI-024", "B-AI-025", "B-AI-031", "B-STU-039"], "High"),
+    ("BUG-06", "FR-07", "Adding the same product creates a duplicate row instead of merging quantity", ["B-AI-028", "B-STU-036"], "High"),
+    ("BUG-07", "FR-07", "Cart trusts client-supplied product name and price", ["B-AI-034", "B-AI-035"], "Critical"),
+    ("BUG-08", "FR-15", "Product creation is accessible without an admin JWT", ["C-AI-002", "C-AI-003", "C-AI-004", "C-AI-005", "C-STU-037"], "Critical"),
+    ("BUG-09", "FR-15", "Product creation omits required name, price, and category validation", ["C-AI-006", "C-AI-007", "C-AI-008", "C-AI-009", "C-AI-010", "C-AI-014", "C-AI-015", "C-AI-016", "C-AI-017", "C-AI-018", "C-AI-021", "C-AI-022", "C-AI-023", "C-AI-024", "C-AI-025", "C-AI-026", "C-AI-027", "C-AI-028", "C-AI-029", "C-STU-039"], "High"),
 ]
 
 
@@ -46,6 +45,29 @@ def request_url(request: dict) -> str:
     return f"{protocol}://{host}{port}{path}"
 
 
+def main_executions(run: dict) -> dict:
+    """Map each case id to the execution of its main test request (setup items excluded)."""
+    by_id: dict[str, dict] = {}
+    for execution in run.get("executions", []):
+        name = execution.get("item", {}).get("name", "")
+        match = re.match(r"([ABC]-(?:AI|STU)-\d{3})\b", name)
+        if match and any(str(a.get("assertion", "")).startswith(match.group(1)) for a in execution.get("assertions", [])):
+            by_id[match.group(1)] = execution
+    return by_id
+
+
+def failed_assertions(case_id: str, execution: dict) -> list[str]:
+    """Concise, human-readable names of the failed assertions for a case."""
+    names = []
+    for a in execution.get("assertions", []):
+        if a.get("error"):
+            label = str(a.get("assertion", "")).strip()
+            if label.startswith(case_id):
+                label = label[len(case_id):].strip()
+            names.append(label or "assertion")
+    return names
+
+
 def main() -> None:
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
     run = json.loads(NEWMAN.read_text(encoding="utf-8"))["run"]
@@ -56,11 +78,22 @@ def main() -> None:
         if match:
             failure_by_id[match.group(1)].append(failure)
 
+    executions = main_executions(run)
+
     cases = []
     for api in catalog["apis"]:
         for case in api["cases"]:
             manual = case.get("automation") == "MANUAL"
             status = "NOT RUN" if manual else ("FAILED" if case["id"] in failure_by_id else "PASSED")
+            execution = executions.get(case["id"])
+            actual_status = ""
+            actual_response = ""
+            failure_reason = ""
+            if execution is not None:
+                actual_status = str(execution.get("response", {}).get("code", ""))
+                actual_response = response_text(execution["response"]).replace("\n", " ").strip()[:200]
+                if status == "FAILED":
+                    failure_reason = "; ".join(failed_assertions(case["id"], execution))[:300]
             cases.append({
                 "pool": api["pool"], "api_id": api["api_id"], "feature": api["feature"],
                 "id": case["id"], "origin": case["origin"], "title": case["title"],
@@ -72,6 +105,9 @@ def main() -> None:
                 "audit_reason": case["audit"]["reason"],
                 "student_fix": case["audit"].get("fix", "None"),
                 "result": status,
+                "actual_status": actual_status,
+                "failure_reason": failure_reason,
+                "actual_response": actual_response,
                 "failure_count": len(failure_by_id.get(case["id"], [])),
             })
 
@@ -98,12 +134,14 @@ def main() -> None:
         writer.writeheader()
         writer.writerows(cases)
 
-    md = ["# HW06 Test Case Catalog and Execution Results", "", "The reviewed catalog contains 40 cases per selected API: 35 AI-generated cases and 5 student-origin extensions adapted from HW02/HW04 evidence. `NOT RUN` is reserved for the OTP-expiry case that needs a controllable clock or a real wait fixture.", ""]
+    md = ["# HW06 Test Case Catalog and Execution Results", "", "The reviewed catalog contains 40 cases per selected API: 35 AI-generated cases and 5 student-origin extensions, all reviewed and confirmed by the student. `Actual` is the HTTP status returned by the SUT for the case's primary request; `Failure reason` lists the failed assertions (empty when the case passed). `NOT RUN` is reserved for the 30-second lockout-expiry case that needs a controllable clock or a timed fixture.", ""]
     for api in catalog["apis"]:
-        md += [f"## Pool {api['pool']} - {api['api_id']} - {api['feature']}", "", f"Contract: {api['contract']}", "", "| ID | Origin | Title | Coverage | ECs | Expected status | Result |", "| --- | --- | --- | --- | --- | --- | --- |"]
+        md += [f"## Pool {api['pool']} - {api['api_id']} - {api['feature']}", "", f"Contract: {api['contract']}", "", "| ID | Origin | Title | Coverage | Expected | Actual | Result | Failure reason |", "| --- | --- | --- | --- | --- | --- | --- | --- |"]
         for case in [row for row in cases if row["pool"] == api["pool"]]:
             title = case["title"].replace("|", "\\|")
-            md.append(f"| {case['id']} | {case['origin']} | {title} | {case['coverage']} | {case['equivalence_classes']} | {case['expected_status']} | {case['result']} |")
+            reason = (case["failure_reason"] or "").replace("|", "\\|")
+            actual = case["actual_status"] or "-"
+            md.append(f"| {case['id']} | {case['origin']} | {title} | {case['coverage']} | {case['expected_status']} | {actual} | {case['result']} | {reason} |")
         md.append("")
     (ROOT / "test-design" / "test-cases.md").write_text("\n".join(md) + "\n", encoding="utf-8")
 
@@ -113,19 +151,14 @@ def main() -> None:
     smd += ["", f"Newman executed {run['stats']['items']['total']} sequential request items (setup + test requests), with {run['stats']['assertions']['total']} assertions and {run['stats']['assertions']['failed']} failed assertions. Setup and script failures: 0. Failed cases are retained as genuine contract-deviation evidence, not changed to match the implementation.", ""]
     (ROOT / "reports" / "test-summary.md").write_text("\n".join(smd), encoding="utf-8")
 
-    execution_by_name = {}
-    for execution in run.get("executions", []):
-        name = execution.get("item", {}).get("name", "")
-        match = re.match(r"([ABC]-(?:AI|STU)-\d{3})\b", name)
-        if match and any(str(assertion.get("assertion", "")).startswith(match.group(1)) for assertion in execution.get("assertions", [])):
-            execution_by_name[match.group(1)] = execution
+    execution_by_name = executions
 
-    bug_md = ["# HW06 Bug Reports", "", "These are locally reproduced issue drafts. Each must receive a student-captured screenshot and a public GitHub Issue URL before submission.", "", "| ID | Feature | Severity | Title | Test IDs | GitHub Issue | Screenshot |", "| --- | --- | --- | --- | --- | --- | --- |"]
+    bug_md =["# HW06 Bug Reports", "", "These are locally reproduced issue drafts. Each must receive a student-captured screenshot and a public GitHub Issue URL before submission.", "", "| ID | Feature | Severity | Title | Test IDs | GitHub Issue | Screenshot |", "| --- | --- | --- | --- | --- | --- | --- |"]
     for bug_id, feature, title, ids, severity in BUGS:
         bug_md.append(f"| {bug_id} | {feature} | {severity} | {title} | {', '.join(ids)} | STUDENT ACTION | STUDENT ACTION |")
     for bug_id, feature, title, ids, severity in BUGS:
         representative = next((case_id for case_id in ids if case_id in execution_by_name), None)
-        bug_md += ["", f"## {bug_id} - {title}", "", f"- Severity: **{severity}**", f"- Feature: `{feature}`", f"- Reproduced by: `{', '.join(ids)}`", "- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 18/08/2026", "- Expected: The request follows the reviewed EShop contract and security/state rules.", "- Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report."]
+        bug_md += ["", f"## {bug_id} - {title}", "", f"- Severity: **{severity}**", f"- Feature: `{feature}`", f"- Reproduced by: `{', '.join(ids)}`", "- Environment: EShop commit `85af3ba875c88283615e22cb108f13e2fccaf0e9`, local Newman run on 30/08/2026", "- Expected: The request follows the reviewed EShop contract and security/state rules.", "- Actual: The listed contract assertions fail consistently in the attached Newman JSON/HTML report."]
         if representative:
             execution = execution_by_name[representative]
             body = response_text(execution["response"]).replace("\n", " ")[:500]

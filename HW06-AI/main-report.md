@@ -9,87 +9,90 @@
 | SUT commit | `85af3ba875c88283615e22cb108f13e2fccaf0e9` |
 | Local execution URL | `http://127.0.0.1:3001` |
 
-## 1. Scope and selection
+## 1. Revised scope
 
-The API choices are inherited from the student's final HW02/HW04 artifacts.
+The student changed the group allocation on 18/08/2026 and selected member 1's row.
 
-| Pool | Feature | Tested endpoints |
+| Pool | Feature | Primary endpoint |
 | --- | --- | --- |
-| A | FR-03 Forgot password/password reset | `POST /api/forgot-password`; `POST /api/reset-password` |
-| B | FR-11 Order history/cancellation | `GET /api/orders/my-orders`; supporting `GET /api/orders/:id`; `PUT /api/orders/:id/cancel` |
-| C | FR-14 Category CRUD | `GET/POST /api/categories`; `PUT/DELETE /api/categories/:id` |
+| A | FR-02 Login and account lockout | `POST /api/login` |
+| B | FR-07 Add to shopping cart | `POST /api/cart` |
+| C | FR-15 Create product | `POST /api/products` |
 
-The student must still confirm that no group member has the same three-feature combination.
+`GET /api/cart` and `GET /api/products/:id` are used only as supporting state/persistence oracles. They are not counted as additional selected APIs.
 
 ## 2. Method and audit workflow
 
-The reusable skill follows this pipeline: inspect requirements and API specification; enumerate request/response variables; derive valid and invalid equivalence classes; add boundary values; model state and ownership transitions; trace SEC-01 through SEC-07; define exact JSON schemas; generate at least 35 AI cases; audit them; add five student-origin extensions; build Postman v2.1; execute with Newman; and triage only reproducible contract deviations as bugs.
+The reusable generator performs separate passes for contract variables, equivalence classes and boundaries, state transitions, SEC-01 through SEC-07, response schemas, minimum representative selection, audit, and extension. The artifacts keep three stages:
 
-The reviewed catalog is `test-design/test-cases.json`. The untouched generation snapshot is `test-design/test-cases-ai-original.json`. Their comparison is under `AI docs/evidence/setup-session/ai-final-comparisons/test-catalog.md`. All 120 reviewed cases include an audit verdict and rationale. `A-STU-038` remains `INCOMPLETE`/manual because OTP expiry needs a controllable clock or authorized wait fixture; immediately exercising it would produce invalid evidence. The AI Audit uses the six-section HW05 format, while `appendix_a/` preserves each recorded user prompt and delivered output separately.
+- `test-cases-ai-original.json`: 35 raw AI cases per API, initially marked `INCOMPLETE`.
+- `test-cases-ai-reviewed.json`: preliminary reviewed AI-only catalog.
+- `test-cases.json`: reviewed catalog plus five student-origin extensions per API.
 
-## 3. Pool A - FR-03
+The student reviewed and confirmed every verdict and adopted the extensions. Six extensions were strengthened during that review so the automated assertion matches the case intent: `A-STU-036` now decodes the JWT and compares its role claim to the persisted role; `A-STU-037` was repurposed from a duplicate secret check into a user-enumeration comparison; `B-STU-036` now performs a real 2+3 sequence and asserts the merged total via a GET-cart callback; `B-STU-037` provisions two users and asserts cart isolation; `B-STU-038` reads the caller's cart back to prove ownership is not redirected; and `C-STU-038` was repurposed from a near-duplicate category case into an id mass-assignment check. Expected results come from the README/specification. Observed buggy behavior is never used as the oracle.
 
-Inputs include email presence/type/format, registration state, OTP presence/type/length/value/lifecycle, and password length/complexity. Boundaries cover missing/null/empty values, seven/eight-character passwords, OTP shape, token rotation, injection strings, and malformed JSON. Response checks enforce JSON content type, allowed status, required properties, and no unexpected fields.
+## 3. Pool A - FR-02 login
 
-Designed: 40 cases (35 AI + 5 student-origin). Executed: 39. Passed: 18. Failed: 21. Not run: 1.
+The 40 cases cover email/password presence, null/blank/wrong types, malformed JSON, registered and unknown accounts, wrong credentials, generic errors, SQL injection, body role claims, JWT schema, secret absence, and the lockout state machine at one, two, and three consecutive failures.
 
-Main findings:
+Boundaries and states:
 
-- `BUG-01`: forgot-password returns a four-digit OTP instead of six digits.
-- `BUG-02`: reset-password accepts weak, empty, null, and missing passwords.
-- `BUG-03`: malformed email inputs are treated as unknown accounts instead of being validated.
-- `BUG-04`: malformed JSON produces an HTML error page rather than the API error schema.
+- Before three failures, a correct password must still work.
+- At three failures, the account is locked for 30 seconds.
+- A successful login resets the consecutive-failure counter.
+- The exact expiry boundary remains manual because reliable automation requires a controllable clock or timed fixture.
 
-The five extensions emphasize OTP lower boundary, token rotation, expiry, password whitespace, and response secrecy. The first AI pass focused mainly on single-request partitions and therefore underrepresented lifecycle and cross-request checks.
+Observed findings:
 
-## 4. Pool B - FR-11
+- `BUG-01`: success returns plaintext password and internal account fields.
+- `BUG-02`: malformed/missing/wrong-type fields are not validated.
+- `BUG-04`: the failed-attempt counter advances too quickly; two failures already lock the account.
+- Cross-cutting `BUG-03`: malformed JSON returns HTML instead of JSON.
 
-The suite covers no/invalid/valid authentication, empty and populated histories, ownership isolation, order detail, order states (`pending`, `confirmed`, `shipping`, `delivered`, `canceled`), cancellation rules, ID boundaries, SQL-like identifiers, schema consistency, and data integrity. Each stateful case creates an isolated user/order through explicit sequential setup requests.
+Result: 40 designed, 39 executed, 19 passed, 20 failed, 1 not run.
 
-Designed/executed: 40. Passed: 34. Failed: 6.
+## 4. Pool B - FR-07 add to cart
 
-Main findings:
+The suite covers JWT enforcement, product-ID partitions, positive-integer quantity boundaries, missing/forged name and price, malformed JSON, SQL/XSS-like strings, repeated product addition, different-product state, ownership/mass-assignment probes, and exact success/error schemas. Supporting `GET /api/cart` verifies post-state.
 
-- `BUG-05`: `GET /api/orders/:id` is public and exposes non-owned orders (IDOR).
-- `BUG-06`: a shipping order can be canceled, and the forbidden transition persists.
-- `BUG-07`: a negative total created through supporting checkout is returned as a valid-looking history item.
+Observed findings:
 
-The student-origin extensions add persistence after a rejected transition, direct public-IDOR access, HTML-safe addresses, negative-total integrity, and status-count consistency. These require multi-request state reasoning rather than a single endpoint oracle.
+- `BUG-05`: invalid IDs, quantities, names, and prices are accepted.
+- `BUG-06`: adding the same product appends a duplicate row instead of increasing one row's quantity.
+- `BUG-07`: the API trusts client-supplied name and price rather than canonical catalog data.
+- Cross-cutting `BUG-03`: malformed JSON returns HTML instead of JSON.
 
-## 5. Pool C - FR-14
+Result: 40 designed/executed, 14 passed, 26 failed.
 
-The CRUD matrix covers public reads, admin/user/no/malformed authentication, name type and boundaries, duplicate and injection-like values, malformed JSON, existing/nonexistent/zero/negative/nonnumeric IDs, update isolation, repeated delete, and exact list/message/error schemas.
+## 5. Pool C - FR-15 create product
 
-Designed/executed: 40. Passed: 19. Failed: 21.
+The 40 cases cover missing/malformed/non-admin authentication; name lengths 1, 254, 255, and 256; missing/null/blank/wrong-type names; positive, zero, negative, string, boolean, array, and unsafe-integer prices; existing/stale/nonexistent categories; optional fields; SQL/XSS-like text; body role/id/owner fields; exact response schema; and read-after-write persistence.
 
-Main findings:
+Observed findings:
 
-- `BUG-08`: normal users can perform category mutations (role escalation).
-- `BUG-09`: create/update accepts invalid category names.
-- `BUG-10`: update/delete reports success for nonexistent or invalid IDs.
-- `BUG-04`: malformed JSON returns HTML rather than JSON.
+- `BUG-08`: `POST /api/products` performs no JWT or admin-role check.
+- `BUG-09`: required name, positive price, and existing-category constraints are not enforced.
+- Cross-cutting `BUG-03`: malformed JSON returns HTML instead of JSON.
 
-The five extensions cover trimming, role escalation, HTML-as-data, update isolation, and repeated-delete behavior. The first AI pass needed explicit prompting for mutation repetition and persistence effects.
+Result: 40 designed/executed, 14 passed, 26 failed.
 
 ## 6. Security traceability
 
-| Requirement | Representative tests | Result |
+| Requirement | Representative cases | Result |
 | --- | --- | --- |
-| SEC-01 Sensitive-data protection | `A-AI-012`, `A-STU-040`, `B-AI-014`, `B-AI-015` | Covered; selected responses did not expose password/SQL internals |
-| SEC-02 Authentication/ownership | `B-AI-001`-`B-AI-035`, `C-AI-002`, `C-AI-020`, `C-AI-030` | Failed for public/non-owner order detail |
-| SEC-03 Role authorization | `C-AI-008`, `C-AI-021`, `C-AI-032`, `C-STU-037` | Failed; normal users mutate categories |
-| SEC-04 XSS-safe handling | `A-AI-011`, `B-STU-038`, `C-STU-038` | Covered as JSON data |
-| SEC-05 Injection resistance | `A-AI-010`, `B-AI-024`, `C-AI-016`, `C-AI-027`, `C-AI-028` | Queries remained parameterized; invalid IDs still return wrong success status |
-| SEC-06 Profile update authorization | None | Explicitly deferred: selected APIs do not update profiles |
-| SEC-07 Reset-token security | `A-AI-001`, `A-AI-013`-`A-AI-034`, `A-STU-036`-`A-STU-040` | Failed OTP length/password validation; expiry not runtime-tested |
+| SEC-01 password protection | `A-AI-001` (secret exposure); `A-STU-037` (user enumeration) | Failed: plaintext password exposed in login response. Passed: unknown-email and wrong-password responses are indistinguishable |
+| SEC-02 valid JWT | `B-AI-002..006`, `C-AI-002..005` | Cart protected; product creation unprotected |
+| SEC-03 admin role | `A-AI-023`, `C-AI-005`, `C-STU-037` | Failed for product creation |
+| SEC-04 safe handling of HTML | `B-AI-033`, `C-AI-034` | API keeps payload as JSON data; consuming UI still needs manual verification |
+| SEC-05 parameterized queries | `A-AI-024..025`, `B-AI-032`, `C-AI-033` | Injection did not change query meaning |
+| SEC-06 profile role update | N/A | Explicitly deferred: selected operations do not update profiles |
+| SEC-07 OTP lifecycle | N/A | Explicitly deferred: selected operations do not issue or consume OTPs |
 
-## 7. Postman/Newman design and features used
+## 7. Postman/Newman features
 
-Used and evidenced locally: Collection v2.1, folders, collection variables, a local environment, collection-level pre-request script, `X-Student-Id` header injection, sequential state setup requests, bearer tokens, dynamic IDs, JSON bodies, raw malformed bodies, request test scripts, JSON Schema assertions, custom cross-request checks, CLI/JSON/HTML Newman reporters, and environment overrides.
+Used and evidenced: Collection v2.1, folders, collection/environment variables, bearer tokens, dynamic entity IDs, collection-level pre-request script, automatic `X-Student-Id` header, JSON and malformed raw bodies, sequential setup requests, JSON Schema assertions, cross-request state callbacks, and CLI/JSON/HTML Newman reporters.
 
-Not claimed without student evidence: Postman workspace sharing, console screenshot, Collection Runner data file, monitor, or mock server. The student may add these only after real use.
-
-The first generated harness used asynchronous setup inside pre-request scripts. Newman did not wait for those Promises, causing false 401 results. The corrected builder emits setup as ordinary sequential Collection requests and writes runtime values to both collection and environment scopes. A final clean run recorded zero setup/script failures.
+Not claimed without student evidence: shared workspace, monitor, mock server, Postman Console screenshot, or data-file Runner execution.
 
 ## 8. Execution summary
 
@@ -97,35 +100,34 @@ The first generated harness used asynchronous setup inside pre-request scripts. 
 | --- | ---: | ---: | ---: | ---: |
 | Designed | 40 | 40 | 40 | 120 |
 | AI-generated | 35 | 35 | 35 | 105 |
-| Student-origin extensions | 5 | 5 | 5 | 15 |
+| Proposed student extensions | 5 | 5 | 5 | 15 |
 | Executed | 39 | 40 | 40 | 119 |
-| Passed | 18 | 34 | 19 | 71 |
-| Failed | 21 | 6 | 21 | 48 |
+| Passed | 19 | 14 | 14 | 47 |
+| Failed | 20 | 26 | 26 | 72 |
 | Not run | 1 | 0 | 0 | 1 |
 
-Newman executed 348 sequential setup/test request items and 601 assertions. Failed assertions: 86. Setup, pre-request, and test-script failures: 0. The command exited 1 because real contract assertions failed. Evidence: `reports/newman-cli.txt`, `reports/newman-report.json`, and `reports/newman-report.html`.
+The clean Newman run executed 222 HTTP requests and 466 assertions. It recorded 124 failed assertions and zero request, pre-request, or test-script failures. Exit code 1 is expected because contract violations are retained. Evidence is in `reports/newman-cli.txt`, `newman-report.json`, and `newman-report.html`.
 
 ## 9. Bug reporting
 
-Ten reproducible bug groups are documented with representative request/status/body evidence in `bug-reports.md`. Public GitHub Issue URLs and screenshots are deliberately blank because publishing and screenshot capture require student action. The report must not claim those requirements complete until the real issue pages exist.
+Nine reproducible bug groups are drafted in `bug-reports.md`. GitHub Issue URLs and screenshots remain student actions. No publication or screenshot is claimed.
 
 ## 10. CI/CD
 
-`.github/workflows/hw06-api.yml` installs the pinned Newman toolchain, validates the generator/catalog, checks out the pinned SUT, starts it, runs the collection, and uploads reports on success or failure. The workflow is prepared but no GitHub run is claimed. The student must push and capture the required passing and deliberate-failure run links/screenshots. Because the pinned SUT contains intentional bugs, a genuine all-contract-tests-passing run requires a corrected SUT; weakening expected results is not acceptable.
+The manual workflow validates the catalog and generator, starts an exact configured SUT commit, runs the full reviewed collection, and uploads Newman JSON/HTML plus the backend log even on failure. It exposes `passing` and `deliberate-failure` modes. The latter runs a separate one-item evidence collection only after the real suite passes, verifies exactly one controlled assertion failure, and then returns a red job result. `skills/setup-newman-ci-evidence/` documents and validates this process. Real GitHub run URLs/screenshots remain student actions. An all-passing contract run requires a corrected SUT; expected results must not be weakened to manufacture a green build.
 
-## 11. AI-driven test generator
+## 11. AI-driven generator
 
-The reusable skill is `skills/generate-eshop-api-tests/`. It includes a strict catalog validator, Postman collection builder, three unit tests, promptable workflow instructions, a catalog template, pseudocode, and a pipeline reference. Validation enforces per-API counts, AI/student origins, equivalence-class references, security traceability/dispositions, schema coverage, audit labels, and the student-ID header mechanism.
+`skills/generate-eshop-api-tests/` contains the instructions, catalog validator, Postman builder, unit tests, template, and pipeline reference. Validation enforces three pools, at least 35 AI plus five student cases per API, EC coverage, domain/state/security/schema tags, SEC traceability or explicit disposition, audit labels, and response schemas.
 
-The required diagram remains student-owned. `test-generator/SELF-DRAWN-DIAGRAM-REQUIRED.md` is only a checklist; it is not submitted as the diagram.
+The student-drawn diagram is `test-generator/23127272_HW06_test_generator_diagram.png` (editable source: `.excalidraw`), and the design pseudocode is `test-generator/pseudocode.md`.
 
-## 12. Limitations and student checklist
+## 12. Remaining student actions
 
-- Confirm the three-feature combination is unique in the group.
-- Review/sign all preliminary AI verdicts and the AI audit.
-- Capture a real Postman Console screenshot showing `X-Student-Id: 23127272`.
-- Publish the ten reviewed issue drafts and attach real screenshots.
-- Push and record two real CI runs.
-- Draw and export the generator diagram personally.
-- Perform the OTP-expiry test with an authorized timing fixture.
-- Add optional monitor/mock/data-run evidence only if actually used.
+- (Done) Reviewed and confirmed all audit verdicts and adopted/refined the 15 extensions.
+- Capture the real Postman Console showing `X-Student-Id: 23127272`.
+- Execute the 30-second lockout-expiry case with a controlled/timed fixture.
+- Review and publish the nine issue drafts with real screenshots.
+- Push and record the required green and deliberate-failure CI runs.
+- (Done) Generator diagram drawn personally in Excalidraw.
+- Regenerate final PDFs after completing the human-owned evidence.

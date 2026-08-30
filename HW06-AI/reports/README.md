@@ -1,5 +1,5 @@
 # Execution Reports
 
-This folder contains the genuine final local Newman CLI/JSON/HTML output for the reviewed FR-03/FR-11/FR-14 collection, plus machine-readable and Markdown summaries.
+This folder contains the genuine local Newman CLI/JSON/HTML output for the revised FR-02/FR-07/FR-15 collection, plus machine-readable and Markdown summaries.
 
-`harness-defect-run/` preserves the first invalid automation run for the AI audit. It must not be used as SUT bug evidence. The final `newman-report.*` files have zero setup/pre-request/test-script failures.
+The current `newman-report.*` files have zero request/setup/pre-request/test-script failures. Obsolete harness evidence from the previous API allocation was removed.

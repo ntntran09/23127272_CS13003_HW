@@ -1,145 +1,145 @@
 # HW06 Test Case Catalog and Execution Results
 
-The reviewed catalog contains 40 cases per selected API: 35 AI-generated cases and 5 student-origin extensions adapted from HW02/HW04 evidence. `NOT RUN` is reserved for the OTP-expiry case that needs a controllable clock or a real wait fixture.
+The reviewed catalog contains 40 cases per selected API: 35 AI-generated cases and 5 student-origin extensions, all reviewed and confirmed by the student. `Actual` is the HTTP status returned by the SUT for the case's primary request; `Failure reason` lists the failed assertions (empty when the case passed). `NOT RUN` is reserved for the 30-second lockout-expiry case that needs a controllable clock or a timed fixture.
 
-## Pool A - FR-03 - Forgot password and password reset
+## Pool A - FR-02 - Login and account lockout
 
-Contract: Two-step OTP reset with strong password and SEC-07 lifecycle
+Contract: JWT login plus three-failure/30-second lockout
 
-| ID | Origin | Title | Coverage | ECs | Expected status | Result |
-| --- | --- | --- | --- | --- | --- | --- |
-| A-AI-001 | AI | Registered email returns a six-digit OTP | domain, schema, security | A-EC-EMAIL-REGISTERED, A-EC-SCHEMA, A-EC-OTP-LIFECYCLE | 200 | FAILED |
-| A-AI-002 | AI | Unregistered well-formed email | domain | A-EC-EMAIL-INVALID | 404 | PASSED |
-| A-AI-003 | AI | Missing email field | domain | A-EC-EMAIL-INVALID | 400/422 | FAILED |
-| A-AI-004 | AI | Null email | domain | A-EC-EMAIL-INVALID | 400/422 | FAILED |
-| A-AI-005 | AI | Empty email | domain | A-EC-EMAIL-INVALID | 400/422 | FAILED |
-| A-AI-006 | AI | Whitespace-only email | domain | A-EC-EMAIL-INVALID | 400/422 | FAILED |
-| A-AI-007 | AI | Email without at sign | domain | A-EC-EMAIL-INVALID | 400/422 | FAILED |
-| A-AI-008 | AI | Email without domain | domain | A-EC-EMAIL-INVALID | 400/422 | FAILED |
-| A-AI-009 | AI | Email with embedded spaces | domain | A-EC-EMAIL-INVALID | 400/422 | FAILED |
-| A-AI-010 | AI | SQL injection payload in email | domain, security | A-EC-EMAIL-INVALID | 400/404 | PASSED |
-| A-AI-011 | AI | HTML payload in email | domain, security | A-EC-EMAIL-INVALID | 400/404 | PASSED |
-| A-AI-012 | AI | Forgot-password error does not expose SQL details | security, schema | A-EC-EMAIL-INVALID, A-EC-SCHEMA | 400/404 | PASSED |
-| A-AI-013 | AI | Two OTP requests return six-digit values | state, security, schema | A-EC-OTP-LIFECYCLE, A-EC-SCHEMA | 200 | FAILED |
-| A-AI-014 | AI | Valid token and representative strong password | domain, state, schema | A-EC-PASSWORD-STRONG, A-EC-OTP-VALID, A-EC-SCHEMA | 200 | PASSED |
-| A-AI-015 | AI | Wrong six-digit token | domain, state, schema | A-EC-OTP-INVALID, A-EC-OTP-INVALID, A-EC-SCHEMA | 400 | PASSED |
-| A-AI-016 | AI | Empty token | domain, state, schema | A-EC-OTP-INVALID, A-EC-OTP-INVALID, A-EC-SCHEMA | 400/422 | PASSED |
-| A-AI-017 | AI | Five-digit token below boundary | domain, state, schema | A-EC-OTP-INVALID, A-EC-OTP-INVALID, A-EC-SCHEMA | 400/422 | PASSED |
-| A-AI-018 | AI | Seven-digit token above boundary | domain, state, schema | A-EC-OTP-INVALID, A-EC-OTP-INVALID, A-EC-SCHEMA | 400/422 | PASSED |
-| A-AI-019 | AI | Nonnumeric token | domain, state, schema | A-EC-OTP-INVALID, A-EC-OTP-INVALID, A-EC-SCHEMA | 400/422 | PASSED |
-| A-AI-020 | AI | Password length seven below minimum | domain, state, schema | A-EC-PASSWORD-WEAK, A-EC-OTP-VALID, A-EC-SCHEMA | 400/422 | FAILED |
-| A-AI-021 | AI | Password length eight at minimum | domain, state, schema | A-EC-PASSWORD-STRONG, A-EC-OTP-VALID, A-EC-SCHEMA | 200 | PASSED |
-| A-AI-022 | AI | Password length nine above minimum | domain, state, schema | A-EC-PASSWORD-STRONG, A-EC-OTP-VALID, A-EC-SCHEMA | 200 | PASSED |
-| A-AI-023 | AI | Password missing uppercase | domain, state, schema | A-EC-PASSWORD-WEAK, A-EC-OTP-VALID, A-EC-SCHEMA | 400/422 | FAILED |
-| A-AI-024 | AI | Password missing lowercase | domain, state, schema | A-EC-PASSWORD-WEAK, A-EC-OTP-VALID, A-EC-SCHEMA | 400/422 | FAILED |
-| A-AI-025 | AI | Password missing digit | domain, state, schema | A-EC-PASSWORD-WEAK, A-EC-OTP-VALID, A-EC-SCHEMA | 400/422 | FAILED |
-| A-AI-026 | AI | Password missing allowed special | domain, state, schema | A-EC-PASSWORD-WEAK, A-EC-OTP-VALID, A-EC-SCHEMA | 400/422 | FAILED |
-| A-AI-027 | AI | Unsupported special character only | domain, state, schema | A-EC-PASSWORD-WEAK, A-EC-OTP-VALID, A-EC-SCHEMA | 400/422 | FAILED |
-| A-AI-028 | AI | Empty new password | domain, state, schema | A-EC-PASSWORD-WEAK, A-EC-OTP-VALID, A-EC-SCHEMA | 400/422 | FAILED |
-| A-AI-029 | AI | Null new password | domain, state, schema | A-EC-PASSWORD-WEAK, A-EC-OTP-VALID, A-EC-SCHEMA | 400/422 | FAILED |
-| A-AI-030 | AI | Missing reset email | domain, schema | A-EC-OTP-INVALID, A-EC-SCHEMA | 400/422 | PASSED |
-| A-AI-031 | AI | Missing reset token | domain, schema | A-EC-OTP-INVALID, A-EC-SCHEMA | 400/422 | PASSED |
-| A-AI-032 | AI | Missing new password | domain, schema | A-EC-OTP-INVALID, A-EC-SCHEMA | 400/422 | FAILED |
-| A-AI-033 | AI | Malformed JSON body | domain, schema | A-EC-OTP-INVALID, A-EC-SCHEMA | 400/422 | FAILED |
-| A-AI-034 | AI | OTP cannot be used for another email | state, security, schema | A-EC-OTP-INVALID, A-EC-OTP-LIFECYCLE | 400 | PASSED |
-| A-AI-035 | AI | Successful reset response has exact schema | schema, state | A-EC-SCHEMA, A-EC-PASSWORD-STRONG, A-EC-OTP-VALID | 200 | PASSED |
-| A-STU-036 | STUDENT | OTP lower boundary is not four digits | domain, security, schema | A-EC-OTP-LIFECYCLE, A-EC-SCHEMA | 200 | FAILED |
-| A-STU-037 | STUDENT | Issuing a new OTP invalidates the previous OTP | state, security | A-EC-OTP-LIFECYCLE, A-EC-OTP-INVALID | 400 | PASSED |
-| A-STU-038 | STUDENT | OTP expiry metadata or enforcement is required | state, security | A-EC-OTP-LIFECYCLE | 400 | NOT RUN |
-| A-STU-039 | STUDENT | Whitespace cannot replace the required special character | domain, security | A-EC-PASSWORD-WEAK, A-EC-OTP-VALID | 400/422 | FAILED |
-| A-STU-040 | STUDENT | Reset password must not be stored or returned as plaintext | security, state, schema | A-EC-PASSWORD-STRONG, A-EC-SCHEMA | 200 | PASSED |
+| ID | Origin | Title | Coverage | Expected | Actual | Result | Failure reason |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| A-AI-001 | AI | Valid user login returns JWT without secrets | domain, schema, security | 200 | 200 | FAILED | secrets absent |
+| A-AI-002 | AI | Valid admin login returns JWT | domain, schema | 200 | 200 | PASSED |  |
+| A-AI-003 | AI | Missing email | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-004 | AI | Null email | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-005 | AI | Empty email | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-006 | AI | Whitespace email | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-007 | AI | Email lacks at sign | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-008 | AI | Email lacks local part | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-009 | AI | Email lacks domain | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-010 | AI | Email contains spaces | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-011 | AI | Numeric email | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-012 | AI | Array email | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-013 | AI | Missing password | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-014 | AI | Null password | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-015 | AI | Empty password | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-016 | AI | Whitespace password | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-017 | AI | Numeric password | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-018 | AI | Object password | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-019 | AI | Unknown email | domain, schema, security | 401 | 401 | PASSED |  |
+| A-AI-020 | AI | Wrong password | domain, schema, security | 401 | 401 | PASSED |  |
+| A-AI-021 | AI | Empty JSON object | domain, schema | 400/422 | 401 | FAILED | status is allowed |
+| A-AI-022 | AI | Malformed JSON | domain, schema | 400 | 400 | FAILED | content type; response schema |
+| A-AI-023 | AI | Role field cannot select admin | security, schema | 200 | 200 | PASSED |  |
+| A-AI-024 | AI | SQL injection in email | security, schema | 401 | 401 | PASSED |  |
+| A-AI-025 | AI | SQL injection in password | security, schema | 401 | 401 | PASSED |  |
+| A-AI-026 | AI | Failure response is JSON | schema | 401 | 401 | PASSED |  |
+| A-AI-027 | AI | Long email rejected without 5xx | domain, security, schema | 400/401/422 | 401 | PASSED |  |
+| A-AI-028 | AI | Correct password after 1 consecutive failure(s) | state, schema, security | 200 | 200 | PASSED |  |
+| A-AI-029 | AI | Correct password after 2 consecutive failure(s) | state, schema, security | 200 | 403 | FAILED | status is allowed; response schema |
+| A-AI-030 | AI | Correct password after 3 consecutive failure(s) | state, schema, security | 403 | 403 | PASSED |  |
+| A-AI-031 | AI | Correct password after 4 consecutive failure(s) | state, schema, security | 403 | 403 | PASSED |  |
+| A-AI-032 | AI | Success resets failed-attempt counter | state, schema | 200 | 200 | PASSED |  |
+| A-AI-033 | AI | Locked response leaks no secrets | state, security, schema | 403 | 403 | PASSED |  |
+| A-AI-034 | AI | Email case variation has stable behavior | domain, schema | 200/401 | 401 | PASSED |  |
+| A-AI-035 | AI | Lock expires at 30-second boundary | state, security | 200 | - | NOT RUN |  |
+| A-STU-036 | STUDENT | JWT role claim matches the persisted user role | security, schema | 200 | 200 | PASSED |  |
+| A-STU-037 | STUDENT | Login does not leak whether an email exists (uniform failure) | security | 401 | 401 | PASSED |  |
+| A-STU-038 | STUDENT | Unknown extra nested object is ignored | security, schema | 200 | 200 | PASSED |  |
+| A-STU-039 | STUDENT | Unicode email fails generically | domain, security, schema | 400/401/422 | 401 | PASSED |  |
+| A-STU-040 | STUDENT | Oversized password fails without 5xx | domain, security, schema | 400/401/413/422 | 401 | PASSED |  |
 
-## Pool B - FR-11 - Order history and cancellation
+## Pool B - FR-07 - Add product to cart
 
-Contract: Owned order history plus FR-10 cancellation rules
+Contract: Authenticated validated cart mutation with merge and isolation
 
-| ID | Origin | Title | Coverage | ECs | Expected status | Result |
-| --- | --- | --- | --- | --- | --- | --- |
-| B-AI-001 | AI | Authenticated seeded user with no orders gets an empty array | domain, state, schema, security | B-EC-AUTH-VALID, B-EC-HISTORY-EMPTY, B-EC-SCHEMA | 200 | PASSED |
-| B-AI-002 | AI | Missing Authorization header | security, schema | B-EC-AUTH-INVALID, B-EC-SCHEMA | 401 | PASSED |
-| B-AI-003 | AI | Bearer keyword without token | security, schema | B-EC-AUTH-INVALID, B-EC-SCHEMA | 401 | PASSED |
-| B-AI-004 | AI | Malformed JWT | security, schema | B-EC-AUTH-INVALID, B-EC-SCHEMA | 403 | PASSED |
-| B-AI-005 | AI | Wrong authorization scheme | security, schema | B-EC-AUTH-INVALID, B-EC-SCHEMA | 401/403 | PASSED |
-| B-AI-006 | AI | Valid admin token accesses only admin-owned history | security, schema | B-EC-AUTH-VALID, B-EC-SCHEMA | 200 | PASSED |
-| B-AI-007 | AI | One pending order appears in history | domain, state, schema | B-EC-AUTH-VALID, B-EC-HISTORY-NONEMPTY, B-EC-STATUS, B-EC-SCHEMA | 200 | PASSED |
-| B-AI-008 | AI | Confirmed order appears with confirmed status | domain, state, schema | B-EC-AUTH-VALID, B-EC-HISTORY-NONEMPTY, B-EC-STATUS, B-EC-SCHEMA | 200 | PASSED |
-| B-AI-009 | AI | Shipping order appears with shipping status | domain, state, schema | B-EC-AUTH-VALID, B-EC-HISTORY-NONEMPTY, B-EC-STATUS, B-EC-SCHEMA | 200 | PASSED |
-| B-AI-010 | AI | Delivered order appears with delivered status | domain, state, schema | B-EC-AUTH-VALID, B-EC-HISTORY-NONEMPTY, B-EC-STATUS, B-EC-SCHEMA | 200 | PASSED |
-| B-AI-011 | AI | Canceled order appears with canceled status | domain, state, schema | B-EC-AUTH-VALID, B-EC-HISTORY-NONEMPTY, B-EC-STATUS, B-EC-SCHEMA | 200 | PASSED |
-| B-AI-012 | AI | Order total remains an integer | domain, state, schema | B-EC-AUTH-VALID, B-EC-HISTORY-NONEMPTY, B-EC-STATUS, B-EC-SCHEMA | 200 | PASSED |
-| B-AI-013 | AI | Vietnamese shipping address remains valid JSON | domain, state, schema | B-EC-AUTH-VALID, B-EC-HISTORY-NONEMPTY, B-EC-STATUS, B-EC-SCHEMA | 200 | PASSED |
-| B-AI-014 | AI | History excludes password fields | domain, state, schema | B-EC-AUTH-VALID, B-EC-HISTORY-NONEMPTY, B-EC-STATUS, B-EC-SCHEMA | 200 | PASSED |
-| B-AI-015 | AI | History schema rejects extra secret properties | domain, state, schema | B-EC-AUTH-VALID, B-EC-HISTORY-NONEMPTY, B-EC-STATUS, B-EC-SCHEMA | 200 | PASSED |
-| B-AI-016 | AI | History is sorted by descending order id | domain, state, schema | B-EC-AUTH-VALID, B-EC-HISTORY-NONEMPTY, B-EC-STATUS, B-EC-SCHEMA | 200 | PASSED |
-| B-AI-017 | AI | Owned order detail requires valid owner token | domain, security, schema | B-EC-ORDER-ID, B-EC-OWNERSHIP, B-EC-SCHEMA | 200 | PASSED |
-| B-AI-018 | AI | Order detail rejects missing token | domain, security, schema | B-EC-ORDER-ID, B-EC-OWNERSHIP, B-EC-SCHEMA | 401 | FAILED |
-| B-AI-019 | AI | Order detail rejects a non-owner token | domain, security, schema | B-EC-ORDER-ID, B-EC-OWNERSHIP, B-EC-SCHEMA | 403/404 | FAILED |
-| B-AI-020 | AI | Nonexistent order id | domain, security, schema | B-EC-ORDER-ID, B-EC-OWNERSHIP, B-EC-SCHEMA | 404 | PASSED |
-| B-AI-021 | AI | Order id zero lower invalid boundary | domain, security, schema | B-EC-ORDER-ID, B-EC-OWNERSHIP, B-EC-SCHEMA | 404 | PASSED |
-| B-AI-022 | AI | Negative order id | domain, security, schema | B-EC-ORDER-ID, B-EC-OWNERSHIP, B-EC-SCHEMA | 404 | PASSED |
-| B-AI-023 | AI | Nonnumeric order id | domain, security, schema | B-EC-ORDER-ID, B-EC-OWNERSHIP, B-EC-SCHEMA | 400/404 | PASSED |
-| B-AI-024 | AI | SQL payload in order id | domain, security, schema | B-EC-ORDER-ID, B-EC-OWNERSHIP, B-EC-SCHEMA | 400/404 | PASSED |
-| B-AI-025 | AI | Owner cancels pending order | state, security, schema | B-EC-CANCEL-ALLOWED, B-EC-SCHEMA | 200 | PASSED |
-| B-AI-026 | AI | Owner cancels confirmed order | state, security, schema | B-EC-CANCEL-ALLOWED, B-EC-SCHEMA | 200 | PASSED |
-| B-AI-027 | AI | Shipping order cannot be canceled | state, security, schema | B-EC-CANCEL-FORBIDDEN, B-EC-SCHEMA | 400 | FAILED |
-| B-AI-028 | AI | Delivered order cannot be canceled | state, security, schema | B-EC-CANCEL-FORBIDDEN, B-EC-SCHEMA | 400 | PASSED |
-| B-AI-029 | AI | Canceled order cannot be canceled again | state, security, schema | B-EC-CANCEL-FORBIDDEN, B-EC-SCHEMA | 400 | PASSED |
-| B-AI-030 | AI | Non-owner cannot cancel order | state, security, schema | B-EC-CANCEL-FORBIDDEN, B-EC-SCHEMA | 404 | PASSED |
-| B-AI-031 | AI | Cancel rejects missing token | state, security, schema | B-EC-CANCEL-FORBIDDEN, B-EC-SCHEMA | 401 | PASSED |
-| B-AI-032 | AI | Cancel rejects malformed token | state, security, schema | B-EC-CANCEL-FORBIDDEN, B-EC-SCHEMA | 403 | PASSED |
-| B-AI-033 | AI | Cancel nonexistent order | state, security, schema | B-EC-CANCEL-FORBIDDEN, B-EC-SCHEMA | 404 | PASSED |
-| B-AI-034 | AI | Cancel order id zero | state, security, schema | B-EC-CANCEL-FORBIDDEN, B-EC-SCHEMA | 404 | PASSED |
-| B-AI-035 | AI | Cancel nonnumeric order id | state, security, schema | B-EC-CANCEL-FORBIDDEN, B-EC-SCHEMA | 400/404 | PASSED |
-| B-STU-036 | STUDENT | Rejected shipping cancellation leaves state unchanged | state, security | B-EC-CANCEL-FORBIDDEN, B-EC-STATUS | 400 | FAILED |
-| B-STU-037 | STUDENT | Order detail is not publicly readable by ID | security, schema | B-EC-OWNERSHIP, B-EC-AUTH-INVALID | 401 | FAILED |
-| B-STU-038 | STUDENT | HTML shipping address remains inert JSON data | security, schema | B-EC-HISTORY-NONEMPTY, B-EC-SCHEMA | 200 | PASSED |
-| B-STU-039 | STUDENT | History must not normalize an invalid negative total as valid | domain, schema | B-EC-HISTORY-NONEMPTY, B-EC-SCHEMA | 200 | FAILED |
-| B-STU-040 | STUDENT | Second cancellation is rejected and remains canceled | state, security, schema | B-EC-CANCEL-ALLOWED, B-EC-STATUS | 200 | PASSED |
+| ID | Origin | Title | Coverage | Expected | Actual | Result | Failure reason |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| B-AI-001 | AI | Add existing product quantity one | domain, state, schema | 200 | 200 | PASSED |  |
+| B-AI-002 | AI | Missing JWT | security, schema | 401 | 401 | PASSED |  |
+| B-AI-003 | AI | Empty bearer | security, schema | 401 | 401 | PASSED |  |
+| B-AI-004 | AI | Malformed JWT | security, schema | 403 | 403 | PASSED |  |
+| B-AI-005 | AI | Wrong scheme | security, schema | 403 | 403 | PASSED |  |
+| B-AI-006 | AI | Tampered JWT | security, schema | 403 | 403 | PASSED |  |
+| B-AI-007 | AI | Missing id | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-008 | AI | Null id | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-009 | AI | Zero id | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-010 | AI | Negative id | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-011 | AI | Decimal id | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-012 | AI | String id | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-013 | AI | Nonexistent id | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-014 | AI | Missing quantity | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-015 | AI | Null quantity | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-016 | AI | Zero quantity | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-017 | AI | Negative quantity | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-018 | AI | Decimal quantity | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-019 | AI | String quantity | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-020 | AI | Boolean quantity | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-021 | AI | Missing name | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-022 | AI | Empty name | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-023 | AI | Missing price | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-024 | AI | Zero price | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-025 | AI | Negative price | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-026 | AI | Valid quantity 1 | domain, schema | 200 | 200 | PASSED |  |
+| B-AI-027 | AI | Valid quantity 2 | domain, schema | 200 | 200 | PASSED |  |
+| B-AI-028 | AI | Same product merges and sums quantity | state, schema | 200 | 200 | FAILED | merge |
+| B-AI-029 | AI | Different product creates second line | state, schema | 200 | 200 | PASSED |  |
+| B-AI-030 | AI | Malformed JSON | domain, schema | 400 | 400 | FAILED | content type; response schema |
+| B-AI-031 | AI | Empty object | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-032 | AI | SQL text remains data | security, schema | 200 | 200 | PASSED |  |
+| B-AI-033 | AI | HTML text remains inert | security, schema | 200 | 200 | PASSED |  |
+| B-AI-034 | AI | Forged price rejected | security, state, schema | 400/409/422 | 200 | FAILED | status is allowed; response schema |
+| B-AI-035 | AI | Forged name rejected | security, state, schema | 400/409/422 | 200 | FAILED | status is allowed; response schema |
+| B-STU-036 | STUDENT | Repeated quantities sum arithmetically (2 then 3 = 5) | security, state, schema | 200 | 200 | FAILED | quantities 2+3 sum to 5 in one row |
+| B-STU-037 | STUDENT | Two authenticated users have isolated carts | security, state, schema | 200 | 200 | PASSED |  |
+| B-STU-038 | STUDENT | Body user_id cannot redirect cart ownership | security, state, schema | 200 | 200 | PASSED |  |
+| B-STU-039 | STUDENT | Overflow-like quantity rejected | security, state, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| B-STU-040 | STUDENT | Prototype-looking property ignored | security, state, schema | 200 | 200 | PASSED |  |
 
-## Pool C - FR-14 - Category management
+## Pool C - FR-15 - Create product
 
-Contract: Category view/create/update/delete with admin authorization
+Contract: Admin-only validated product creation and persistence
 
-| ID | Origin | Title | Coverage | ECs | Expected status | Result |
-| --- | --- | --- | --- | --- | --- | --- |
-| C-AI-001 | AI | Public category list returns an exact array schema | domain, schema | C-EC-LIST, C-EC-SCHEMA | 200 | PASSED |
-| C-AI-002 | AI | Category list is valid without authentication | security, schema | C-EC-LIST, C-EC-SCHEMA | 200 | PASSED |
-| C-AI-003 | AI | Category ids are positive integers | domain, schema | C-EC-LIST, C-EC-SCHEMA | 200 | PASSED |
-| C-AI-004 | AI | Category names are nonblank strings | domain, schema | C-EC-LIST, C-EC-SCHEMA | 200 | PASSED |
-| C-AI-005 | AI | Admin creates a valid category | domain, security, schema | C-EC-NAME-VALID, C-EC-CREATE, C-EC-SCHEMA | 200 | PASSED |
-| C-AI-006 | AI | Create rejects missing token | domain, security, schema | C-EC-AUTH-INVALID, C-EC-CREATE, C-EC-SCHEMA | 401 | PASSED |
-| C-AI-007 | AI | Create rejects malformed token | domain, security, schema | C-EC-AUTH-INVALID, C-EC-CREATE, C-EC-SCHEMA | 403 | PASSED |
-| C-AI-008 | AI | Create rejects normal-user token | domain, security, schema | C-EC-AUTH-USER, C-EC-CREATE, C-EC-SCHEMA | 403 | FAILED |
-| C-AI-009 | AI | Create rejects empty name | domain, security, schema | C-EC-NAME-BLANK, C-EC-CREATE, C-EC-SCHEMA | 400/422 | FAILED |
-| C-AI-010 | AI | Create rejects whitespace-only name | domain, security, schema | C-EC-NAME-BLANK, C-EC-CREATE, C-EC-SCHEMA | 400/422 | FAILED |
-| C-AI-011 | AI | Create rejects missing name | domain, security, schema | C-EC-NAME-BLANK, C-EC-CREATE, C-EC-SCHEMA | 400/422 | FAILED |
-| C-AI-012 | AI | Create rejects null name | domain, security, schema | C-EC-NAME-BLANK, C-EC-CREATE, C-EC-SCHEMA | 400/422 | FAILED |
-| C-AI-013 | AI | Create rejects numeric name | domain, security, schema | C-EC-NAME-INVALID-TYPE, C-EC-CREATE, C-EC-SCHEMA | 400/422 | FAILED |
-| C-AI-014 | AI | Create accepts Vietnamese name | domain, security, schema | C-EC-NAME-VALID, C-EC-CREATE, C-EC-SCHEMA | 200 | PASSED |
-| C-AI-015 | AI | Create accepts 255-character name robustness boundary | domain, security, schema | C-EC-NAME-VALID, C-EC-CREATE, C-EC-SCHEMA | 200 | PASSED |
-| C-AI-016 | AI | Create safely handles SQL metacharacters in name | domain, security, schema | C-EC-NAME-VALID, C-EC-CREATE, C-EC-SCHEMA | 200 | PASSED |
-| C-AI-017 | AI | Create handles duplicate name consistently | domain, security, schema | C-EC-NAME-VALID, C-EC-CREATE, C-EC-SCHEMA | 200/409 | PASSED |
-| C-AI-018 | AI | Create rejects malformed JSON | domain, security, schema | C-EC-NAME-INVALID-TYPE, C-EC-CREATE, C-EC-SCHEMA | 400 | FAILED |
-| C-AI-019 | AI | Admin updates an existing category | domain, state, security, schema | C-EC-UPDATE, C-EC-ID-VALID, C-EC-SCHEMA | 200 | PASSED |
-| C-AI-020 | AI | Update rejects missing token | domain, state, security, schema | C-EC-UPDATE, C-EC-ID-VALID, C-EC-SCHEMA | 401 | PASSED |
-| C-AI-021 | AI | Update rejects normal-user token | domain, state, security, schema | C-EC-UPDATE, C-EC-ID-VALID, C-EC-SCHEMA | 403 | FAILED |
-| C-AI-022 | AI | Update nonexistent id | domain, state, security, schema | C-EC-UPDATE, C-EC-ID-INVALID, C-EC-SCHEMA | 404 | FAILED |
-| C-AI-023 | AI | Update id zero | domain, state, security, schema | C-EC-UPDATE, C-EC-ID-INVALID, C-EC-SCHEMA | 404 | FAILED |
-| C-AI-024 | AI | Update negative id | domain, state, security, schema | C-EC-UPDATE, C-EC-ID-INVALID, C-EC-SCHEMA | 404 | FAILED |
-| C-AI-025 | AI | Update nonnumeric id | domain, state, security, schema | C-EC-UPDATE, C-EC-ID-INVALID, C-EC-SCHEMA | 400/404 | FAILED |
-| C-AI-026 | AI | Update rejects empty name | domain, state, security, schema | C-EC-UPDATE, C-EC-ID-VALID, C-EC-SCHEMA | 400/422 | FAILED |
-| C-AI-027 | AI | Update safely handles SQL payload in id | domain, state, security, schema | C-EC-UPDATE, C-EC-ID-INVALID, C-EC-SCHEMA | 400/404 | FAILED |
-| C-AI-028 | AI | Update safely stores SQL-like name | domain, state, security, schema | C-EC-UPDATE, C-EC-ID-VALID, C-EC-SCHEMA | 200 | PASSED |
-| C-AI-029 | AI | Admin deletes an existing category | state, security, schema | C-EC-DELETE, C-EC-ID-VALID, C-EC-SCHEMA | 200 | PASSED |
-| C-AI-030 | AI | Delete rejects missing token | state, security, schema | C-EC-DELETE, C-EC-ID-VALID, C-EC-SCHEMA | 401 | PASSED |
-| C-AI-031 | AI | Delete rejects malformed token | state, security, schema | C-EC-DELETE, C-EC-ID-VALID, C-EC-SCHEMA | 403 | PASSED |
-| C-AI-032 | AI | Delete rejects normal-user token | state, security, schema | C-EC-DELETE, C-EC-ID-VALID, C-EC-SCHEMA | 403 | FAILED |
-| C-AI-033 | AI | Delete nonexistent id | state, security, schema | C-EC-DELETE, C-EC-ID-INVALID, C-EC-SCHEMA | 404 | FAILED |
-| C-AI-034 | AI | Delete id zero | state, security, schema | C-EC-DELETE, C-EC-ID-INVALID, C-EC-SCHEMA | 404 | FAILED |
-| C-AI-035 | AI | Delete nonnumeric id | state, security, schema | C-EC-DELETE, C-EC-ID-INVALID, C-EC-SCHEMA | 400/404 | FAILED |
-| C-STU-036 | STUDENT | Spaces-only category name is rejected after trimming | domain, security, schema | C-EC-NAME-BLANK, C-EC-CREATE | 400/422 | FAILED |
-| C-STU-037 | STUDENT | Normal user cannot create a category | security, state, schema | C-EC-AUTH-USER, C-EC-CREATE | 403 | FAILED |
-| C-STU-038 | STUDENT | HTML category name is returned only as JSON data | security, schema | C-EC-NAME-VALID, C-EC-CREATE | 200 | PASSED |
-| C-STU-039 | STUDENT | Updating one category leaves unrelated categories unchanged | state, schema | C-EC-UPDATE, C-EC-ID-VALID | 200 | PASSED |
-| C-STU-040 | STUDENT | Deleting the same category twice returns not found on repetition | state, schema | C-EC-DELETE, C-EC-ID-VALID | 200 | FAILED |
+| ID | Origin | Title | Coverage | Expected | Actual | Result | Failure reason |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| C-AI-001 | AI | Admin creates valid product | domain, state, schema | 200 | 200 | PASSED |  |
+| C-AI-002 | AI | Missing JWT | security, schema | 401 | 200 | FAILED | status is allowed; response schema |
+| C-AI-003 | AI | Malformed JWT | security, schema | 403 | 200 | FAILED | status is allowed; response schema |
+| C-AI-004 | AI | Wrong scheme | security, schema | 403 | 200 | FAILED | status is allowed; response schema |
+| C-AI-005 | AI | Normal user JWT | security, schema | 403 | 200 | FAILED | status is allowed; response schema |
+| C-AI-006 | AI | Missing name | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-007 | AI | Null name | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-008 | AI | Empty name | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-009 | AI | Whitespace name | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-010 | AI | Numeric name | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-011 | AI | Name length one | domain, schema | 200 | 200 | PASSED |  |
+| C-AI-012 | AI | Name length 254 | domain, schema | 200 | 200 | PASSED |  |
+| C-AI-013 | AI | Name length 255 | domain, schema | 200 | 200 | PASSED |  |
+| C-AI-014 | AI | Name length 256 | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-015 | AI | Missing price | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-016 | AI | Null price | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-017 | AI | Negative price | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-018 | AI | Zero price | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-019 | AI | Price one | domain, schema | 200 | 200 | PASSED |  |
+| C-AI-020 | AI | Positive decimal price | domain, schema | 200 | 200 | PASSED |  |
+| C-AI-021 | AI | String price | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-022 | AI | Boolean price | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-023 | AI | Array price | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-024 | AI | Missing category | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-025 | AI | Null category | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-026 | AI | Category zero | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-027 | AI | Negative category | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-028 | AI | Nonexistent category | domain, schema | 400/404/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-029 | AI | String category | domain, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-AI-030 | AI | Existing category three | domain, schema | 200 | 200 | PASSED |  |
+| C-AI-031 | AI | Optional description and image omitted | domain, schema | 200 | 200 | PASSED |  |
+| C-AI-032 | AI | Malformed JSON | domain, schema | 400 | 400 | FAILED | content type; response schema |
+| C-AI-033 | AI | SQL text remains data | security, schema | 200 | 200 | PASSED |  |
+| C-AI-034 | AI | HTML text remains inert | security, schema | 200 | 200 | PASSED |  |
+| C-AI-035 | AI | Role field cannot affect authorization | security, schema | 200 | 200 | PASSED |  |
+| C-STU-036 | STUDENT | Created product persists exact stable fields | state, schema | 200 | 200 | PASSED |  |
+| C-STU-037 | STUDENT | User JWT plus forged role still forbidden | security, state, schema | 403 | 200 | FAILED | status is allowed; response schema |
+| C-STU-038 | STUDENT | Client-supplied id cannot override the server-assigned product id | security, state, schema | 200/201 | 200 | PASSED |  |
+| C-STU-039 | STUDENT | Unsafe-integer price rejected | domain, security, schema | 400/422 | 200 | FAILED | status is allowed; response schema |
+| C-STU-040 | STUDENT | Server-controlled id and owner fields ignored | security, state, schema | 200 | 200 | PASSED |  |
 
