@@ -1,3 +1,9 @@
+7e648fe | 2026-08-30 12:23 | heyyouknowme | hw06: add demo-video script, CI screenshots, self-assessment 093, refreshed PDF
+745e341 | 2026-08-30 12:14 | heyyouknowme | hw06: record CI green (success) and red (one-failing) run links
+b330453 | 2026-08-30 12:10 | heyyouknowme | hw06: CI runs a green passing suite and a red one-failing suite
+1ab1135 | 2026-08-30 11:50 | heyyouknowme | hw06: mark commit-log checklist item done
+140179b | 2026-08-30 11:49 | heyyouknowme | hw06: confirm the API selection is unique within the group
+be86e5a | 2026-08-30 11:47 | heyyouknowme | hw06: refresh Git commit log
 acb7a0d | 2026-08-30 11:47 | heyyouknowme | hw06: build Excel workbook and Main-Report / AI-Audit PDFs
 48c5072 | 2026-08-30 11:44 | heyyouknowme | hw06: add bug/console and GitHub-issue screenshots, link them in reports
 b48bfab | 2026-08-30 11:23 | heyyouknowme | hw06: add required Git commit log
